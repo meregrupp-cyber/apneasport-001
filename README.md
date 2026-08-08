@@ -55,5 +55,6 @@ Kopeeri lokaalseks arenduseks `.env.example` failiks `.env`. Ära commiti väär
 Vaata [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md). `main` on kavandatud production branch;
 feature-harud ja pull request'id saavad Cloudflare preview deployment'i. DNS-i ei muudeta repo kaudu.
 
-Senine GitHub Pages coming-soon lahendus asub `legacy/coming-soon/` ning selle `CNAME` jääb juurkausta
-kuni Cloudflare cutover on preview ja review järel eraldi kinnitatud.
+GitHub Pages teenindab ajutiselt juurkausta sünkroniseeritud staatilist buildi. `.nojekyll` tagab, et
+Astro `_astro` varad jõuavad avalikku veebi. `CNAME` jääb juurkausta kuni Cloudflare cutover on
+eraldi kinnitatud.
