@@ -1,0 +1,142 @@
+---
+interface Props {
+  locale: 'et' | 'en';
+  categories: string[];
+  years: string[];
+}
+
+const { locale, categories, years } = Astro.props;
+const copy =
+  locale === 'et'
+    ? {
+        search: 'Otsi dokumente',
+        searchPlaceholder: 'Pealkiri või märksõna',
+        category: 'Kategooria',
+        language: 'Keel',
+        status: 'Staatus',
+        year: 'Aasta',
+        all: 'Kõik',
+        active: 'Kehtiv',
+        draft: 'Mustand',
+        noResults: 'Sobivaid dokumente ei leitud.',
+      }
+    : {
+        search: 'Search documents',
+        searchPlaceholder: 'Title or keyword',
+        category: 'Category',
+        language: 'Language',
+        status: 'Status',
+        year: 'Year',
+        all: 'All',
+        active: 'Active',
+        draft: 'Draft',
+        noResults: 'No matching documents found.',
+      };
+---
+
+<div class="document-browser" data-document-browser>
+  <form class="document-filters" data-document-filters>
+    <label>
+      <span>{copy.search}</span>
+      <input type="search" name="query" placeholder={copy.searchPlaceholder} autocomplete="off" />
+    </label>
+    <label>
+      <span>{copy.category}</span>
+      <select name="category">
+        <option value="">{copy.all}</option>
+        {categories.map((category) => <option value={category}>{category}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>{copy.language}</span>
+      <select name="locale">
+        <option value="">{copy.all}</option>
+        <option value="et">ET</option>
+        <option value="en">EN</option>
+        <option value="multi">ET / EN</option>
+      </select>
+    </label>
+    <label>
+      <span>{copy.status}</span>
+      <select name="status">
+        <option value="">{copy.all}</option>
+        <option value="active">{copy.active}</option>
+        <option value="draft">{copy.draft}</option>
+      </select>
+    </label>
+    <label>
+      <span>{copy.year}</span>
+      <select name="year">
+        <option value="">{copy.all}</option>
+        {years.map((year) => <option value={year}>{year}</option>)}
+      </select>
+    </label>
+  </form>
+  <div class="document-list" data-document-list><slot /></div>
+  <p class="no-results" data-no-results hidden>{copy.noResults}</p>
+</div>
+
+<script>
+  import { initialiseDocumentFilters } from '../../scripts/document-filters';
+  initialiseDocumentFilters();
+</script>
+
+<style>
+  .document-filters {
+    display: grid;
+    grid-template-columns: 2fr repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-ice);
+  }
+  .document-filters label {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    color: var(--color-muted);
+    font-size: 0.74rem;
+    font-weight: 650;
+  }
+  .document-filters input,
+  .document-filters select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.55rem;
+    color: var(--color-ink);
+    background: var(--color-foam);
+  }
+  .document-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .no-results {
+    padding: 2rem;
+    border: 1px dashed var(--color-line);
+    border-radius: var(--radius-md);
+    color: var(--color-muted);
+    text-align: center;
+  }
+  @media (max-width: 62rem) {
+    .document-filters {
+      grid-template-columns: 1fr 1fr;
+    }
+    .document-filters label:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 42rem) {
+    .document-filters,
+    .document-list {
+      grid-template-columns: 1fr;
+    }
+    .document-filters label:first-child {
+      grid-column: auto;
+    }
+  }
+</style>

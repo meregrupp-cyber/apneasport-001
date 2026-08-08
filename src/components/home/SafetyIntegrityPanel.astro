@@ -1,0 +1,107 @@
+---
+import { routeFor, type Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const content =
+  locale === 'et'
+    ? {
+        eyebrow: 'Ohutus ja aus sport',
+        title: 'Sügavus algab vastutusest.',
+        text: 'Ohutu sport vajab pädevat juhendamist, selget järelevalvet ja valmisolekut aidata. Aus sport vajab sama selgeid eetilisi piire.',
+        items: [
+          'Treeningu ja võistluse järelevalve',
+          'Esmaabi ja päästevalmidus',
+          'Antidoping',
+          'Laste ja noorte kaitse',
+          'Väärkohtlemise ennetamine',
+          'Huvide konflikt ja läbipaistvus',
+        ],
+        cta: 'Vaata põhimõtteid',
+      }
+    : {
+        eyebrow: 'Safety and integrity',
+        title: 'Depth begins with responsibility.',
+        text: 'Safe sport needs competent supervision, clear oversight and readiness to help. Fair sport needs equally clear ethical boundaries.',
+        items: [
+          'Training and competition supervision',
+          'First aid and rescue readiness',
+          'Anti-doping',
+          'Child and youth protection',
+          'Safeguarding',
+          'Conflicts of interest and transparency',
+        ],
+        cta: 'View the principles',
+      };
+---
+
+<section class="safety-panel" data-reveal>
+  <div>
+    <p class="eyebrow">{content.eyebrow}</p>
+    <h2>{content.title}</h2>
+    <p class="lede">{content.text}</p>
+    <a class="button button--primary" href={routeFor('safetyIntegrity', locale)}
+      >{content.cta}<span aria-hidden="true">→</span></a
+    >
+  </div>
+  <ol>
+    {
+      content.items.map((item, index) => (
+        <li>
+          <span>0{index + 1}</span>
+          {item}
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .safety-panel {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    padding: clamp(1.5rem, 5vw, 4.5rem);
+    border-radius: var(--radius-lg);
+    color: var(--color-foam);
+    background:
+      radial-gradient(circle at 12% 12%, rgb(69 215 196 / 15%), transparent 32%), var(--color-abyss);
+    box-shadow: var(--shadow-deep);
+  }
+
+  .safety-panel .button {
+    margin-top: var(--space-5);
+  }
+
+  .safety-panel ol {
+    display: grid;
+    align-content: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .safety-panel li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.75rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
+    color: rgb(242 247 248 / 82%);
+  }
+
+  .safety-panel li span {
+    color: var(--color-aqua);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 750;
+  }
+
+  @media (max-width: 48rem) {
+    .safety-panel {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

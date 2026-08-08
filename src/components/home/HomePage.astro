@@ -1,0 +1,295 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { routeFor, type Locale } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import HeroDepthScene from './HeroDepthScene.astro';
+import TrustStrip from './TrustStrip.astro';
+import SportPortalCard from './SportPortalCard.astro';
+import SafetyIntegrityPanel from './SafetyIntegrityPanel.astro';
+import AidaNetworkSection from './AidaNetworkSection.astro';
+import ClubFeatureCard from './ClubFeatureCard.astro';
+import TrainingPathCard from './TrainingPathCard.astro';
+import ContactPanel from './ContactPanel.astro';
+import DocumentCard from '../documents/DocumentCard.astro';
+import SocialFeedFallback from '../news/SocialFeedFallback.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const copy = t(locale);
+const sports = (await getCollection('sports')).filter((entry) => entry.data.locale === locale);
+const clubs = (await getCollection('clubs')).filter(
+  (entry) => entry.data.locale === locale && entry.data.featured,
+);
+const documents = (await getCollection('documents')).filter((entry) => entry.data.featured);
+const news = (await getCollection('news'))
+  .filter((entry) => entry.data.locale === locale && !entry.data.draft)
+  .slice(0, 3);
+
+const sportRoute = (translationKey: string) => {
+  if (translationKey === 'sport-freediving') return routeFor('freediving', locale);
+  if (translationKey === 'sport-waterfighting') return routeFor('waterfighting', locale);
+  return routeFor('mermaiding', locale);
+};
+
+const home =
+  locale === 'et'
+    ? {
+        title: 'Üks hingetõmme. Mitu maailma.',
+        description:
+          'Eesti Apneaspordi Liit arendab vabasukeldumist, allveevõitlust ja merineitsisporti ohutult, ausalt ja avatult.',
+        aboutEyebrow: 'Mis on EAPSL?',
+        aboutTitle: 'Ühine ruum oskusele, ohutusele ja arengule.',
+        aboutText:
+          'Loome Eestis ohutud, ausad ja üldkättesaadavad tingimused apneasportide harrastamiseks, treenimiseks, võistlemiseks ja rahvusvaheliseks esindamiseks.',
+        aboutCta: 'Tutvu eesmärkidega',
+        sportsEyebrow: 'Kolm spordiala',
+        sportsTitle: 'Mitu maailma ühe veepinna all.',
+        sportsIntro:
+          'Igal alal on oma tehnika ja iseloom. Kõiki ühendavad oskus, kontroll ja teadlik ohutus.',
+        sportSafety: ['Ära sukeldu üksi', 'Juhendatud treening', 'Pädev järelevalve'],
+        clubEyebrow: 'Liikmesklubid',
+        clubTitle: 'Sport kasvab klubides.',
+        clubText:
+          'Liikmesklubid loovad treeningukeskkonna, kus huviline saab alustada ning sportlane edasi areneda.',
+        trainingEyebrow: 'Treenerid ja koolitused',
+        trainingTitle: 'Vali õige õpitee.',
+        trainingCards: [
+          {
+            title: 'Treenerikutse info',
+            text: 'Ametlik roll, tasemed ja nõuded lisanduvad pärast kinnitamist.',
+            route: 'qualification' as const,
+          },
+          {
+            title: 'AIDA koolitustee',
+            text: 'Rahvusvaheline vabasukeldumise kursuste ja kvalifikatsioonide süsteem.',
+            route: 'aidaEducation' as const,
+          },
+          {
+            title: 'Koolituste kalender',
+            text: 'Avaldatavad koolitused ja registreerimisinfo ühes vaates.',
+            route: 'trainingCalendar' as const,
+          },
+        ],
+        docsEyebrow: 'Ametlik info',
+        docsTitle: 'Dokumendid nähtaval, staatus selge.',
+        docsText:
+          'Põhikiri on avaldatud; järgmised kinnitatud dokumendid lisanduvad struktureeritud arhiivi.',
+        docsCta: 'Ava dokumendiarhiiv',
+        newsEyebrow: 'Uudised',
+        newsTitle: 'EAPSL-i enda uudistearhiiv.',
+        noNews:
+          'Esimesed kinnitatud uudised lisanduvad siia. Mustandeid ega Facebooki postitusi automaatselt ei avaldata.',
+      }
+    : {
+        title: 'One breath. Many worlds.',
+        description:
+          'The Estonian Apnea Sports League develops freediving, underwater combat and mermaiding safely, fairly and openly.',
+        aboutEyebrow: 'What is EAPSL?',
+        aboutTitle: 'A shared space for skill, safety and progress.',
+        aboutText:
+          'We create safe, fair and accessible conditions in Estonia for practising, training, competing and representing apnea sports internationally.',
+        aboutCta: 'Explore our mission',
+        sportsEyebrow: 'Three sports',
+        sportsTitle: 'Many worlds below one surface.',
+        sportsIntro:
+          'Each discipline has its own technique and character. Skill, control and deliberate safety connect them all.',
+        sportSafety: ['Never dive alone', 'Supervised training', 'Competent oversight'],
+        clubEyebrow: 'Member clubs',
+        clubTitle: 'Sport grows in clubs.',
+        clubText:
+          'Member clubs create the training environment where newcomers can begin and athletes can progress.',
+        trainingEyebrow: 'Coaches and education',
+        trainingTitle: 'Choose the right pathway.',
+        trainingCards: [
+          {
+            title: 'Professional qualification',
+            text: 'The official role, levels and requirements will be added after approval.',
+            route: 'qualification' as const,
+          },
+          {
+            title: 'AIDA education pathway',
+            text: 'The international system of freediving courses and qualifications.',
+            route: 'aidaEducation' as const,
+          },
+          {
+            title: 'Training calendar',
+            text: 'Publishable courses and registration information in one view.',
+            route: 'trainingCalendar' as const,
+          },
+        ],
+        docsEyebrow: 'Official information',
+        docsTitle: 'Documents visible, status clear.',
+        docsText:
+          'The Statutes are published; further approved documents will join the structured archive.',
+        docsCta: 'Open document archive',
+        newsEyebrow: 'News',
+        newsTitle: 'EAPSL’s own news archive.',
+        noNews:
+          'The first approved news items will appear here. Drafts and Facebook posts are not published automatically.',
+      };
+---
+
+<BaseLayout title={home.title} description={home.description} {locale} routeKey="home">
+  <main id="main-content">
+    <HeroDepthScene {locale} />
+    <TrustStrip {locale} />
+
+    <section class="section about-section">
+      <div class="container about-grid">
+        <div>
+          <p class="eyebrow">{home.aboutEyebrow}</p>
+          <h2>{home.aboutTitle}</h2>
+        </div>
+        <div>
+          <p class="lede">{home.aboutText}</p>
+          <a class="button button--ghost" href={routeFor('mission', locale)}
+            >{home.aboutCta}<span aria-hidden="true">→</span></a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--ice sports-section">
+      <div class="container section-heading">
+        <p class="eyebrow">{home.sportsEyebrow}</p>
+        <h2>{home.sportsTitle}</h2>
+        <p class="lede">{home.sportsIntro}</p>
+      </div>
+      <div class="container grid grid--3 sport-grid">
+        {
+          sports.map((sport, index) => (
+            <SportPortalCard
+              title={sport.data.title}
+              summary={sport.data.summary}
+              safety={home.sportSafety[index] ?? home.sportSafety[0] ?? ''}
+              href={sportRoute(sport.data.translationKey)}
+              index={`0${index + 1}`}
+              accent={sport.data.accent}
+              cta={copy.learnMore}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container"><SafetyIntegrityPanel {locale} /></div>
+    </section>
+    <AidaNetworkSection {locale} />
+
+    <section class="section section--ice">
+      <div class="container section-heading">
+        <p class="eyebrow">{home.clubEyebrow}</p>
+        <h2>{home.clubTitle}</h2>
+        <p class="lede">{home.clubText}</p>
+      </div>
+      <div class="container club-wrap">
+        {clubs.map((club) => <ClubFeatureCard {...club.data} {locale} />)}
+      </div>
+    </section>
+
+    <section class="section training-section">
+      <div class="container section-heading">
+        <p class="eyebrow">{home.trainingEyebrow}</p>
+        <h2>{home.trainingTitle}</h2>
+      </div>
+      <div class="container grid grid--3">
+        {
+          home.trainingCards.map((card, index) => (
+            <TrainingPathCard
+              number={`0${index + 1}`}
+              title={card.title}
+              text={card.text}
+              href={routeFor(card.route, locale)}
+              cta={copy.learnMore}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section section--ice documents-section">
+      <div class="container docs-layout">
+        <div>
+          <p class="eyebrow">{home.docsEyebrow}</p>
+          <h2>{home.docsTitle}</h2>
+          <p class="lede">{home.docsText}</p>
+          <a class="button button--ink" href={routeFor('documents', locale)}
+            >{home.docsCta}<span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="home-documents">
+          {documents.map((document) => <DocumentCard {...document.data} uiLocale={locale} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section news-section">
+      <div class="container section-heading">
+        <p class="eyebrow">{home.newsEyebrow}</p>
+        <h2>{home.newsTitle}</h2>
+      </div>
+      <div class="container news-empty">
+        {news.length === 0 && <p class="status-note">{home.noNews}</p>}
+      </div>
+      <div class="container"><SocialFeedFallback {locale} /></div>
+    </section>
+
+    <section class="section section--compact">
+      <div class="container"><ContactPanel {locale} /></div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: end;
+    gap: clamp(2rem, 8vw, 8rem);
+  }
+  .about-grid .button {
+    margin-top: 1.75rem;
+  }
+  .section-heading {
+    margin-bottom: var(--space-6);
+  }
+  .section-heading h2 {
+    max-width: 16ch;
+  }
+  .sport-grid {
+    align-items: stretch;
+  }
+  .club-wrap {
+    margin-top: var(--space-6);
+  }
+  .training-section .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+  }
+  .docs-layout {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(2rem, 8vw, 8rem);
+  }
+  .docs-layout .button {
+    margin-top: var(--space-5);
+  }
+  .home-documents {
+    display: grid;
+    gap: 1rem;
+  }
+  .news-empty {
+    margin-bottom: var(--space-4);
+  }
+  @media (max-width: 52rem) {
+    .about-grid,
+    .docs-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

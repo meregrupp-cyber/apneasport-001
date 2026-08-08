@@ -1,0 +1,119 @@
+---
+import { getFacebookPageUrl, site } from '../../data/site';
+import { externalLinks } from '../../data/external-links';
+import { routeFor, type Locale } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+const facebookUrl = getFacebookPageUrl();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="footer-brand">{site.legalName[locale]}</p>
+      <p>{site.internationalRole}</p>
+      <p>{locale === 'et' ? 'Registrikood' : 'Registry code'} {site.registryCode}</p>
+    </div>
+    <div>
+      <p class="footer-heading">{locale === 'et' ? 'Kontakt' : 'Contact'}</p>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={`tel:${site.phoneHref}`}>{site.phoneDisplay}</a>
+      <span>{site.location[locale]}</span>
+    </div>
+    <div>
+      <p class="footer-heading">{locale === 'et' ? 'Kiirlingid' : 'Quick links'}</p>
+      <a href={routeFor('documents', locale)}>{locale === 'et' ? 'Dokumendid' : 'Documents'}</a>
+      <a href={routeFor('membership', locale)}
+        >{locale === 'et' ? 'Liikmeks astumine' : 'Membership'}</a
+      >
+      <a href={externalLinks.aida.home} target="_blank" rel="noopener noreferrer"
+        >AIDA International ↗</a
+      >
+      {
+        facebookUrl && (
+          <a href={facebookUrl} target="_blank" rel="noopener noreferrer">
+            Facebook ↗
+          </a>
+        )
+      }
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© {new Date().getFullYear()} EAPSL. {copy.allRights}</p>
+    <nav aria-label={locale === 'et' ? 'Õigusinfo' : 'Legal information'}>
+      <a href={routeFor('privacy', locale)}>{locale === 'et' ? 'Privaatsus' : 'Privacy'}</a>
+      <a href={routeFor('cookies', locale)}>{locale === 'et' ? 'Küpsised' : 'Cookies'}</a>
+      <a href={routeFor('accessibility', locale)}
+        >{locale === 'et' ? 'Ligipääsetavus' : 'Accessibility'}</a
+      >
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: var(--space-7);
+    color: rgb(242 247 248 / 76%);
+    background: var(--color-abyss);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+
+  .footer-grid > div {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-brand,
+  .footer-heading {
+    color: var(--color-foam);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .footer-brand {
+    font-size: var(--step-1);
+  }
+
+  .footer-bottom {
+    display: flex;
+    min-height: 5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    font-size: 0.82rem;
+  }
+
+  .footer-bottom nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 46rem) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+
+    .footer-bottom {
+      align-items: flex-start;
+      flex-direction: column;
+      padding-block: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,260 @@
+---
+import { routeFor, type Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content =
+  locale === 'et'
+    ? {
+        overline: 'Eesti Apneaspordi Liit · AIDA Estonia',
+        title: 'Üks hingetõmme. Mitu maailma.',
+        lead: 'Arendame Eestis vabasukeldumist, allveevõitlust, merineitsisporti ja nendega seotud allveespordialasid — ohutult, ausalt ja avatult.',
+        primary: 'Avasta spordialad',
+        secondary: 'Tutvu liiduga',
+        depth: 'Liigu sügavamale',
+      }
+    : {
+        overline: 'Estonian Apnea Sports League · AIDA Estonia',
+        title: 'One breath. Many worlds.',
+        lead: 'We develop freediving, underwater combat, mermaiding and related underwater sports in Estonia — safely, fairly and openly.',
+        primary: 'Explore the sports',
+        secondary: 'About the League',
+        depth: 'Move deeper',
+      };
+---
+
+<section class="hero" data-depth-root>
+  <div class="depth-background" aria-hidden="true">
+    <div class="surface-light"></div>
+    <div class="depth-orb"></div>
+    <div class="water-line water-line--one"></div>
+    <div class="water-line water-line--two"></div>
+    <canvas data-depth-canvas></canvas>
+    <img
+      src="/brand/eapsl-mark.webp"
+      alt=""
+      width="1056"
+      height="1074"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </div>
+  <div class="container hero-content">
+    <p class="eyebrow">{content.overline}</p>
+    <h1>{content.title}</h1>
+    <p class="lede">{content.lead}</p>
+    <div class="button-row">
+      <a class="button button--primary" href={routeFor('sports', locale)}
+        >{content.primary}<span aria-hidden="true">↓</span></a
+      >
+      <a class="button button--secondary" href={routeFor('league', locale)}
+        >{content.secondary}<span aria-hidden="true">→</span></a
+      >
+    </div>
+  </div>
+  <a class="depth-cue" href="#trust-strip">
+    <span>{content.depth}</span>
+    <span class="depth-line" aria-hidden="true"></span>
+  </a>
+</section>
+
+<script>
+  import { initialiseDepthScene } from '../../scripts/depth-scene';
+
+  const start = () => initialiseDepthScene();
+  const idle = window.requestIdleCallback;
+  if (typeof idle === 'function') {
+    idle(start, { timeout: 1400 });
+  } else {
+    globalThis.setTimeout(start, 400);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    min-height: max(46rem, 92svh);
+    align-items: center;
+    overflow: hidden;
+    color: var(--color-foam);
+    background:
+      linear-gradient(180deg, rgb(2 11 20 / 18%), rgb(2 11 20 / 68%)),
+      radial-gradient(circle at 72% 18%, #0d7a99, transparent 36%),
+      linear-gradient(150deg, #062944 0%, var(--color-abyss) 72%);
+    isolation: isolate;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    padding-top: 6rem;
+  }
+
+  .hero h1 {
+    max-width: 12ch;
+  }
+
+  .hero .lede {
+    max-width: 41rem;
+  }
+
+  .depth-background,
+  .depth-background::after,
+  .surface-light,
+  .depth-orb,
+  .water-line,
+  [data-depth-canvas] {
+    position: absolute;
+    inset: 0;
+  }
+
+  .depth-background {
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .depth-background::after {
+    content: '';
+    background: linear-gradient(90deg, rgb(2 11 20 / 72%) 0%, rgb(2 11 20 / 12%) 70%);
+  }
+
+  .surface-light {
+    top: -28%;
+    right: -12%;
+    left: auto;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgb(69 215 196 / 34%),
+      rgb(15 95 131 / 8%) 42%,
+      transparent 68%
+    );
+    filter: blur(1.5rem);
+  }
+
+  .depth-orb {
+    top: 18%;
+    right: 8%;
+    bottom: auto;
+    left: auto;
+    width: min(42vw, 38rem);
+    aspect-ratio: 1;
+    border: 1px solid rgb(69 215 196 / 30%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 28%, rgb(69 215 196 / 18%), transparent 60%);
+    box-shadow:
+      inset 0 0 8rem rgb(69 215 196 / 8%),
+      0 0 10rem rgb(15 95 131 / 20%);
+  }
+
+  .water-line {
+    top: 30%;
+    right: -15%;
+    bottom: auto;
+    left: 38%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 36%), transparent);
+    transform: rotate(-14deg);
+  }
+
+  .water-line--two {
+    top: 63%;
+    opacity: 0.4;
+    transform: rotate(-8deg);
+  }
+
+  [data-depth-canvas] {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  [data-depth-root][data-enhanced='true'] [data-depth-canvas] {
+    opacity: 0.72;
+  }
+
+  .depth-background img {
+    position: absolute;
+    z-index: 1;
+    right: clamp(-8rem, -6vw, -2rem);
+    bottom: clamp(-12rem, -12vw, -4rem);
+    width: min(58vw, 50rem);
+    border-radius: 50%;
+    opacity: 0.1;
+    mix-blend-mode: screen;
+    filter: saturate(0.8) contrast(1.1);
+  }
+
+  .depth-cue {
+    position: absolute;
+    z-index: 5;
+    right: 2rem;
+    bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgb(242 247 248 / 66%);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  .depth-line {
+    width: 1px;
+    height: 3.5rem;
+    background: linear-gradient(var(--color-aqua), transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .surface-light {
+      animation: breathe 8s ease-in-out infinite alternate;
+    }
+
+    .depth-orb {
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes breathe {
+    to {
+      transform: scale(1.12);
+      opacity: 0.76;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      transform: translate3d(-1.5rem, 1rem, 0) scale(1.04);
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .hero {
+      min-height: 46rem;
+    }
+
+    .hero-content {
+      padding-top: 8rem;
+      padding-bottom: 5rem;
+    }
+
+    .depth-background img {
+      right: -8rem;
+      bottom: -5rem;
+      width: 30rem;
+    }
+
+    .depth-cue {
+      display: none;
+    }
+  }
+</style>

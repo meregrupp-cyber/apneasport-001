@@ -1,0 +1,15 @@
+.astro
+dist
+node_modules
+package-lock.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+legacy
+public/**/*.svg
+.env.example
+.ci-test
+.lockgen
+.npm-cache
+.pnpm-home
+.pnpm-store
+.playwright-browsers

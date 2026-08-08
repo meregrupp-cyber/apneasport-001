@@ -1,0 +1,190 @@
+---
+import { externalLinks } from '../../data/external-links';
+import { routeFor, type Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const content =
+  locale === 'et'
+    ? {
+        eyebrow: 'AIDA Estonia',
+        title: 'Eesti vabasukeldumine rahvusvahelises võrgustikus.',
+        text: 'EAPSL on AIDA Internationali liige ja tegutseb vabasukeldumise valdkonnas AIDA Estonia rollis. See roll ei laiene samal viisil allveevõitlusele ega merineitsispordile.',
+        more: 'AIDA Estonia roll',
+        links: [
+          'AIDA ametlik veeb',
+          'Reeglid ja dokumendid',
+          'Sündmuste kalender',
+          'Koolitussüsteem',
+        ],
+      }
+    : {
+        eyebrow: 'AIDA Estonia',
+        title: 'Estonian freediving in an international network.',
+        text: 'EAPSL is a member of AIDA International and acts as AIDA Estonia in freediving. This role does not extend in the same way to underwater combat or mermaiding.',
+        more: 'The AIDA Estonia role',
+        links: [
+          'AIDA official website',
+          'Rules and documents',
+          'Event calendar',
+          'Education system',
+        ],
+      };
+const links = [
+  externalLinks.aida.home,
+  externalLinks.aida.documents,
+  externalLinks.aida.calendar,
+  externalLinks.aida.education,
+];
+---
+
+<section class="aida-network section--dark">
+  <div class="network-art" aria-hidden="true">
+    <span class="point point--estonia"></span>
+    <span class="point point--one"></span>
+    <span class="point point--two"></span>
+    <span class="point point--three"></span>
+    <span class="connection connection--one"></span>
+    <span class="connection connection--two"></span>
+    <span class="connection connection--three"></span>
+  </div>
+  <div class="container aida-grid">
+    <div>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2>{content.title}</h2>
+      <p class="lede">{content.text}</p>
+      <a class="button button--primary" href={routeFor('aidaEstonia', locale)}
+        >{content.more}<span aria-hidden="true">→</span></a
+      >
+    </div>
+    <nav aria-label={locale === 'et' ? 'AIDA ametlikud lingid' : 'Official AIDA links'}>
+      {
+        content.links.map((label, index) => (
+          <a href={links[index]} target="_blank" rel="noopener noreferrer">
+            <span>0{index + 1}</span>
+            {label}
+            <b aria-hidden="true">↗</b>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</section>
+
+<style>
+  .aida-network {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--space-8);
+    background:
+      radial-gradient(circle at 72% 42%, rgb(15 95 131 / 55%), transparent 36%), var(--color-deep);
+    isolation: isolate;
+  }
+
+  .aida-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: end;
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .aida-grid .button {
+    margin-top: var(--space-5);
+  }
+
+  .aida-grid nav {
+    display: grid;
+  }
+
+  .aida-grid nav a {
+    display: grid;
+    min-height: 4.5rem;
+    grid-template-columns: 2.2rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgb(255 255 255 / 14%);
+    color: rgb(242 247 248 / 82%);
+    font-family: var(--font-display);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .aida-grid nav span {
+    color: var(--color-aqua);
+    font-size: 0.7rem;
+  }
+  .aida-grid nav b {
+    font-weight: 400;
+  }
+
+  .network-art,
+  .point,
+  .connection {
+    position: absolute;
+  }
+  .network-art {
+    z-index: -1;
+    inset: 0;
+    opacity: 0.56;
+  }
+  .point {
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 2px solid var(--color-aqua);
+    border-radius: 50%;
+    box-shadow: 0 0 1.2rem var(--color-aqua);
+  }
+  .point--estonia {
+    top: 22%;
+    right: 24%;
+    width: 1rem;
+    height: 1rem;
+    background: var(--color-aqua);
+  }
+  .point--one {
+    top: 58%;
+    right: 8%;
+  }
+  .point--two {
+    top: 68%;
+    right: 42%;
+  }
+  .point--three {
+    top: 18%;
+    right: 52%;
+  }
+  .connection {
+    right: 24%;
+    height: 1px;
+    transform-origin: right center;
+    background: linear-gradient(90deg, transparent, var(--color-aqua));
+  }
+  .connection--one {
+    top: 23%;
+    width: 30%;
+    transform: rotate(4deg);
+  }
+  .connection--two {
+    top: 25%;
+    width: 37%;
+    transform: rotate(-58deg);
+  }
+  .connection--three {
+    top: 25%;
+    width: 31%;
+    transform: rotate(34deg);
+  }
+
+  @media (max-width: 48rem) {
+    .aida-grid {
+      grid-template-columns: 1fr;
+    }
+    .network-art {
+      opacity: 0.24;
+    }
+  }
+</style>

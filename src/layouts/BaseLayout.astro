@@ -1,0 +1,63 @@
+---
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/source-sans-3';
+import '../styles/global.css';
+import '../styles/motion.css';
+
+import SEOHead from '../components/common/SEOHead.astro';
+import SiteFooter from '../components/common/SiteFooter.astro';
+import SiteHeader from '../components/common/SiteHeader.astro';
+import { site } from '../data/site';
+import { t } from '../i18n/ui';
+import type { Locale, RouteKey } from '../i18n/routes';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  routeKey: RouteKey;
+  image?: string;
+}
+
+const { title, description, locale, routeKey, image } = Astro.props;
+const copy = t(locale);
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsOrganization',
+  name: site.legalName[locale],
+  alternateName: [site.shortName, site.internationalRole],
+  url: site.baseUrl,
+  email: site.email,
+  telephone: site.phoneHref,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Kauri tee 12-5',
+    addressLocality: 'Alliku küla',
+    addressRegion: 'Harju maakond',
+    postalCode: '76403',
+    addressCountry: 'EE',
+  },
+};
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#031b2c" />
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <SEOHead {title} {description} {locale} {routeKey} {...image ? { image } : {}} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">{copy.skip}</a>
+    <SiteHeader {locale} {routeKey} />
+    <slot />
+    <SiteFooter {locale} />
+    <script>
+      import { initialiseMotion } from '../scripts/motion';
+      initialiseMotion();
+    </script>
+  </body>
+</html>

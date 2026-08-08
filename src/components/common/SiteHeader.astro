@@ -1,0 +1,236 @@
+---
+import { navigation } from '../../data/navigation';
+import { routeFor, type Locale, type RouteKey } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  locale: Locale;
+  routeKey: RouteKey;
+}
+
+const { locale, routeKey } = Astro.props;
+const items = navigation(locale);
+const copy = t(locale);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a
+      class="brand"
+      href={routeFor('home', locale)}
+      aria-label={locale === 'et' ? 'EAPSL avaleht' : 'EAPSL home'}
+    >
+      <span class="brand-mark" aria-hidden="true"><span></span></span>
+      <span class="brand-copy">
+        <strong>EAPSL</strong>
+        <small>{locale === 'et' ? 'AIDA Estonia' : 'AIDA Estonia'}</small>
+      </span>
+    </a>
+
+    <nav
+      class="desktop-nav"
+      aria-label={locale === 'et' ? 'Põhinavigatsioon' : 'Primary navigation'}
+    >
+      {
+        items.map((item) => (
+          <a href={item.href} aria-current={item.key === routeKey ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header-actions">
+      <LanguageSwitcher {locale} {routeKey} />
+      <a class="contact-link" href={routeFor('contact', locale)}>{copy.contact}</a>
+      <details class="mobile-menu">
+        <summary>{copy.menu}</summary>
+        <nav aria-label={locale === 'et' ? 'Mobiilinavigatsioon' : 'Mobile navigation'}>
+          {items.map((item) => <a href={item.href}>{item.label}</a>)}
+          <a href={routeFor('contact', locale)}>{copy.contact}</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    z-index: 50;
+    inset: 0 0 auto;
+    color: var(--color-foam);
+  }
+
+  .header-inner {
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    border-bottom: 1px solid rgb(255 255 255 / 14%);
+  }
+
+  .brand,
+  .header-actions,
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .brand {
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .brand-mark {
+    display: grid;
+    width: 2.55rem;
+    height: 2.55rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 38%);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 65% 25%, var(--color-aqua), transparent 38%), var(--color-brand);
+  }
+
+  .brand-mark span {
+    width: 0.85rem;
+    height: 1.25rem;
+    border: 2px solid var(--color-foam);
+    border-top-color: transparent;
+    border-radius: 50%;
+    transform: rotate(28deg);
+  }
+
+  .brand-copy {
+    display: grid;
+    line-height: 1.05;
+  }
+
+  .brand-copy strong {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+  }
+
+  .brand-copy small {
+    margin-top: 0.25rem;
+    color: rgb(242 247 248 / 70%);
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .desktop-nav {
+    gap: clamp(0.75rem, 2vw, 1.75rem);
+  }
+
+  .desktop-nav a {
+    position: relative;
+    min-height: 2.75rem;
+    align-content: center;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .desktop-nav a::after {
+    position: absolute;
+    right: 0;
+    bottom: 0.35rem;
+    left: 0;
+    height: 2px;
+    content: '';
+    background: var(--color-aqua);
+    transform: scaleX(0);
+    transition: transform 160ms ease;
+  }
+
+  .desktop-nav a:hover::after,
+  .desktop-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .header-actions {
+    gap: 0.75rem;
+  }
+
+  .contact-link {
+    min-height: 2.75rem;
+    align-content: center;
+    padding-inline: 1rem;
+    border-radius: 999px;
+    color: var(--color-abyss);
+    background: var(--color-aqua);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  @media (max-width: 66rem) {
+    .desktop-nav,
+    .contact-link {
+      display: none;
+    }
+
+    .mobile-menu {
+      position: relative;
+      display: block;
+    }
+
+    .mobile-menu summary {
+      min-width: 3.5rem;
+      min-height: 2.75rem;
+      align-content: center;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      font-weight: 700;
+      list-style: none;
+      text-align: center;
+    }
+
+    .mobile-menu summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-menu nav {
+      position: absolute;
+      top: calc(100% + 0.75rem);
+      right: 0;
+      display: grid;
+      width: min(19rem, calc(100vw - 1.25rem));
+      padding: 0.75rem;
+      border: 1px solid rgb(255 255 255 / 15%);
+      border-radius: var(--radius-md);
+      background: rgb(3 27 44 / 96%);
+      box-shadow: var(--shadow-deep);
+    }
+
+    .mobile-menu nav a {
+      min-height: 2.75rem;
+      align-content: center;
+      padding-inline: 0.75rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+    }
+
+    .mobile-menu nav a:hover {
+      background: rgb(255 255 255 / 8%);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .brand-copy small {
+      display: none;
+    }
+  }
+</style>

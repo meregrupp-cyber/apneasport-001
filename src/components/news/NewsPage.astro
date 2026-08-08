@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../i18n/routes';
+import PageHero from '../common/PageHero.astro';
+import SocialFeedFallback from './SocialFeedFallback.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const news = (await getCollection('news')).filter(
+  (entry) => entry.data.locale === locale && !entry.data.draft,
+);
+const content =
+  locale === 'et'
+    ? {
+        title: 'Uudised',
+        eyebrow: 'EAPSL-i enda arhiiv',
+        intro: 'Kinnitatud uudised, teated ja spordilood ühes püsivas arhiivis.',
+        description: 'Eesti Apneaspordi Liidu uudised ja ametlikud teated.',
+        empty:
+          'Esimesed kinnitatud uudised lisanduvad siia. Toimetuse mustandeid ega sotsiaalmeedia postitusi automaatselt ei avaldata.',
+      }
+    : {
+        title: 'News',
+        eyebrow: 'EAPSL’s own archive',
+        intro: 'Approved news, notices and sports stories in one persistent archive.',
+        description: 'News and official notices from the Estonian Apnea Sports League.',
+        empty:
+          'The first approved news items will appear here. Editorial drafts and social posts are not published automatically.',
+      };
+---
+
+<BaseLayout title={content.title} description={content.description} {locale} routeKey="news">
+  <main id="main-content">
+    <PageHero {locale} eyebrow={content.eyebrow} title={content.title} intro={content.intro} />
+    <section class="section">
+      <div class="container">
+        {news.length === 0 ? <p class="status-note news-empty">{content.empty}</p> : <div />}
+        <SocialFeedFallback {locale} />
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .news-empty {
+    margin-bottom: 1.5rem;
+  }
+</style>

@@ -1,0 +1,193 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import { routeFor, type Locale, type RouteKey } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import PageHero from '../common/PageHero.astro';
+
+interface Props {
+  entry: CollectionEntry<'sports'>;
+  routeKey: RouteKey;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const { Content } = await render(entry);
+const data = entry.data;
+const copy = t(locale);
+const labels =
+  locale === 'et'
+    ? {
+        what: 'Mis ala see on?',
+        who: 'Kellele see sobib?',
+        start: 'Kuidas alustada?',
+        disciplines: 'Põhidistsipliinid',
+        safety: 'Ohutus',
+        training: 'Treening ja kvalifikatsioon',
+        competition: 'Võistlemine',
+        official: 'Ametlikud välislingid',
+        contact: 'Leia treeninguvõimalus',
+      }
+    : {
+        what: 'What is it?',
+        who: 'Who is it for?',
+        start: 'How to begin',
+        disciplines: 'Core disciplines',
+        safety: 'Safety',
+        training: 'Training and qualifications',
+        competition: 'Competition',
+        official: 'Official external links',
+        contact: 'Find a training opportunity',
+      };
+---
+
+<PageHero {locale} eyebrow={data.eyebrow} title={data.title} intro={data.summary} />
+<article class="section sport-detail">
+  <div class="container sport-layout">
+    <aside>
+      <p class="eyebrow">{locale === 'et' ? 'Lehel' : 'On this page'}</p>
+      <nav aria-label={locale === 'et' ? 'Lehe sisukord' : 'Table of contents'}>
+        {
+          Object.values(labels)
+            .slice(0, 7)
+            .map((label, index) => <a href={`#section-${index + 1}`}>{label}</a>)
+        }
+      </nav>
+    </aside>
+    <div class="sport-content">
+      <section id="section-1">
+        <h2>{labels.what}</h2><p>{data.definition}</p><div class="prose-body"><Content /></div>
+      </section>
+      <section id="section-2">
+        <h2>{labels.who}</h2><ul>{data.suitedFor.map((item) => <li>{item}</li>)}</ul>
+      </section>
+      <section id="section-3">
+        <h2>{labels.start}</h2><ol>{data.startSteps.map((item) => <li>{item}</li>)}</ol>
+      </section>
+      <section id="section-4">
+        <h2>{labels.disciplines}</h2><ul>{data.disciplines.map((item) => <li>{item}</li>)}</ul>
+      </section>
+      <section id="section-5" class="safety-section">
+        <h2>{labels.safety}</h2><ul>{data.safety.map((item) => <li>{item}</li>)}</ul>
+      </section>
+      <section id="section-6"><h2>{labels.training}</h2><p>{data.qualification}</p></section>
+      <section id="section-7"><h2>{labels.competition}</h2><p>{data.competition}</p></section>
+      {
+        data.officialLinks.length > 0 && (
+          <section>
+            <>
+              <h2>{labels.official}</h2>
+              <div class="button-row">
+                {data.officialLinks.map((link) => (
+                  <a
+                    class="button button--ghost"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.label}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            </>
+          </section>
+        )
+      }
+      <aside class="contact-cta">
+        <div>
+          <h2>{labels.contact}</h2><p>
+            {
+              locale === 'et'
+                ? 'Alusta liikmesklubist või küsi EAPSL-ilt kinnitatud kontakti.'
+                : 'Start with a member club or ask EAPSL for an approved contact.'
+            }
+          </p>
+        </div><a class="button button--primary" href={routeFor('contact', locale)}
+          >{locale === 'et' ? 'Võta ühendust' : 'Contact us'}<span aria-hidden="true">→</span></a
+        >
+      </aside>
+      <p class="legal-note">{copy.legalDocumentNote}</p>
+    </div>
+  </div>
+</article>
+
+<style>
+  .sport-layout {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(2rem, 7vw, 7rem);
+  }
+  .sport-layout > aside {
+    position: sticky;
+    top: 1.5rem;
+  }
+  .sport-layout > aside nav {
+    display: grid;
+  }
+  .sport-layout > aside a {
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-muted);
+    font-size: 0.82rem;
+    text-decoration: none;
+  }
+  .sport-content {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .sport-content > section {
+    display: grid;
+    gap: 1.25rem;
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-line);
+    scroll-margin-top: 2rem;
+  }
+  .sport-content h2 {
+    font-size: var(--step-2);
+  }
+  .sport-content p,
+  .sport-content li {
+    max-width: 68ch;
+  }
+  .sport-content ul,
+  .sport-content ol {
+    display: grid;
+    gap: 0.7rem;
+    padding-left: 1.35rem;
+    margin: 0;
+  }
+  .safety-section {
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    border: 0 !important;
+    border-radius: var(--radius-md);
+    color: var(--color-foam);
+    background: var(--color-deep);
+  }
+  .contact-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    border-radius: var(--radius-md);
+    background: var(--color-brand);
+    color: var(--color-foam);
+  }
+  .contact-cta p {
+    margin-top: 0.75rem;
+    color: rgb(242 247 248 / 74%);
+  }
+  @media (max-width: 50rem) {
+    .sport-layout {
+      grid-template-columns: 1fr;
+    }
+    .sport-layout > aside {
+      position: static;
+    }
+    .contact-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

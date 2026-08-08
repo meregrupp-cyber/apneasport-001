@@ -1,0 +1,17 @@
+{
+  "translationKey": "training-calendar-placeholder",
+  "locale": "en",
+  "title": "Training calendar",
+  "type": "Information will be added after approval",
+  "level": null,
+  "startsAt": null,
+  "endsAt": null,
+  "registrationDeadline": null,
+  "location": null,
+  "organizer": null,
+  "language": null,
+  "volume": null,
+  "registrationUrl": null,
+  "status": "upcoming",
+  "placeholder": true
+}

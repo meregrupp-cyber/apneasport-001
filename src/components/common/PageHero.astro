@@ -1,0 +1,62 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+  eyebrow: string;
+  title: string;
+  intro: string;
+}
+const { locale, eyebrow, title, intro } = Astro.props;
+---
+
+<header class="page-hero">
+  <div class="page-hero-art" aria-hidden="true"><span></span><span></span></div>
+  <div class="container">
+    <Breadcrumbs {locale} current={title} />
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    <p class="lede">{intro}</p>
+  </div>
+</header>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 10rem 5rem;
+    color: var(--color-foam);
+    background:
+      radial-gradient(circle at 82% 10%, rgb(69 215 196 / 24%), transparent 30%),
+      linear-gradient(145deg, var(--color-deep), var(--color-abyss));
+    isolation: isolate;
+  }
+  .page-hero h1 {
+    max-width: 14ch;
+  }
+  .page-hero-art,
+  .page-hero-art span {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+  }
+  .page-hero-art {
+    inset: 0;
+  }
+  .page-hero-art span:first-child {
+    top: 20%;
+    right: 8%;
+    width: 22rem;
+    height: 22rem;
+    border: 1px solid rgb(69 215 196 / 25%);
+  }
+  .page-hero-art span:last-child {
+    top: 44%;
+    right: 17%;
+    width: 8rem;
+    height: 8rem;
+    background: rgb(69 215 196 / 9%);
+    box-shadow: 0 0 6rem rgb(69 215 196 / 18%);
+  }
+</style>

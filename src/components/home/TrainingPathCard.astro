@@ -1,0 +1,59 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  text: string;
+  href: string;
+  cta: string;
+}
+const { number, title, text, href, cta } = Astro.props;
+---
+
+<a class="training-card" href={href} data-reveal>
+  <span>{number}</span>
+  <h3>{title}</h3>
+  <p>{text}</p>
+  <strong>{cta} <b aria-hidden="true">→</b></strong>
+</a>
+
+<style>
+  .training-card {
+    display: grid;
+    min-height: 21rem;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-foam);
+    text-decoration: none;
+  }
+  .training-card > span {
+    color: var(--color-aqua-dark);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 750;
+  }
+  .training-card h3 {
+    font-size: var(--step-1);
+  }
+  .training-card p {
+    color: var(--color-muted);
+  }
+  .training-card strong {
+    color: var(--color-brand);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .training-card {
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+    }
+    .training-card:hover {
+      transform: translateY(-0.35rem);
+      box-shadow: var(--shadow-soft);
+    }
+  }
+</style>

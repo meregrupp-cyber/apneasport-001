@@ -1,0 +1,11 @@
+{
+  "translationKey": "club-meregrupp",
+  "locale": "et",
+  "name": "MEREGRUPP",
+  "summary": "Liikmesklubi täpne kirjeldus, asukoht ja spordialad lisanduvad pärast EAPSL-i kinnitust.",
+  "website": "https://meregrupp.ee/",
+  "logo": "/brand/meregrupp-logo.webp",
+  "location": null,
+  "sports": [],
+  "featured": true
+}

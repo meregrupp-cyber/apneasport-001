@@ -1,0 +1,2 @@
+# Host-level redirects (www, pages.dev) are configured only after the Cloudflare
+# custom domain is connected and reviewed. No DNS or production redirect here.
