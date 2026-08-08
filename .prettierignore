@@ -18,6 +18,7 @@ public/**/*.svg
 **/*.html
 _astro/**/*.css
 _astro/*.css
+**/*.*.css
 404.html
 index.html
 _astro/
