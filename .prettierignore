@@ -15,6 +15,8 @@ public/**/*.svg
 .playwright-browsers
 
 # Generated GitHub Pages snapshot (synchronized from dist/)
+**/*.html
+_astro/**/*.css
 404.html
 index.html
 _astro/
