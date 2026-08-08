@@ -169,6 +169,11 @@ const home =
               index={`0${index + 1}`}
               accent={sport.data.accent}
               cta={copy.learnMore}
+              logoSrc={
+                sport.data.translationKey === 'sport-freediving'
+                  ? '/brand/aida-logo-negative.svg'
+                  : undefined
+              }
             />
           ))
         }

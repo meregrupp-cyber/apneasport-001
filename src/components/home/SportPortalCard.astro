@@ -7,16 +7,19 @@ interface Props {
   index: string;
   accent: 'aqua' | 'cobalt' | 'coral';
   cta: string;
+  logoSrc?: string | undefined;
 }
 
-const { title, summary, safety, href, index, accent, cta } = Astro.props;
+const { title, summary, safety, href, index, accent, cta, logoSrc } = Astro.props;
 ---
 
 <a class:list={['sport-card', `sport-card--${accent}`]} href={href} data-reveal>
   <span class="sport-number">{index}</span>
   <div class="sport-visual" aria-hidden="true">
     <span class="sport-orbit"></span>
-    <span class="sport-core"></span>
+    <span class:list={['sport-core', { 'sport-core--logo': logoSrc }]}>
+      {logoSrc && <img src={logoSrc} alt="" width="174" height="112" loading="lazy" />}
+    </span>
   </div>
   <div class="sport-copy">
     <h3>{title}</h3>
@@ -87,6 +90,23 @@ const { title, summary, safety, href, index, accent, cta } = Astro.props;
   .sport-core {
     position: absolute;
     border-radius: 50%;
+  }
+
+  .sport-core--logo {
+    inset: 16%;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 20%);
+    background: rgb(2 27 44 / 76%);
+  }
+
+  .sport-core--logo img {
+    display: block;
+    width: 76%;
+    height: auto;
+    max-height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 1.25rem rgb(69 215 196 / 34%));
   }
 
   .sport-visual {
