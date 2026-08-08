@@ -1,0 +1,75 @@
+---
+import { getFacebookPageUrl } from '../../data/site';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const url = getFacebookPageUrl();
+const content =
+  locale === 'et'
+    ? {
+        eyebrow: 'Sotsiaalmeedia',
+        title: 'Jälgi EAPSL-i Facebookis',
+        text: 'Facebook on täiendav levikanal. Veebi uudistearhiiv töötab sellest sõltumatult.',
+        cta: 'Ava Facebook',
+      }
+    : {
+        eyebrow: 'Social media',
+        title: 'Follow EAPSL on Facebook',
+        text: 'Facebook is an additional distribution channel. The website news archive works independently.',
+        cta: 'Open Facebook',
+      };
+---
+
+<aside class="social-fallback">
+  <div>
+    <p class="eyebrow">{content.eyebrow}</p>
+    <h3>{content.title}</h3>
+    <p>{content.text}</p>
+  </div>
+  {
+    url ? (
+      <a class="button button--ghost" href={url} target="_blank" rel="noopener noreferrer">
+        {content.cta}
+        <span aria-hidden="true">↗</span>
+      </a>
+    ) : (
+      <span class="social-status">
+        {locale === 'et'
+          ? 'Link lisandub pärast keskkonnamuutuja seadistamist.'
+          : 'The link appears after the environment variable is configured.'}
+      </span>
+    )
+  }
+</aside>
+
+<style>
+  .social-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-ice);
+  }
+  .social-fallback p:not(.eyebrow) {
+    max-width: 42rem;
+    margin-top: 0.75rem;
+    color: var(--color-muted);
+  }
+  .social-status {
+    max-width: 18rem;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 44rem) {
+    .social-fallback {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,0 +1,38 @@
+:root {
+  --color-abyss: #020b14;
+  --color-deep: #031b2c;
+  --color-brand: #07345f;
+  --color-water: #0f5f83;
+  --color-aqua: #45d7c4;
+  --color-aqua-dark: #16786f;
+  --color-ice: #f2f7f8;
+  --color-foam: #ffffff;
+  --color-ink: #071822;
+  --color-muted: #526872;
+  --color-warning: #a45c00;
+  --color-coral: #ff826c;
+  --color-line: rgb(7 52 95 / 16%);
+  --shadow-soft: 0 24px 80px rgb(2 11 20 / 12%);
+  --shadow-deep: 0 36px 120px rgb(2 11 20 / 32%);
+  --font-display: 'Manrope Variable', 'Avenir Next', sans-serif;
+  --font-body: 'Source Sans 3 Variable', 'Segoe UI', sans-serif;
+  --step--1: clamp(0.9rem, 0.86rem + 0.16vw, 1rem);
+  --step-0: clamp(1rem, 0.94rem + 0.24vw, 1.16rem);
+  --step-1: clamp(1.25rem, 1.14rem + 0.44vw, 1.55rem);
+  --step-2: clamp(1.55rem, 1.35rem + 0.82vw, 2.1rem);
+  --step-3: clamp(2rem, 1.55rem + 1.82vw, 3.2rem);
+  --step-4: clamp(2.65rem, 1.55rem + 4.4vw, 5.6rem);
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+  --space-7: 4.5rem;
+  --space-8: 7rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.75rem;
+  --radius-pill: 999px;
+  --container: 76rem;
+}

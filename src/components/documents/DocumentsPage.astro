@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import PageHero from '../common/PageHero.astro';
+import DocumentCard from './DocumentCard.astro';
+import DocumentFilters from './DocumentFilters.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const copy = t(locale);
+const documents = await getCollection('documents');
+const categories = [...new Set(documents.map((entry) => entry.data.category))].sort();
+const years = [
+  ...new Set(
+    documents
+      .map((entry) => entry.data.publishedAt?.slice(0, 4))
+      .filter((year): year is string => Boolean(year)),
+  ),
+]
+  .sort()
+  .reverse();
+const content =
+  locale === 'et'
+    ? {
+        title: 'Dokumendid',
+        eyebrow: 'Ametlik info- ja dokumendiarhiiv',
+        intro:
+          'Leia põhikiri ning teised EAPSL-i kinnitatud või selgelt mustandina märgitud dokumendid.',
+        description: 'EAPSL-i dokumentide otsitav ja filtreeritav arhiiv.',
+      }
+    : {
+        title: 'Documents',
+        eyebrow: 'Official information and document archive',
+        intro: 'Find the Statutes and other EAPSL documents, clearly marked as approved or draft.',
+        description: 'A searchable and filterable archive of EAPSL documents.',
+      };
+---
+
+<BaseLayout title={content.title} description={content.description} {locale} routeKey="documents">
+  <main id="main-content">
+    <PageHero {locale} eyebrow={content.eyebrow} title={content.title} intro={content.intro} />
+    <section class="section section--ice">
+      <div class="container">
+        <p class="legal-note archive-note">{copy.legalDocumentNote}</p>
+        <DocumentFilters {locale} {categories} {years}>
+          {documents.map((document) => <DocumentCard {...document.data} uiLocale={locale} />)}
+        </DocumentFilters>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .archive-note {
+    margin-bottom: 1.5rem;
+  }
+</style>

@@ -1,0 +1,35 @@
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion='ready'] [data-reveal] {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 600ms ease,
+      transform 600ms ease;
+  }
+
+  html[data-motion='ready'] [data-reveal][data-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  [data-tilt] {
+    transform: perspective(70rem) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 220ms ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

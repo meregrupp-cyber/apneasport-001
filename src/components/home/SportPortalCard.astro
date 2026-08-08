@@ -1,0 +1,159 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  safety: string;
+  href: string;
+  index: string;
+  accent: 'aqua' | 'cobalt' | 'coral';
+  cta: string;
+}
+
+const { title, summary, safety, href, index, accent, cta } = Astro.props;
+---
+
+<a class:list={['sport-card', `sport-card--${accent}`]} href={href} data-reveal>
+  <span class="sport-number">{index}</span>
+  <div class="sport-visual" aria-hidden="true">
+    <span class="sport-orbit"></span>
+    <span class="sport-core"></span>
+  </div>
+  <div class="sport-copy">
+    <h3>{title}</h3>
+    <p>{summary}</p>
+    <span class="safety-chip">{safety}</span>
+    <span class="card-cta">{cta} <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+
+<style>
+  .sport-card {
+    position: relative;
+    display: grid;
+    min-height: 32rem;
+    align-content: end;
+    overflow: hidden;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    color: var(--color-foam);
+    background: var(--color-deep);
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    isolation: isolate;
+  }
+
+  .sport-card::before {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    content: '';
+    background:
+      linear-gradient(180deg, transparent 25%, rgb(2 11 20 / 88%)),
+      radial-gradient(circle at 70% 15%, var(--accent), transparent 52%),
+      linear-gradient(145deg, #0c4568, #020b14 72%);
+  }
+
+  .sport-card--aqua {
+    --accent: rgb(69 215 196 / 70%);
+  }
+  .sport-card--cobalt {
+    --accent: rgb(72 126 255 / 62%);
+  }
+  .sport-card--coral {
+    --accent: rgb(255 130 108 / 52%);
+  }
+
+  .sport-card::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: inherit;
+    content: '';
+  }
+
+  .sport-number {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .sport-visual,
+  .sport-orbit,
+  .sport-core {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .sport-visual {
+    z-index: -1;
+    top: 4rem;
+    left: 50%;
+    width: 16rem;
+    height: 16rem;
+    transform: translateX(-50%);
+  }
+
+  .sport-orbit {
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 32%);
+    box-shadow: inset 0 0 4rem rgb(255 255 255 / 6%);
+  }
+
+  .sport-core {
+    inset: 25%;
+    background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 34%), transparent 64%);
+    box-shadow: 0 0 4rem var(--accent);
+  }
+
+  .sport-copy {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .sport-copy h3 {
+    font-size: var(--step-2);
+  }
+
+  .sport-copy p {
+    color: rgb(242 247 248 / 76%);
+    font-size: 0.98rem;
+  }
+
+  .safety-chip {
+    justify-self: start;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid rgb(255 255 255 / 17%);
+    border-radius: 999px;
+    color: rgb(242 247 248 / 76%);
+    font-size: 0.72rem;
+  }
+
+  .card-cta {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sport-card {
+      transition: transform 240ms ease;
+    }
+
+    .sport-card:hover,
+    .sport-card:focus-visible {
+      transform: translateY(-0.5rem);
+    }
+
+    .sport-card:hover .sport-orbit,
+    .sport-card:focus-visible .sport-orbit {
+      transform: scale(1.08) rotate(12deg);
+      transition: transform 500ms ease;
+    }
+  }
+</style>

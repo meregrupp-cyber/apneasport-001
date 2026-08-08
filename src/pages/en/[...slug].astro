@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageTemplate from '../../components/common/PageTemplate.astro';
+import { pagesFor, type StaticPage } from '../../data/pages';
+import { routeFor } from '../../i18n/routes';
+
+export function getStaticPaths() {
+  return pagesFor('en')
+    .filter((page) => !['documents', 'news'].includes(page.routeKey))
+    .map((page) => ({
+      params: {
+        slug: routeFor(page.routeKey, 'en')
+          .replace(/^\/en\//, '')
+          .replace(/\/$/, ''),
+      },
+      props: { page },
+    }));
+}
+
+interface Props {
+  page: StaticPage;
+}
+const { page } = Astro.props;
+---
+
+<BaseLayout title={page.title} description={page.intro} locale="en" routeKey={page.routeKey}>
+  <main id="main-content"><PageTemplate {page} /></main>
+</BaseLayout>

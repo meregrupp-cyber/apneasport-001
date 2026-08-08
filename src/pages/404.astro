@@ -1,0 +1,54 @@
+---
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/source-sans-3';
+import '../styles/global.css';
+import SiteFooter from '../components/common/SiteFooter.astro';
+import SiteHeader from '../components/common/SiteHeader.astro';
+import { routeFor } from '../i18n/routes';
+---
+
+<!doctype html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Lehte ei leitud / Page not found | EAPSL</title>
+  </head>
+  <body>
+    <SiteHeader locale="et" routeKey="home" />
+    <main id="main-content" class="not-found">
+      <div class="narrow">
+        <p class="eyebrow">404 · Liiga sügav / Too deep</p>
+        <h1>Lehte ei leitud.<br /><span>Page not found.</span></h1>
+        <p class="lede">
+          Kontrolli aadressi või liigu tagasi avalehele. Check the address or return to the home
+          page.
+        </p>
+        <div class="button-row">
+          <a class="button button--primary" href={routeFor('home', 'et')}>Eesti avaleht</a>
+          <a class="button button--secondary" href={routeFor('home', 'en')}>English home</a>
+        </div>
+      </div>
+    </main>
+    <SiteFooter locale="et" />
+  </body>
+</html>
+
+<style>
+  .not-found {
+    display: grid;
+    min-height: 80svh;
+    align-items: center;
+    padding-block: 9rem 5rem;
+    color: var(--color-foam);
+    background:
+      radial-gradient(circle at 75% 20%, rgb(69 215 196 / 20%), transparent 32%), var(--color-abyss);
+  }
+  .not-found h1 {
+    max-width: 14ch;
+  }
+  .not-found h1 span {
+    color: rgb(242 247 248 / 52%);
+  }
+</style>

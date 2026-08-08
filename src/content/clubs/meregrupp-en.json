@@ -1,0 +1,11 @@
+{
+  "translationKey": "club-meregrupp",
+  "locale": "en",
+  "name": "MEREGRUPP",
+  "summary": "The member club's detailed description, location and sports will be added after EAPSL approval.",
+  "website": "https://meregrupp.ee/",
+  "logo": "/brand/meregrupp-logo.webp",
+  "location": null,
+  "sports": [],
+  "featured": true
+}

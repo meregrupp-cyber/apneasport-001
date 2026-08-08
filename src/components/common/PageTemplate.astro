@@ -1,0 +1,214 @@
+---
+import { getCollection } from 'astro:content';
+import type { StaticPage } from '../../data/pages';
+import { routeFor } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import ClubFeatureCard from '../home/ClubFeatureCard.astro';
+import SportPortalCard from '../home/SportPortalCard.astro';
+import TrainingPathCard from '../home/TrainingPathCard.astro';
+import PageHero from './PageHero.astro';
+
+interface Props {
+  page: StaticPage;
+}
+const { page } = Astro.props;
+const copy = t(page.locale);
+const clubs =
+  page.routeKey === 'memberClubs'
+    ? (await getCollection('clubs')).filter(
+        (entry) => entry.data.locale === page.locale && entry.data.featured,
+      )
+    : [];
+
+const sportCards =
+  page.locale === 'et'
+    ? [
+        {
+          title: 'Vabasukeldumine',
+          summary: 'Üks hingetõmme, tehnika ja teadlik ohutus.',
+          safety: 'Ära sukeldu üksi',
+          href: routeFor('freediving', 'et'),
+          accent: 'aqua' as const,
+        },
+        {
+          title: 'Allveevõitlus',
+          summary: 'Reguleeritud paarisala kontrollitud keskkonnas.',
+          safety: 'Juhendatud treening',
+          href: routeFor('waterfighting', 'et'),
+          accent: 'cobalt' as const,
+        },
+        {
+          title: 'Merineitsisport',
+          summary: 'Monolesta tehnika, liikumine ja esitus.',
+          safety: 'Pädev järelevalve',
+          href: routeFor('mermaiding', 'et'),
+          accent: 'coral' as const,
+        },
+      ]
+    : [
+        {
+          title: 'Freediving',
+          summary: 'One breath, technique and deliberate safety.',
+          safety: 'Never dive alone',
+          href: routeFor('freediving', 'en'),
+          accent: 'aqua' as const,
+        },
+        {
+          title: 'Underwater combat',
+          summary: 'A regulated paired sport in a controlled setting.',
+          safety: 'Supervised training',
+          href: routeFor('waterfighting', 'en'),
+          accent: 'cobalt' as const,
+        },
+        {
+          title: 'Mermaiding',
+          summary: 'Monofin technique, movement and performance.',
+          safety: 'Competent supervision',
+          href: routeFor('mermaiding', 'en'),
+          accent: 'coral' as const,
+        },
+      ];
+
+const trainingCards =
+  page.locale === 'et'
+    ? [
+        {
+          title: 'Treenerikutse info',
+          text: 'EAPSL-i roll ja ametlik kutseandja vajavad kinnitamist.',
+          href: routeFor('qualification', 'et'),
+        },
+        {
+          title: 'AIDA koolitustee',
+          text: 'Algkursusest instruktori- ja ohutusteeni ametliku AIDA info põhjal.',
+          href: routeFor('aidaEducation', 'et'),
+        },
+        {
+          title: 'Koolituste kalender',
+          text: 'Struktuur on valmis, sündmused lisanduvad pärast kinnitamist.',
+          href: routeFor('trainingCalendar', 'et'),
+        },
+      ]
+    : [
+        {
+          title: 'Professional qualification',
+          text: 'EAPSL’s role and the official awarding body require confirmation.',
+          href: routeFor('qualification', 'en'),
+        },
+        {
+          title: 'AIDA education pathway',
+          text: 'From entry courses to instructor and safety pathways, based on official AIDA information.',
+          href: routeFor('aidaEducation', 'en'),
+        },
+        {
+          title: 'Training calendar',
+          text: 'The structure is ready; events will be added after approval.',
+          href: routeFor('trainingCalendar', 'en'),
+        },
+      ];
+---
+
+<PageHero locale={page.locale} eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+
+<div class="section">
+  <div class="narrow page-sections">
+    {page.placeholder && <p class="status-note">{copy.placeholder}</p>}
+    {
+      page.sections.map((section) => (
+        <section class="page-section" data-reveal>
+          <h2>{section.title}</h2>
+          <div class="prose">
+            {section.paragraphs.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+            {section.items && (
+              <ul>
+                {section.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            )}
+            {section.links && (
+              <div class="button-row">
+                {section.links.map((link) => (
+                  <a
+                    class="button button--ghost"
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                  >
+                    {link.label}
+                    {link.external && <span aria-hidden="true">↗</span>}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ))
+    }
+    {
+      ['league', 'mission', 'governance', 'membership', 'safetyIntegrity'].includes(
+        page.routeKey,
+      ) && <p class="legal-note">{copy.legalDocumentNote}</p>
+    }
+  </div>
+</div>
+
+{
+  page.routeKey === 'sports' && (
+    <section class="section section--ice">
+      <div class="container grid grid--3">
+        {sportCards.map((card, index) => (
+          <SportPortalCard {...card} index={`0${index + 1}`} cta={copy.learnMore} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+{
+  page.routeKey === 'memberClubs' && clubs.length > 0 && (
+    <section class="section section--ice">
+      <div class="container">
+        {clubs.map((club) => (
+          <ClubFeatureCard {...club.data} locale={page.locale} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+{
+  page.routeKey === 'coaches' && (
+    <section class="section section--ice">
+      <div class="container grid grid--3">
+        {trainingCards.map((card, index) => (
+          <TrainingPathCard number={`0${index + 1}`} {...card} cta={copy.learnMore} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .page-sections {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .page-section {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.8fr) 1.2fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .page-section h2 {
+    font-size: var(--step-2);
+  }
+  @media (max-width: 44rem) {
+    .page-section {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

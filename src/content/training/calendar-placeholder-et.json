@@ -1,0 +1,17 @@
+{
+  "translationKey": "training-calendar-placeholder",
+  "locale": "et",
+  "title": "Koolituste kalender",
+  "type": "Info lisandub pärast kinnitamist",
+  "level": null,
+  "startsAt": null,
+  "endsAt": null,
+  "registrationDeadline": null,
+  "location": null,
+  "organizer": null,
+  "language": null,
+  "volume": null,
+  "registrationUrl": null,
+  "status": "upcoming",
+  "placeholder": true
+}

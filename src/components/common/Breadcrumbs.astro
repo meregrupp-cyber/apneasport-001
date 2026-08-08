@@ -1,0 +1,35 @@
+---
+import { routeFor, type Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+  current: string;
+}
+
+const { locale, current } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label={locale === 'et' ? 'Asukoht lehel' : 'Breadcrumb'}>
+  <ol>
+    <li><a href={routeFor('home', locale)}>{locale === 'et' ? 'Avaleht' : 'Home'}</a></li>
+    <li aria-current="page">{current}</li>
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    color: rgb(242 247 248 / 66%);
+    font-size: 0.82rem;
+    list-style: none;
+  }
+
+  .breadcrumbs li + li::before {
+    margin-right: 0.55rem;
+    content: '/';
+  }
+</style>

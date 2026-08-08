@@ -1,0 +1,38 @@
+---
+import { alternatePath, type Locale, type RouteKey } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  routeKey: RouteKey;
+}
+
+const { locale, routeKey } = Astro.props;
+const copy = t(locale);
+---
+
+<a
+  class="language-switcher"
+  href={alternatePath(routeKey, locale)}
+  hreflang={locale === 'et' ? 'en' : 'et'}
+>
+  <span aria-hidden="true">{copy.languageCode}</span>
+  <span class="visually-hidden">{copy.language}</span>
+</a>
+
+<style>
+  .language-switcher {
+    display: inline-flex;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(242 247 248 / 26%);
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+</style>

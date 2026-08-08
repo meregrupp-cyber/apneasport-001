@@ -1,0 +1,26 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SportDetail from '../../../components/sports/SportDetail.astro';
+import type { RouteKey } from '../../../i18n/routes';
+
+export async function getStaticPaths() {
+  const sports = (await getCollection('sports')).filter((entry) => entry.data.locale === 'en');
+  return sports.map((entry) => ({ params: { sport: entry.data.slug }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'sports'>;
+}
+const { entry } = Astro.props;
+const routeKeys: Record<string, RouteKey> = {
+  'sport-freediving': 'freediving',
+  'sport-waterfighting': 'waterfighting',
+  'sport-mermaiding': 'mermaiding',
+};
+const routeKey = routeKeys[entry.data.translationKey] ?? 'sports';
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.summary} locale="en" {routeKey}>
+  <main id="main-content"><SportDetail {entry} {routeKey} locale="en" /></main>
+</BaseLayout>
