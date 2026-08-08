@@ -13,13 +13,13 @@ const content =
         eyebrow: 'Sotsiaalmeedia',
         title: 'Jälgi EAPSL-i Facebookis',
         text: 'Facebook on täiendav levikanal. Veebi uudistearhiiv töötab sellest sõltumatult.',
-        cta: 'Ava Facebook',
+        linkLabel: 'Link Facebook lehele',
       }
     : {
         eyebrow: 'Social media',
         title: 'Follow EAPSL on Facebook',
         text: 'Facebook is an additional distribution channel. The website news archive works independently.',
-        cta: 'Open Facebook',
+        linkLabel: 'Facebook page link',
       };
 ---
 
@@ -32,7 +32,7 @@ const content =
   {
     url ? (
       <a class="button button--ghost" href={url} target="_blank" rel="noopener noreferrer">
-        {content.cta}
+        {content.linkLabel}: {url}
         <span aria-hidden="true">↗</span>
       </a>
     ) : (

@@ -46,7 +46,8 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 ## Teenused ja keskkonnamuutujad
 
 - [ ] Seadistada Cloudflare Pages projekti nimi ning talletada tekkinud `*.pages.dev` host.
-- [ ] Seadistada `PUBLIC_FACEBOOK_PAGE_URL` Cloudflare build environment'is; väärtust ei hoita koodis.
+- [ ] Seadistada kinnitatud `PUBLIC_FACEBOOK_PAGE_URL` Cloudflare build environment'is; väärtust ei
+      hoita lähtekoodis. GitHub Pagesi staatiline build kasutab kinnitatud väärtust.
 - [ ] Kui Graph API import kinnitatakse: `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_ACCESS_TOKEN` ja `FACEBOOK_API_VERSION` encrypted secrets'ina.
 - [ ] Otsustada, kas Facebooki serveripoolne cache kasutab Cache API-t või eraldi KV binding'ut.
 - [ ] Otsustada analüütikateenus ja õiguslik alus enne selle lisamist.
