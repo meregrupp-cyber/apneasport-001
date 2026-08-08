@@ -1,11 +1,20 @@
 {
   "translationKey": "club-meregrupp",
   "locale": "et",
-  "name": "MEREGRUPP",
-  "summary": "Liikmesklubi täpne kirjeldus, asukoht ja spordialad lisanduvad pärast EAPSL-i kinnitust.",
+  "name": "SK MEREGRUPP",
+  "summary": "Ujumise algõpetus, vabasukeldumine, merineitsid, allveevõitlus, MGVS militaarprogramm, koolitused vetelpäästjale ja apnoe stressitaluvuse arendamiseks ning allveefoto & film. Kõik see ühe katuse all.",
   "website": "https://meregrupp.ee/",
   "logo": "/brand/meregrupp-logo.webp",
   "location": null,
-  "sports": [],
+  "sports": [
+    "Ujumise algõpetus",
+    "Vabasukeldumine",
+    "Merineitsid",
+    "Allveevõitlus",
+    "MGVS militaarprogramm",
+    "Vetelpääste koolitused",
+    "Apnoe stressitaluvuse arendamine",
+    "Allveefoto ja -film"
+  ],
   "featured": true
 }

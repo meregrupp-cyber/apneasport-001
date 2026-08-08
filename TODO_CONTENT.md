@@ -35,7 +35,7 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 
 ## Klubid, kontaktid ja visuaalid
 
-- [ ] MEREGRUPP-i kinnitatud lühikirjeldus, asukoht ja harrastatavad alad.
+- [ ] MEREGRUPP-i kinnitatud täpne asukoht.
 - [ ] Vähemalt üks litsentseeritud MEREGRUPP-i foto koos autori/kasutusõiguse infoga.
 - [ ] Kinnitada 08.08.2026 antud EAPSL-i ringmotiivi ametlik staatus ning lisada SVG-logo,
       brändijuhend ja OG-pildid. Ringmotiivi kasutatakse tellija juhisel päises ja faviconina.
