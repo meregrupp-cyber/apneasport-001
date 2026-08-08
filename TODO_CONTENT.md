@@ -37,8 +37,10 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 
 - [ ] MEREGRUPP-i kinnitatud lühikirjeldus, asukoht ja harrastatavad alad.
 - [ ] Vähemalt üks litsentseeritud MEREGRUPP-i foto koos autori/kasutusõiguse infoga.
-- [ ] EAPSL-i ametlik SVG-logo, brändijuhend, faviconi kinnitus ja OG-pildid.
-- [ ] AIDA heakskiidetud logofail ja kasutusluba. MVP kasutab ainult tekstilist nime/ametlikke linke.
+- [ ] Kinnitada 08.08.2026 antud EAPSL-i ringmotiivi ametlik staatus ning lisada SVG-logo,
+      brändijuhend ja OG-pildid. Ringmotiivi kasutatakse tellija juhisel päises ja faviconina.
+- [ ] Kinnitada 08.08.2026 antud AIDA negatiivlogo kasutusõigus. Faili kasutatakse tellija juhisel
+      vabasukeldumise visuaalides.
 - [ ] Litsentseeritud hero- ja kolme spordiala pildid (21:9, 16:9 ja mobiilsed 4:5 variandid) koos alt-tekstidega.
 
 ## Teenused ja keskkonnamuutujad
