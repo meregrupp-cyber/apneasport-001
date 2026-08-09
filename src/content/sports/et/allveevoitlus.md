@@ -5,7 +5,7 @@ slug: allveevoitlus
 title: Veevõitlus
 eyebrow: Dünaamika. Reeglid. Kontroll.
 summary: Reguleeritud veealune vastasseis, kus tehnika ja kontroll on sama olulised kui füüsiline valmisolek.
-definition: Allveevõitlus on reeglistatud paarisala, mida harrastatakse kontrollitud veekeskkonnas ja pädeva järelevalve all.
+definition: Veevõitlus on reeglistatud paarisala, mida harrastatakse kontrollitud veekeskkonnas ja pädeva järelevalve all.
 suitedFor:
   - Hea ujumisoskusega harrastajatele, kes otsivad tehnilist paarisala.
   - Sportlastele, kes väärtustavad reegleid, kontrolli ja turvalist treeningut.

@@ -230,7 +230,7 @@ export const staticPages: StaticPage[] = [
       eyebrow: 'Põhikirjast tulenev identiteet',
       title: 'Eesmärgid ja olemus',
       intro:
-        'EAPSL ühendab vabasukeldumise, allveevõitluse, merineitsispordi ning seotud allveespordialade arendajaid.',
+        'EAPSL ühendab vabasukeldumise, veevõitluse, merineitsispordi ning seotud allveespordialade arendajaid.',
       sections: [
         {
           title: 'Avalikes huvides tegevus',
@@ -256,7 +256,7 @@ export const staticPages: StaticPage[] = [
       eyebrow: 'Identity grounded in the Statutes',
       title: 'Mission and identity',
       intro:
-        'EAPSL brings together organisations developing freediving, underwater combat, mermaiding and related underwater sports.',
+        'EAPSL brings together organisations developing freediving, waterfighting, mermaiding and related underwater sports.',
       sections: [
         {
           title: 'Public-interest activity',
