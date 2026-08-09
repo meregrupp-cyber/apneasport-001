@@ -87,8 +87,8 @@ const copy = t(locale);
   }
 
   .brand-mark {
-    width: 2.55rem;
-    height: 2.55rem;
+    width: 3.32rem;
+    height: 3.32rem;
     flex: 0 0 auto;
   }
 
@@ -97,6 +97,18 @@ const copy = t(locale);
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-mark img {
+      animation: brand-rotation 48s linear infinite;
+    }
+  }
+
+  @keyframes brand-rotation {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .brand-copy {
