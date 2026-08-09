@@ -2,7 +2,7 @@
 translationKey: sport-waterfighting
 locale: et
 slug: allveevoitlus
-title: Allveevõitlus (aquathlon / waterfighting)
+title: Allveevõitlus
 eyebrow: Dünaamika. Reeglid. Kontroll.
 summary: Reguleeritud veealune vastasseis, kus tehnika ja kontroll on sama olulised kui füüsiline valmisolek.
 definition: Allveevõitlus on reeglistatud paarisala, mida harrastatakse kontrollitud veekeskkonnas ja pädeva järelevalve all.
