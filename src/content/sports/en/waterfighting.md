@@ -2,10 +2,10 @@
 translationKey: sport-waterfighting
 locale: en
 slug: waterfighting
-title: Underwater combat (aquathlon / waterfighting)
+title: Waterfighting
 eyebrow: Dynamics. Rules. Control.
 summary: A regulated underwater contest where technique and control matter as much as physical preparation.
-definition: Underwater combat is a regulated paired sport practised in a controlled aquatic setting with competent supervision.
+definition: Waterfighting is a regulated paired sport practised in a controlled aquatic setting with competent supervision.
 suitedFor:
   - Strong swimmers looking for a technical paired discipline.
   - Athletes who value rules, control and safe training.

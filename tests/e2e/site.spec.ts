@@ -35,7 +35,7 @@ test('core content stays visible without client-side JavaScript', async ({ brows
   const page = await context.newPage();
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Vabasukeldumine', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /^Allveevõitlus/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Veevõitlus', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Merineitsisport', exact: true })).toBeVisible();
   await context.close();
 });
