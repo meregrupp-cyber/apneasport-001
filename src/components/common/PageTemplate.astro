@@ -3,6 +3,9 @@ import { getCollection } from 'astro:content';
 import type { StaticPage } from '../../data/pages';
 import { routeFor } from '../../i18n/routes';
 import { t } from '../../i18n/ui';
+import freedivingImage from '../../assets/eapsl/freediving.png';
+import mermaidingImage from '../../assets/eapsl/mermaiding.png';
+import waterfightingImage from '../../assets/eapsl/waterfighting.png';
 import ClubFeatureCard from '../home/ClubFeatureCard.astro';
 import SportPortalCard from '../home/SportPortalCard.astro';
 import TrainingPathCard from '../home/TrainingPathCard.astro';
@@ -30,6 +33,8 @@ const sportCards =
           href: routeFor('freediving', 'et'),
           accent: 'aqua' as const,
           logoSrc: '/brand/aida-logo-negative.svg',
+          image: freedivingImage,
+          imageAlt: 'Vabasukeldujad treenimas vee all',
         },
         {
           title: 'Merineitsisport',
@@ -37,6 +42,8 @@ const sportCards =
           safety: 'Pädev järelevalve',
           href: routeFor('mermaiding', 'et'),
           accent: 'coral' as const,
+          image: mermaidingImage,
+          imageAlt: 'Merineitsisportlane esinemas vee all monolestaga',
         },
         {
           title: 'Veevõitlus',
@@ -44,6 +51,8 @@ const sportCards =
           safety: 'Juhendatud treening',
           href: routeFor('waterfighting', 'et'),
           accent: 'cobalt' as const,
+          image: waterfightingImage,
+          imageAlt: 'Veevõitlussportlased treenimas vee all',
         },
       ]
     : [
@@ -54,6 +63,8 @@ const sportCards =
           href: routeFor('freediving', 'en'),
           accent: 'aqua' as const,
           logoSrc: '/brand/aida-logo-negative.svg',
+          image: freedivingImage,
+          imageAlt: 'Freediving athletes training underwater',
         },
         {
           title: 'Mermaiding',
@@ -61,6 +72,8 @@ const sportCards =
           safety: 'Competent supervision',
           href: routeFor('mermaiding', 'en'),
           accent: 'coral' as const,
+          image: mermaidingImage,
+          imageAlt: 'Mermaiding athlete performing underwater with a monofin',
         },
         {
           title: 'Waterfighting',
@@ -68,6 +81,8 @@ const sportCards =
           safety: 'Supervised training',
           href: routeFor('waterfighting', 'en'),
           accent: 'cobalt' as const,
+          image: waterfightingImage,
+          imageAlt: 'Waterfighting athletes training underwater',
         },
       ];
 

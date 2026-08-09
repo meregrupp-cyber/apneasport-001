@@ -1,0 +1,211 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  summary: string;
+  safety: string;
+  href: string;
+  index: string;
+  accent: 'aqua' | 'cobalt' | 'coral';
+  cta: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  flip?: boolean;
+  dynamic?: boolean;
+  logoSrc?: string | undefined;
+}
+
+const { title, summary, safety, href, index, accent, cta, image, imageAlt, flip, dynamic, logoSrc } =
+  Astro.props;
+---
+
+<article
+  class:list={[
+    'sport-feature',
+    `sport-feature--${accent}`,
+    { 'sport-feature--flip': flip, 'sport-feature--dynamic': dynamic },
+  ]}
+  data-reveal
+>
+  <div class="sport-feature-copy">
+    <p class="sport-feature-index" aria-hidden="true">{index}</p>
+    <h3>{title}</h3>
+    <p class="sport-feature-summary">{summary}</p>
+    <span class="safety-chip">{safety}</span>
+    {
+      logoSrc && (
+        <img
+          class="sport-feature-logo"
+          src={logoSrc}
+          alt=""
+          width="174"
+          height="112"
+          loading="lazy"
+        />
+      )
+    }
+    <a class="button button--secondary" href={href}>{cta}<span aria-hidden="true">→</span></a>
+  </div>
+  <a class="sport-feature-media" href={href} tabindex="-1" aria-hidden="true">
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[480, 760, 1080, 1448]}
+      sizes="(max-width: 54rem) 100vw, 56vw"
+      format="webp"
+      quality={82}
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+</article>
+
+<style>
+  .sport-feature {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 5.5rem);
+  }
+
+  .sport-feature--aqua {
+    --accent: 69 215 196;
+  }
+
+  .sport-feature--cobalt {
+    --accent: 72 126 255;
+  }
+
+  /* Mermaiding keeps the shared navy/turquoise system with only a subtle violet lean. */
+  .sport-feature--coral {
+    --accent: 157 139 255;
+  }
+
+  .sport-feature--flip .sport-feature-media {
+    order: -1;
+  }
+
+  .sport-feature-copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.1rem;
+  }
+
+  .sport-feature-index {
+    color: rgb(var(--accent) / 90%);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.16em;
+  }
+
+  .sport-feature h3 {
+    font-size: var(--step-3);
+  }
+
+  .sport-feature-summary {
+    max-width: 34rem;
+    color: rgb(242 247 248 / 78%);
+    font-size: var(--step-1);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .safety-chip {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgb(255 255 255 / 18%);
+    border-radius: var(--radius-pill);
+    color: rgb(242 247 248 / 76%);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+  }
+
+  .sport-feature-logo {
+    width: 6.5rem;
+    height: auto;
+    margin-top: 0.25rem;
+    opacity: 0.85;
+  }
+
+  .sport-feature-copy .button {
+    margin-top: 0.75rem;
+  }
+
+  .sport-feature-media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 30px 90px rgb(2 11 20 / 55%),
+      0 0 5rem rgb(var(--accent) / 14%);
+    isolation: isolate;
+  }
+
+  /* Soft inner highlight along the top edge, like light filtering through water. */
+  .sport-feature-media::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: inherit;
+    content: '';
+    background: linear-gradient(180deg, rgb(255 255 255 / 10%), transparent 18%);
+    pointer-events: none;
+  }
+
+  .sport-feature-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Waterfighting reads more kinetic: the image pushes past the text column edge. */
+  .sport-feature--dynamic .sport-feature-media {
+    margin-inline-end: calc(-1 * clamp(0rem, 4vw, 3.5rem));
+    box-shadow:
+      0 30px 90px rgb(2 11 20 / 55%),
+      0 0 7rem rgb(var(--accent) / 22%);
+  }
+
+  .sport-feature--dynamic.sport-feature--flip .sport-feature-media {
+    margin-inline-end: 0;
+    margin-inline-start: calc(-1 * clamp(0rem, 4vw, 3.5rem));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sport-feature-media img {
+      transition: transform 900ms ease;
+    }
+
+    .sport-feature:hover .sport-feature-media img,
+    .sport-feature:focus-within .sport-feature-media img {
+      transform: scale(1.03);
+    }
+  }
+
+  @media (max-width: 54rem) {
+    .sport-feature {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    .sport-feature--flip .sport-feature-media {
+      order: 0;
+    }
+
+    .sport-feature--dynamic .sport-feature-media,
+    .sport-feature--dynamic.sport-feature--flip .sport-feature-media {
+      margin-inline: 0;
+    }
+
+    .sport-feature h3 {
+      font-size: var(--step-2);
+    }
+  }
+</style>

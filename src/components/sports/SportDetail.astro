@@ -1,7 +1,11 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { routeFor, type Locale, type RouteKey } from '../../i18n/routes';
 import { t } from '../../i18n/ui';
+import freedivingImage from '../../assets/eapsl/freediving.png';
+import mermaidingImage from '../../assets/eapsl/mermaiding.png';
+import waterfightingImage from '../../assets/eapsl/waterfighting.png';
 import PageHero from '../common/PageHero.astro';
 
 interface Props {
@@ -14,6 +18,12 @@ const { entry, locale } = Astro.props;
 const { Content } = await render(entry);
 const data = entry.data;
 const copy = t(locale);
+const sportImages: Record<string, ImageMetadata> = {
+  'sport-freediving': freedivingImage,
+  'sport-mermaiding': mermaidingImage,
+  'sport-waterfighting': waterfightingImage,
+};
+const heroImage = sportImages[data.translationKey];
 const labels =
   locale === 'et'
     ? {
@@ -40,7 +50,13 @@ const labels =
       };
 ---
 
-<PageHero {locale} eyebrow={data.eyebrow} title={data.title} intro={data.summary} />
+<PageHero
+  {locale}
+  eyebrow={data.eyebrow}
+  title={data.title}
+  intro={data.summary}
+  image={heroImage}
+/>
 <article class="section sport-detail">
   <div class="container sport-layout">
     <aside>
