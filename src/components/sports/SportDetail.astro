@@ -40,15 +40,7 @@ const labels =
       };
 ---
 
-<PageHero
-  {locale}
-  eyebrow={data.eyebrow}
-  title={data.title}
-  intro={data.summary}
-  artLogoSrc={data.translationKey === 'sport-freediving'
-    ? '/brand/aida-logo-negative.svg'
-    : undefined}
-/>
+<PageHero {locale} eyebrow={data.eyebrow} title={data.title} intro={data.summary} />
 <article class="section sport-detail">
   <div class="container sport-layout">
     <aside>
