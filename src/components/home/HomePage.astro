@@ -19,7 +19,12 @@ interface Props {
 }
 const { locale } = Astro.props;
 const copy = t(locale);
-const sports = (await getCollection('sports')).filter((entry) => entry.data.locale === locale);
+const sportOrder = ['sport-freediving', 'sport-mermaiding', 'sport-waterfighting'];
+const sports = (await getCollection('sports'))
+  .filter((entry) => entry.data.locale === locale)
+  .sort(
+    (a, b) => sportOrder.indexOf(a.data.translationKey) - sportOrder.indexOf(b.data.translationKey),
+  );
 const clubs = (await getCollection('clubs')).filter(
   (entry) => entry.data.locale === locale && entry.data.featured,
 );
@@ -49,7 +54,11 @@ const home =
         sportsTitle: 'Mitu maailma ühe veepinna all.',
         sportsIntro:
           'Igal alal on oma tehnika ja iseloom. Kõiki ühendavad oskus, kontroll ja teadlik ohutus.',
-        sportSafety: ['Ära sukeldu üksi', 'Juhendatud treening', 'Pädev järelevalve'],
+        sportSafety: {
+          'sport-freediving': 'Ära sukeldu üksi',
+          'sport-mermaiding': 'Pädev järelevalve',
+          'sport-waterfighting': 'Juhendatud treening',
+        } as Record<string, string>,
         clubEyebrow: 'Liikmesklubid',
         clubTitle: 'Sport kasvab klubides.',
         clubText:
@@ -96,7 +105,11 @@ const home =
         sportsTitle: 'Many worlds below one surface.',
         sportsIntro:
           'Each discipline has its own technique and character. Skill, control and deliberate safety connect them all.',
-        sportSafety: ['Never dive alone', 'Supervised training', 'Competent oversight'],
+        sportSafety: {
+          'sport-freediving': 'Never dive alone',
+          'sport-mermaiding': 'Competent supervision',
+          'sport-waterfighting': 'Supervised training',
+        } as Record<string, string>,
         clubEyebrow: 'Member clubs',
         clubTitle: 'Sport grows in clubs.',
         clubText:
@@ -164,7 +177,7 @@ const home =
             <SportPortalCard
               title={sport.data.title}
               summary={sport.data.summary}
-              safety={home.sportSafety[index] ?? home.sportSafety[0] ?? ''}
+              safety={home.sportSafety[sport.data.translationKey] ?? ''}
               href={sportRoute(sport.data.translationKey)}
               index={`0${index + 1}`}
               accent={sport.data.accent}
