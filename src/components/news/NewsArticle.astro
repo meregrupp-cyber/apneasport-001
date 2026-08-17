@@ -1,0 +1,175 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import { formatNewsDate } from '../../i18n/dates';
+import { routeFor, type Locale } from '../../i18n/routes';
+import Breadcrumbs from '../common/Breadcrumbs.astro';
+
+interface Props {
+  entry: CollectionEntry<'news'>;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const { Content } = await render(entry);
+const data = entry.data;
+const labels =
+  locale === 'et'
+    ? { back: 'Kõik uudised', published: 'Avaldatud', updated: 'Uuendatud' }
+    : { back: 'All news', published: 'Published', updated: 'Updated' };
+---
+
+<article class="news-article">
+  <header class="news-article-hero">
+    <div class="container news-article-head">
+      <Breadcrumbs {locale} current={data.title} />
+      <p class="news-article-meta">
+        <span>{labels.published}</span>
+        <time datetime={data.publishedAt}>{formatNewsDate(data.publishedAt, locale)}</time>
+        {
+          data.updatedAt && (
+            <span class="news-article-updated">
+              {labels.updated}{' '}
+              <time datetime={data.updatedAt}>{formatNewsDate(data.updatedAt, locale)}</time>
+            </span>
+          )
+        }
+      </p>
+      <h1>{data.title}</h1>
+      <p class="lede">{data.excerpt}</p>
+      {data.author && <p class="news-article-author">{data.author}</p>}
+    </div>
+  </header>
+
+  <div class="section">
+    <div class="narrow news-article-layout">
+      {
+        data.image && (
+          <figure class="news-article-logo">
+            <img src={data.image} alt={data.imageAlt} width="348" height="224" />
+          </figure>
+        )
+      }
+      <div class="news-article-body"><Content /></div>
+      {
+        data.tags.length > 0 && (
+          <ul class="news-article-tags">
+            {data.tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+      <a class="button button--ghost" href={routeFor('news', locale)}
+        ><span aria-hidden="true">←</span>{labels.back}</a
+      >
+    </div>
+  </div>
+</article>
+
+<style>
+  .news-article-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: 10rem 4rem;
+    color: var(--color-foam);
+    background:
+      radial-gradient(circle at 82% 12%, rgb(69 215 196 / 22%), transparent 32%),
+      linear-gradient(145deg, var(--color-deep), var(--color-abyss));
+  }
+
+  .news-article-hero h1 {
+    max-width: 20ch;
+    font-size: var(--step-3);
+  }
+
+  .news-article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: var(--space-3);
+    color: var(--color-aqua);
+    font-family: var(--font-display);
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .news-article-author {
+    margin-top: var(--space-4);
+    color: rgb(242 247 248 / 80%);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .news-article-layout {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+
+  /* Negative AIDA mark: give it the deep ground it was drawn for. */
+  .news-article-logo {
+    display: grid;
+    width: min(20rem, 100%);
+    place-items: center;
+    padding: 1.75rem 2rem;
+    margin: 0;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: var(--radius-md);
+    background: linear-gradient(150deg, var(--color-deep), var(--color-abyss));
+  }
+
+  .news-article-logo img {
+    width: 100%;
+    height: auto;
+  }
+
+  .news-article-body {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 68ch;
+  }
+
+  .news-article-body :global(p) {
+    text-wrap: pretty;
+  }
+
+  .news-article-body :global(a) {
+    color: var(--color-brand);
+    font-weight: 600;
+  }
+
+  .news-article-body :global(blockquote) {
+    padding: 0.25rem 0 0.25rem 1.35rem;
+    margin: 0;
+    border-left: 3px solid var(--color-aqua);
+    color: var(--color-ink);
+    font-size: var(--step-1);
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .news-article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .news-article-tags li {
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    color: var(--color-muted);
+    font-size: 0.74rem;
+  }
+
+  @media (max-width: 44rem) {
+    .news-article-hero {
+      padding-block: 8.5rem 3rem;
+    }
+  }
+</style>

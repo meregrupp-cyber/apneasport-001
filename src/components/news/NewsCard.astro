@@ -1,0 +1,131 @@
+---
+import { formatNewsDate } from '../../i18n/dates';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  excerpt: string;
+  publishedAt: string;
+  href: string;
+  author?: string | undefined;
+  image?: string | undefined;
+  imageAlt?: string | undefined;
+  cta: string;
+}
+
+const { locale, title, excerpt, publishedAt, href, author, image, imageAlt, cta } = Astro.props;
+---
+
+<article class="news-card" data-reveal>
+  {
+    image && (
+      <div class="news-card-logo">
+        <img src={image} alt={imageAlt ?? ''} width="174" height="112" loading="lazy" />
+      </div>
+    )
+  }
+  <div class="news-card-body">
+    <p class="news-card-meta">
+      <time datetime={publishedAt}>{formatNewsDate(publishedAt, locale)}</time>
+      {author && <span class="news-card-author">{author}</span>}
+    </p>
+    <h3><a href={href}>{title}</a></h3>
+    <p class="news-card-excerpt">{excerpt}</p>
+    <span class="news-card-cta" aria-hidden="true">{cta} →</span>
+  </div>
+</article>
+
+<style>
+  .news-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.25rem, 4vw, 2.75rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-foam);
+    transition: border-color 200ms ease;
+  }
+
+  .news-card:hover {
+    border-color: rgb(69 215 196 / 55%);
+  }
+
+  /* The AIDA mark is a negative logo, so it needs a deep ground to sit on. */
+  .news-card-logo {
+    display: grid;
+    aspect-ratio: 3 / 2;
+    place-items: center;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(150deg, var(--color-deep), var(--color-abyss));
+  }
+
+  .news-card-logo img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .news-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    color: var(--color-muted);
+    font-family: var(--font-display);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .news-card-author::before {
+    margin-right: 0.75rem;
+    content: '·';
+  }
+
+  .news-card h3 {
+    margin-top: 0.6rem;
+    font-size: var(--step-2);
+  }
+
+  .news-card h3 a {
+    text-decoration: none;
+  }
+
+  /* Let the whole card act as one target while the heading link stays the accessible name. */
+  .news-card h3 a::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+  }
+
+  .news-card-excerpt {
+    max-width: 60ch;
+    margin-top: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .news-card-cta {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--color-brand);
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    font-weight: 750;
+  }
+
+  @media (max-width: 44rem) {
+    .news-card {
+      grid-template-columns: 1fr;
+    }
+
+    .news-card-logo {
+      max-width: 11rem;
+    }
+  }
+</style>

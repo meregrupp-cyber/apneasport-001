@@ -1,17 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../i18n/routes';
+import { t } from '../../i18n/ui';
+import { newsPath, publishedNews } from '../../data/news';
 import PageHero from '../common/PageHero.astro';
+import NewsCard from './NewsCard.astro';
 import SocialFeedFallback from './SocialFeedFallback.astro';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const news = (await getCollection('news')).filter(
-  (entry) => entry.data.locale === locale && !entry.data.draft,
-);
+const copy = t(locale);
+const news = await publishedNews(locale);
 const content =
   locale === 'et'
     ? {
@@ -37,7 +38,26 @@ const content =
     <PageHero {locale} eyebrow={content.eyebrow} title={content.title} intro={content.intro} />
     <section class="section">
       <div class="container">
-        {news.length === 0 ? <p class="status-note news-empty">{content.empty}</p> : <div />}
+        {news.length === 0 && <p class="status-note news-empty">{content.empty}</p>}
+        {
+          news.length > 0 && (
+            <div class="news-list">
+              {news.map((entry) => (
+                <NewsCard
+                  {locale}
+                  title={entry.data.title}
+                  excerpt={entry.data.excerpt}
+                  publishedAt={entry.data.publishedAt}
+                  href={newsPath(entry)}
+                  author={entry.data.author}
+                  image={entry.data.image}
+                  imageAlt={entry.data.imageAlt}
+                  cta={copy.learnMore}
+                />
+              ))}
+            </div>
+          )
+        }
         <SocialFeedFallback {locale} />
       </div>
     </section>
@@ -47,5 +67,11 @@ const content =
 <style>
   .news-empty {
     margin-bottom: 1.5rem;
+  }
+
+  .news-list {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
   }
 </style>

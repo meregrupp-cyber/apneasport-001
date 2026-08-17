@@ -8,13 +8,23 @@ interface Props {
   locale: Locale;
   routeKey: RouteKey;
   image?: string;
+  /** Overrides the routeKey paths for pages that live under a dynamic route. */
+  paths?: { et: string; en: string };
 }
 
-const { title, description, locale, routeKey, image = '/brand/eapsl-logo-v3.png' } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  routeKey,
+  image = '/brand/eapsl-logo-v3.png',
+  paths,
+} = Astro.props;
+const pathFor = (target: Locale) => paths?.[target] ?? routeFor(routeKey, target);
 const pageTitle = `${title} | ${site.shortName}`;
-const canonical = new URL(routeFor(routeKey, locale), site.baseUrl).href;
-const etUrl = new URL(routeFor(routeKey, 'et'), site.baseUrl).href;
-const enUrl = new URL(routeFor(routeKey, 'en'), site.baseUrl).href;
+const canonical = new URL(pathFor(locale), site.baseUrl).href;
+const etUrl = new URL(pathFor('et'), site.baseUrl).href;
+const enUrl = new URL(pathFor('en'), site.baseUrl).href;
 const imageUrl = new URL(image, site.baseUrl).href;
 ---
 
