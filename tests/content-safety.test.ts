@@ -18,11 +18,20 @@ describe('official content guardrails', () => {
     expect(site.legalName.en).toBe('Estonian Apnea Sports League');
   });
 
-  it('does not hard-code an EAPSL Facebook page URL', () => {
-    const content = textFiles(join(process.cwd(), 'src'))
-      .map((path) => readFileSync(path, 'utf8'))
-      .join('\n');
-    expect(content).not.toMatch(/facebook\.com\/apneasport(?:\.ee)?/i);
-    expect(content).toContain('PUBLIC_FACEBOOK_PAGE_URL');
+  it('keeps the confirmed Facebook page URL in one central place', () => {
+    const files = textFiles(join(process.cwd(), 'src'));
+    const pattern = /facebook\.com\/apneasport(?:\.ee)?/i;
+    const offenders = files.filter(
+      (path) =>
+        pattern.test(readFileSync(path, 'utf8')) && !path.endsWith(join('src', 'data', 'site.ts')),
+    );
+
+    // The URL is approved for publication, but it must stay in src/data/site.ts
+    // so a single edit changes it everywhere, and the env override must survive.
+    expect(offenders).toEqual([]);
+    expect(readFileSync(join(process.cwd(), 'src', 'data', 'site.ts'), 'utf8')).toMatch(pattern);
+    expect(files.map((path) => readFileSync(path, 'utf8')).join('\n')).toContain(
+      'PUBLIC_FACEBOOK_PAGE_URL',
+    );
   });
 });

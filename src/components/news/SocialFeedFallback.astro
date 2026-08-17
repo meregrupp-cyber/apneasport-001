@@ -13,13 +13,15 @@ const content =
         eyebrow: 'Sotsiaalmeedia',
         title: 'Jälgi EAPSL-i Facebookis',
         text: 'Facebook on täiendav levikanal. Veebi uudistearhiiv töötab sellest sõltumatult.',
-        linkLabel: 'Link Facebook lehele',
+        linkLabel: 'Ava EAPSL-i Facebooki leht',
+        hint: 'Klõpsa logol Facebooki siirdumiseks.',
       }
     : {
         eyebrow: 'Social media',
         title: 'Follow EAPSL on Facebook',
         text: 'Facebook is an additional distribution channel. The website news archive works independently.',
-        linkLabel: 'Facebook page link',
+        linkLabel: 'Open the EAPSL Facebook page',
+        hint: 'Click the logo to open Facebook.',
       };
 ---
 
@@ -30,17 +32,24 @@ const content =
     <p>{content.text}</p>
   </div>
   {
-    url ? (
-      <a class="button button--ghost" href={url} target="_blank" rel="noopener noreferrer">
-        {content.linkLabel}: {url}
-        <span aria-hidden="true">↗</span>
-      </a>
-    ) : (
-      <span class="social-status">
-        {locale === 'et'
-          ? 'Link lisandub pärast keskkonnamuutuja seadistamist.'
-          : 'The link appears after the environment variable is configured.'}
-      </span>
+    url && (
+      <div class="social-action">
+        <a
+          class="social-logo"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={content.linkLabel}
+        >
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.412c0-3.026 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.491 0-1.956.931-1.956 1.887v2.264h3.328l-.532 3.491h-2.796V24C19.612 23.094 24 18.1 24 12.073z"
+            />
+          </svg>
+        </a>
+        <p class="social-hint">{content.hint}</p>
+      </div>
     )
   }
 </aside>
@@ -61,10 +70,49 @@ const content =
     margin-top: 0.75rem;
     color: var(--color-muted);
   }
-  .social-status {
-    max-width: 18rem;
+  .social-action {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .social-logo {
+    display: grid;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    color: #1877f2;
+    background: var(--color-foam);
+    box-shadow: 0 0.5rem 1.5rem rgb(2 11 20 / 12%);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .social-logo svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .social-logo:hover,
+  .social-logo:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 0.75rem 2rem rgb(24 119 242 / 30%);
+  }
+
+  .social-hint {
+    max-width: 14rem;
     color: var(--color-muted);
     font-size: 0.85rem;
+  }
+
+  /* The shared rule below adds a top margin meant for the body copy. */
+  .social-fallback .social-hint {
+    margin-top: 0;
   }
   @media (max-width: 44rem) {
     .social-fallback {

@@ -32,6 +32,7 @@ mitte uudiste arhiiv, ning automaatne import vajab serveripoolset API-d ja kinni
 ## Välislingid ja meedia
 
 - Ametlikud muutuvad välislingid hoia `src/data/external-links.ts` failis.
-- Facebooki lehe URL tuleb ainult `PUBLIC_FACEBOOK_PAGE_URL` keskkonnamuutujast.
+- Facebooki lehe URL on kinnitatud ja elab ainult `src/data/site.ts` failis; `PUBLIC_FACEBOOK_PAGE_URL`
+  kirjutab selle keskkonnas üle. Ära korda URL-i komponentides ega uudistes.
 - Lisa pildile tähenduslik alt-tekst; dekoratiivsel pildil kasuta tühja alt-teksti.
 - Ära lisa AI-ga loodud logo ega esita AI-isikut päris sportlase või ametikandjana.

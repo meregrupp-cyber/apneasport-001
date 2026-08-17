@@ -27,7 +27,8 @@ Direct Upload projektile hiljem ümber lülituda ei saa ilma uut Pages projekti 
 
 ## Keskkonnamuutujad ja secrets
 
-- `PUBLIC_FACEBOOK_PAGE_URL`: avalik build-muutuja; seadista ainult kinnitatud väärtus.
+- `PUBLIC_FACEBOOK_PAGE_URL`: avalik build-muutuja. Kinnitatud vaikeväärtus on `src/data/site.ts`
+  failis, seega seadista see ainult siis, kui keskkond vajab muud lehte.
 - `FACEBOOK_PAGE_ID`: Pages Function environment value.
 - `FACEBOOK_PAGE_ACCESS_TOKEN`: encrypted secret, mitte avalik build-muutuja.
 - `FACEBOOK_API_VERSION`: Pages Function environment value.

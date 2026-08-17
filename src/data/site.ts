@@ -19,7 +19,14 @@ export const site = {
   phoneHref: '+3725105573',
 } as const;
 
+/**
+ * Confirmed EAPSL Facebook page, approved for publication by the League.
+ * This module is the single source of truth: never repeat the URL elsewhere.
+ * `PUBLIC_FACEBOOK_PAGE_URL` still overrides it per environment.
+ */
+export const facebookPageUrl = 'https://facebook.com/apneasport.ee/';
+
 export function getFacebookPageUrl(): string | null {
   const value = import.meta.env.PUBLIC_FACEBOOK_PAGE_URL?.trim();
-  return value ? value : null;
+  return value ? value : facebookPageUrl;
 }
