@@ -17,9 +17,10 @@ interface Props {
   locale: Locale;
   routeKey: RouteKey;
   image?: string;
+  paths?: { et: string; en: string };
 }
 
-const { title, description, locale, routeKey, image } = Astro.props;
+const { title, description, locale, routeKey, image, paths } = Astro.props;
 const copy = t(locale);
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -48,12 +49,23 @@ const organizationSchema = {
     <meta name="theme-color" content="#031b2c" />
     <link rel="icon" href="/brand/favicon-v2.png" type="image/png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon-v3.png" sizes="180x180" />
-    <SEOHead {title} {description} {locale} {routeKey} {...image ? { image } : {}} />
+    <SEOHead
+      {title}
+      {description}
+      {locale}
+      {routeKey}
+      {...image ? { image } : {}}
+      {...paths ? { paths } : {}}
+    />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">{copy.skip}</a>
-    <SiteHeader {locale} {routeKey} />
+    <SiteHeader
+      {locale}
+      {routeKey}
+      alternateHref={paths && (locale === 'et' ? paths.en : paths.et)}
+    />
     <slot />
     <SiteFooter {locale} />
     <script>

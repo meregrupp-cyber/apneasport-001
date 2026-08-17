@@ -9,9 +9,11 @@ import backgroundImage from '../../assets/eapsl/background.png';
 import freedivingImage from '../../assets/eapsl/freediving.png';
 import mermaidingImage from '../../assets/eapsl/mermaiding.png';
 import waterfightingImage from '../../assets/eapsl/waterfighting.png';
+import { newsPath, publishedNews } from '../../data/news';
 import HeroDepthScene from './HeroDepthScene.astro';
 import TrustStrip from './TrustStrip.astro';
 import SportShowcase from './SportShowcase.astro';
+import NewsCard from '../news/NewsCard.astro';
 import SafetyIntegrityPanel from './SafetyIntegrityPanel.astro';
 import AidaNetworkSection from './AidaNetworkSection.astro';
 import ClubFeatureCard from './ClubFeatureCard.astro';
@@ -35,9 +37,7 @@ const clubs = (await getCollection('clubs')).filter(
   (entry) => entry.data.locale === locale && entry.data.featured,
 );
 const documents = (await getCollection('documents')).filter((entry) => entry.data.featured);
-const news = (await getCollection('news'))
-  .filter((entry) => entry.data.locale === locale && !entry.data.draft)
-  .slice(0, 3);
+const news = (await publishedNews(locale)).slice(0, 3);
 
 const sportRoute = (translationKey: string) => {
   if (translationKey === 'sport-freediving') return routeFor('freediving', locale);
@@ -119,6 +119,7 @@ const home =
         docsCta: 'Ava dokumendiarhiiv',
         newsEyebrow: 'Uudised',
         newsTitle: 'EAPSL-i enda uudistearhiiv.',
+        newsCta: 'Vaata kõiki uudiseid',
         noNews:
           'Esimesed kinnitatud uudised lisanduvad siia. Mustandeid ega Facebooki postitusi automaatselt ei avaldata.',
       }
@@ -170,6 +171,7 @@ const home =
         docsCta: 'Open document archive',
         newsEyebrow: 'News',
         newsTitle: 'EAPSL’s own news archive.',
+        newsCta: 'See all news',
         noNews:
           'The first approved news items will appear here. Drafts and Facebook posts are not published automatically.',
       };
@@ -301,6 +303,29 @@ const home =
       </div>
       <div class="container news-empty">
         {news.length === 0 && <p class="status-note">{home.noNews}</p>}
+        {
+          news.length > 0 && (
+            <div class="home-news">
+              {news.map((entry) => (
+                <NewsCard
+                  {locale}
+                  title={entry.data.title}
+                  excerpt={entry.data.excerpt}
+                  publishedAt={entry.data.publishedAt}
+                  href={newsPath(entry)}
+                  author={entry.data.author}
+                  image={entry.data.image}
+                  imageAlt={entry.data.imageAlt}
+                  cta={copy.learnMore}
+                />
+              ))}
+              <a class="button button--ghost" href={routeFor('news', locale)}>
+                {home.newsCta}
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          )
+        }
       </div>
       <div class="container"><SocialFeedFallback {locale} /></div>
     </section>
@@ -391,6 +416,11 @@ const home =
   }
   .news-empty {
     margin-bottom: var(--space-4);
+  }
+  .home-news {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-4);
   }
   @media (max-width: 52rem) {
     .about-grid,

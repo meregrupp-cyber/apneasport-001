@@ -7,9 +7,10 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 interface Props {
   locale: Locale;
   routeKey: RouteKey;
+  alternateHref?: string | undefined;
 }
 
-const { locale, routeKey } = Astro.props;
+const { locale, routeKey, alternateHref } = Astro.props;
 const items = navigation(locale);
 const copy = t(locale);
 ---
@@ -44,7 +45,7 @@ const copy = t(locale);
     </nav>
 
     <div class="header-actions">
-      <LanguageSwitcher {locale} {routeKey} />
+      <LanguageSwitcher {locale} {routeKey} {alternateHref} />
       <a class="contact-link" href={routeFor('contact', locale)}>{copy.contact}</a>
       <details class="mobile-menu">
         <summary>{copy.menu}</summary>

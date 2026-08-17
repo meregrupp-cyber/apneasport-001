@@ -5,15 +5,17 @@ import { t } from '../../i18n/ui';
 interface Props {
   locale: Locale;
   routeKey: RouteKey;
+  /** Explicit counterpart URL for pages under a dynamic route. */
+  alternateHref?: string | undefined;
 }
 
-const { locale, routeKey } = Astro.props;
+const { locale, routeKey, alternateHref } = Astro.props;
 const copy = t(locale);
 ---
 
 <a
   class="language-switcher"
-  href={alternatePath(routeKey, locale)}
+  href={alternateHref ?? alternatePath(routeKey, locale)}
   hreflang={locale === 'et' ? 'en' : 'et'}
 >
   <span aria-hidden="true">{copy.languageCode}</span>

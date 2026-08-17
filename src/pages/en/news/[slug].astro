@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import NewsArticle from '../../../components/news/NewsArticle.astro';
+import { newsAlternatePaths, newsSlug, publishedNews } from '../../../data/news';
+
+export async function getStaticPaths() {
+  const entries = await publishedNews('en');
+  return entries.map((entry) => ({ params: { slug: newsSlug(entry) }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'news'>;
+}
+const { entry } = Astro.props;
+const paths = await newsAlternatePaths(entry);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.excerpt}
+  locale="en"
+  routeKey="news"
+  {paths}
+>
+  <main id="main-content"><NewsArticle {entry} locale="en" /></main>
+</BaseLayout>
