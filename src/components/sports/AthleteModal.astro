@@ -1,0 +1,326 @@
+---
+import {
+  athleteName,
+  athleteSlug,
+  countryFlag,
+  disciplineCodes,
+  formatRecord,
+  unknownValue,
+  type Athlete,
+  type AthleteEntry,
+  type AthleteRecord,
+} from '../../data/athletes';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  athlete: Athlete;
+  locale: Locale;
+}
+
+const { athlete, locale } = Astro.props;
+const dialogId = `athlete-${athleteSlug(athlete)}`;
+const titleId = `${dialogId}-title`;
+const countryName =
+  new Intl.DisplayNames([locale], { type: 'region' }).of(athlete.country) ?? athlete.country;
+const labels =
+  locale === 'et'
+    ? {
+        discipline: 'Distsipliin',
+        pb: 'PB',
+        nationalRank: 'Eesti koht',
+        europeanRank: 'Euroopa koht',
+        worldRank: 'Maailma koht',
+        nationalRecord: 'Eesti rekord',
+        worldRecord: 'Maailmarekord',
+        competitions: 'AIDA võistlusi',
+        profile: 'AIDA profiil',
+        close: 'Sulge sportlase profiil',
+        results: `${athleteName(athlete)} tulemused distsipliinide kaupa`,
+      }
+    : {
+        discipline: 'Discipline',
+        pb: 'PB',
+        nationalRank: 'National rank',
+        europeanRank: 'European rank',
+        worldRank: 'World rank',
+        nationalRecord: 'National record',
+        worldRecord: 'World record',
+        competitions: 'AIDA competitions',
+        profile: 'AIDA profile',
+        close: 'Close athlete profile',
+        results: `${athleteName(athlete)} results by discipline`,
+      };
+
+/** Every supported discipline gets a row, whether or not it holds a result. */
+const rows = disciplineCodes.map((discipline) => {
+  const result = athlete.disciplines[discipline];
+  return {
+    discipline,
+    cells: [result?.pb, result?.nationalRank, result?.europeanRank, result?.worldRank],
+  };
+});
+const records: { label: string; records: AthleteRecord[] }[] = [
+  { label: labels.nationalRecord, records: athlete.nationalRecords },
+  { label: labels.worldRecord, records: athlete.worldRecords },
+];
+const entryText = (entry: AthleteEntry | undefined) => entry?.value ?? unknownValue;
+---
+
+<dialog id={dialogId} class="athlete-dialog" aria-labelledby={titleId} data-athlete-modal>
+  <article class="athlete-profile">
+    <header class="athlete-profile-head">
+      <div>
+        <h2 id={titleId}>
+          {athleteName(athlete)}
+          <span class="athlete-flag" role="img" aria-label={countryName}>
+            {countryFlag(athlete.country)}
+          </span>
+        </h2>
+        <p class="athlete-profile-meta">
+          <span>AIDA athlete</span>
+          <span aria-hidden="true">·</span>
+          <span>{athlete.season}</span>
+          <span class:list={['status-pill', `status-pill--${athlete.status.toLowerCase()}`]}>
+            {athlete.status}
+          </span>
+        </p>
+      </div>
+      <button
+        type="button"
+        class="athlete-profile-close"
+        aria-label={labels.close}
+        data-athlete-modal-close
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <div
+      class="data-scroller athlete-profile-results"
+      role="region"
+      tabindex="0"
+      aria-label={labels.results}
+    >
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">{labels.discipline}</th>
+            <th scope="col">{labels.pb}</th>
+            <th scope="col">{labels.nationalRank}</th>
+            <th scope="col">{labels.europeanRank}</th>
+            <th scope="col">{labels.worldRank}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((row) => (
+              <tr>
+                <th scope="row" class="athlete-profile-discipline">
+                  {row.discipline}
+                </th>
+                {row.cells.map((entry) => (
+                  <td class:list={[{ 'athlete-unknown': !entry }]}>
+                    {entry?.url ? <a href={entry.url}>{entry.value}</a> : entryText(entry)}
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="athlete-profile-facts">
+      {
+        records.map((group) => (
+          <div>
+            <dt>{`${group.label}:`}</dt>
+            <dd>
+              {group.records.length > 0 ? (
+                <ul>
+                  {group.records.map((record) => (
+                    <li>
+                      {record.url ? (
+                        <a href={record.url} target="_blank" rel="noopener noreferrer">
+                          {formatRecord(record)}
+                        </a>
+                      ) : (
+                        formatRecord(record)
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span class="athlete-unknown">{unknownValue}</span>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+      <div>
+        <dt>{`${labels.competitions}:`}</dt>
+        <dd>
+          {
+            athlete.aidaCompetitions === undefined ? (
+              <span class="athlete-unknown">{unknownValue}</span>
+            ) : (
+              athlete.aidaCompetitions
+            )
+          }
+        </dd>
+      </div>
+    </dl>
+
+    {
+      athlete.aidaProfile?.url ? (
+        <a
+          class="button button--ghost athlete-profile-link"
+          href={athlete.aidaProfile.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {labels.profile}
+          <span aria-hidden="true">→</span>
+        </a>
+      ) : (
+        <p class="athlete-profile-link athlete-profile-link--empty">
+          {labels.profile} <span class="athlete-unknown">{unknownValue}</span>
+        </p>
+      )
+    }
+  </article>
+</dialog>
+
+<style>
+  /* `display` only under [open]: an author `display` value would beat the user
+     agent rule that keeps a closed dialog hidden. */
+  .athlete-dialog[open] {
+    display: grid;
+  }
+  .athlete-dialog {
+    width: min(100% - 2rem, 46rem);
+    max-height: min(88vh, 46rem);
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--radius-lg);
+    color: var(--color-ink);
+    background: var(--color-foam);
+    box-shadow: var(--shadow-deep);
+  }
+  .athlete-dialog::backdrop {
+    background: rgb(2 11 20 / 62%);
+    backdrop-filter: blur(4px);
+  }
+  .athlete-profile {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    overflow-y: auto;
+  }
+  .athlete-profile-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .athlete-profile-head h2 {
+    font-size: var(--step-2);
+  }
+  .athlete-flag {
+    font-size: 0.85em;
+  }
+  .athlete-profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.65rem;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+  }
+  .athlete-profile-close {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    color: var(--color-brand);
+    background: transparent;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .athlete-profile-close:hover {
+    background: var(--color-ice);
+  }
+  .athlete-profile-results {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background-color: var(--color-foam);
+  }
+  .athlete-profile-discipline {
+    font-family: var(--font-display);
+    font-weight: 750;
+  }
+  .athlete-unknown {
+    color: var(--color-muted);
+  }
+  .athlete-profile-facts {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .athlete-profile-facts > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .athlete-profile-facts dt {
+    color: var(--color-muted);
+  }
+  .athlete-profile-facts dd {
+    margin: 0;
+    font-weight: 650;
+  }
+  .athlete-profile-facts ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .athlete-profile-link {
+    justify-self: start;
+    margin: 0;
+  }
+  .athlete-profile-link--empty {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.75rem 1.15rem;
+    border: 1px dashed var(--color-line);
+    border-radius: var(--radius-pill);
+    color: var(--color-muted);
+    font-family: var(--font-display);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+  @media (max-width: 38rem) {
+    .athlete-dialog {
+      width: calc(100% - 1.5rem);
+      max-height: 88dvh;
+    }
+    .athlete-profile-head h2 {
+      font-size: var(--step-1);
+    }
+  }
+</style>
