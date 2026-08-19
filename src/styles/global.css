@@ -241,6 +241,93 @@ ul {
   border-left: 4px solid var(--color-warning);
 }
 
+/* Registry state badge, shared by the athlete table and the profile dialog.
+   A new state needs one modifier here, nothing else. */
+.status-pill {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-muted);
+  background: rgb(242 247 248 / 80%);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.status-pill--active {
+  border-color: rgb(22 120 111 / 32%);
+  color: var(--color-aqua-dark);
+  background: rgb(69 215 196 / 14%);
+}
+
+/* Compact data table shared by the athlete overview and the profile dialog. */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--color-line);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:last-child th,
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table thead th {
+  color: var(--color-brand);
+  background: var(--color-ice);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Sideways scroller for a wide table. A soft shade on the right edge appears
+   only while columns remain off-screen, so the table shows it can be scrolled
+   without extra copy. Focusable, so it also scrolls with the keyboard. */
+.data-scroller {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  background-image:
+    linear-gradient(to left, var(--color-foam), rgb(255 255 255 / 0%)),
+    radial-gradient(farthest-side at 100% 50%, rgb(7 24 34 / 14%), rgb(7 24 34 / 0%));
+  background-repeat: no-repeat;
+  background-position:
+    right center,
+    right center;
+  background-size:
+    2.25rem 100%,
+    0.85rem 100%;
+  background-attachment: local, scroll;
+}
+
+/* The page must not scroll behind an open profile dialog. */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@media (max-width: 38rem) {
+  .data-table th,
+  .data-table td {
+    padding: 0.55rem 0.7rem;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

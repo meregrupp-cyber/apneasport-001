@@ -40,6 +40,34 @@ test('core content stays visible without client-side JavaScript', async ({ brows
   await context.close();
 });
 
+test('athlete name opens that athlete profile dialog and returns focus on close', async ({
+  page,
+}) => {
+  await page.goto('/spordialad/vabasukeldumine/');
+  const names = page.getByRole('button', { name: /RUDŽINSKIS|PEDAK|UUSTAL/ });
+  await expect(names).toHaveCount(3);
+
+  await names.filter({ hasText: 'RUDŽINSKIS' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('heading', { level: 2 })).toContainText('Tomas RUDŽINSKIS');
+  await expect(dialog).toContainText('AIDA athlete');
+  await expect(dialog).toContainText('INACTIVE');
+  await expect(dialog.getByRole('rowheader')).toHaveCount(8);
+  await expect(page).toHaveURL(/\/spordialad\/vabasukeldumine\/$/);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(names.filter({ hasText: 'RUDŽINSKIS' })).toBeFocused();
+
+  await names.filter({ hasText: 'PEDAK' }).click();
+  await expect(page.getByRole('dialog').getByRole('heading', { level: 2 })).toContainText(
+    'Kristin PEDAK',
+  );
+  await page.getByRole('button', { name: 'Sulge sportlase profiil' }).click();
+  await expect(page.getByRole('dialog')).toBeHidden();
+});
+
 test('key pages have no serious automated accessibility violations', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const path of ['/', '/en/', '/dokumendid/', '/spordialad/vabasukeldumine/']) {

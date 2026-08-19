@@ -33,7 +33,8 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
 - [ ] Vabasukeldumise sportlaste registri kinnitatud andmed: staatused, distsipliinide tulemused,
-      Eesti/Euroopa/maailma rankingud, Eesti ja maailmarekordid ning AIDA profiililingid.
+      Eesti/Euroopa/maailma rankingud, Eesti ja maailmarekordid, AIDA võistluste arv ning AIDA
+      profiililingid.
 
 ## Klubid, kontaktid ja visuaalid
 
