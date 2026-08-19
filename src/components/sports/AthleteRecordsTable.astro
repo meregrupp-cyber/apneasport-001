@@ -1,0 +1,237 @@
+---
+import {
+  athleteName,
+  athletesByLastName,
+  disciplineCodes,
+  unknownValue,
+  type Athlete,
+  type AthleteEntry,
+} from '../../data/athletes';
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const athletes = athletesByLastName();
+const labels =
+  locale === 'et'
+    ? {
+        athlete: 'Sportlane',
+        sex: 'Sugu',
+        status: 'Staatus',
+        nationalRank: 'Eesti koht',
+        europeanRank: 'Euroopa koht',
+        worldRank: 'Maailma koht',
+        nationalRecord: 'Eesti rekord',
+        worldRecord: 'Maailmarekord',
+        aidaProfile: 'AIDA profiil',
+        caption:
+          'Vabasukeldumise sportlaste register: staatus, distsipliinide tulemused, rankingud ja rekordid. Kinnitamata väli on tähistatud sümboliga —.',
+      }
+    : {
+        athlete: 'Athlete',
+        sex: 'Sex',
+        status: 'Status',
+        nationalRank: 'National rank',
+        europeanRank: 'European rank',
+        worldRank: 'World rank',
+        nationalRecord: 'National record',
+        worldRecord: 'World record',
+        aidaProfile: 'AIDA profile',
+        caption:
+          'Freediving athlete registry: status, discipline results, rankings and records. A field awaiting approval is marked with —.',
+      };
+
+interface Column {
+  label: string;
+  /** AIDA discipline abbreviations stay untranslated and share one column width. */
+  code?: boolean;
+  /** Single read path per cell, so a value, a date, a venue or a link is added in one place. */
+  value: (athlete: Athlete) => AthleteEntry | undefined;
+}
+
+const columns: Column[] = [
+  ...disciplineCodes.map((discipline) => ({
+    label: discipline,
+    code: true,
+    value: (athlete: Athlete) => athlete.disciplines[discipline],
+  })),
+  { label: labels.nationalRank, value: (athlete) => athlete.nationalRank },
+  { label: labels.europeanRank, value: (athlete) => athlete.europeanRank },
+  { label: labels.worldRank, value: (athlete) => athlete.worldRank },
+  { label: labels.nationalRecord, value: (athlete) => athlete.nationalRecord },
+  { label: labels.worldRecord, value: (athlete) => athlete.worldRecord },
+  { label: labels.aidaProfile, value: (athlete) => athlete.aidaProfile },
+];
+const captionId = 'athlete-table-caption';
+---
+
+<div class="athlete-panel" role="region" tabindex="0" aria-labelledby={captionId}>
+  <table class="athlete-table">
+    <caption id={captionId} class="visually-hidden">{labels.caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="athlete-name">{labels.athlete}</th>
+        <th scope="col" class="athlete-narrow">{labels.sex}</th>
+        <th scope="col">{labels.status}</th>
+        {
+          columns.map((column) => (
+            <th scope="col" class:list={[{ 'athlete-code': column.code }]}>
+              {column.label}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        athletes.map((athlete) => (
+          <tr>
+            <th scope="row" class="athlete-name">
+              {athleteName(athlete)}
+            </th>
+            <td class="athlete-narrow">{athlete.sex}</td>
+            <td>
+              <span
+                class:list={['athlete-status', `athlete-status--${athlete.status.toLowerCase()}`]}
+              >
+                {athlete.status}
+              </span>
+            </td>
+            {columns.map((column) => {
+              const entry = column.value(athlete);
+              return (
+                <td class:list={[{ 'athlete-code': column.code, 'athlete-unknown': !entry }]}>
+                  {entry ? (
+                    entry.url ? (
+                      <a href={entry.url}>{entry.value}</a>
+                    ) : (
+                      entry.value
+                    )
+                  ) : (
+                    unknownValue
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  /* The frame is the scroll container, so nothing clips its focus ring: the
+     table is the only thing that moves sideways and it can also be scrolled
+     with the keyboard. */
+  .athlete-panel {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-foam);
+    /* A soft shade on the right edge appears only while columns remain
+       off-screen, so the table shows it can be scrolled without extra copy. */
+    background-image:
+      linear-gradient(to left, var(--color-foam), rgb(255 255 255 / 0%)),
+      radial-gradient(farthest-side at 100% 50%, rgb(7 24 34 / 14%), rgb(7 24 34 / 0%));
+    background-repeat: no-repeat;
+    background-position:
+      right center,
+      right center;
+    background-size:
+      2.25rem 100%,
+      0.85rem 100%;
+    background-attachment: local, scroll;
+  }
+  .athlete-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.86rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .athlete-table th,
+  .athlete-table td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .athlete-table tbody tr:last-child th,
+  .athlete-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .athlete-table thead th {
+    color: var(--color-brand);
+    background: var(--color-ice);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  /* The name stays in view while the results scroll past it. */
+  .athlete-name {
+    position: sticky;
+    left: 0;
+    min-width: 11.5rem;
+    box-shadow: 1px 0 0 var(--color-line);
+  }
+  thead .athlete-name {
+    z-index: 2;
+  }
+  tbody .athlete-name {
+    z-index: 1;
+    color: var(--color-ink);
+    background: var(--color-foam);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .athlete-narrow {
+    width: 1%;
+  }
+  .athlete-code {
+    min-width: 4.25rem;
+  }
+  .athlete-unknown {
+    color: var(--color-muted);
+  }
+  .athlete-status {
+    display: inline-block;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    color: var(--color-muted);
+    background: rgb(242 247 248 / 80%);
+    font-family: var(--font-display);
+    font-size: 0.66rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+  }
+  .athlete-status--active {
+    border-color: rgb(22 120 111 / 32%);
+    color: var(--color-aqua-dark);
+    background: rgb(69 215 196 / 14%);
+  }
+  @media (max-width: 38rem) {
+    .athlete-table th,
+    .athlete-table td {
+      padding: 0.55rem 0.7rem;
+    }
+    .athlete-name {
+      min-width: 10.5rem;
+    }
+    tbody .athlete-name {
+      font-size: 0.9rem;
+    }
+  }
+</style>

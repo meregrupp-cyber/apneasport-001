@@ -7,6 +7,7 @@ import freedivingImage from '../../assets/eapsl/freediving.png';
 import mermaidingImage from '../../assets/eapsl/mermaiding.png';
 import waterfightingImage from '../../assets/eapsl/waterfighting.png';
 import PageHero from '../common/PageHero.astro';
+import AthleteRecordsTable from './AthleteRecordsTable.astro';
 
 interface Props {
   entry: CollectionEntry<'sports'>;
@@ -34,6 +35,9 @@ const labels =
         safety: 'Ohutus',
         training: 'Treening ja kvalifikatsioon',
         competition: 'Võistlemine',
+        athletes: 'Sportlased ja rekordid',
+        athletesIntro:
+          'Tulemused, rekordid, rankingud ja AIDA profiilid lisanduvad pärast ametlike andmete kinnitamist; kinnitamata väli on tähistatud sümboliga —.',
         official: 'Ametlikud välislingid',
         contact: 'Leia treeninguvõimalus',
       }
@@ -45,9 +49,28 @@ const labels =
         safety: 'Safety',
         training: 'Training and qualifications',
         competition: 'Competition',
+        athletes: 'Athletes and records',
+        athletesIntro:
+          'Results, records, rankings and AIDA profiles will be added after the official data is approved; a field awaiting approval is marked with —.',
         official: 'Official external links',
         contact: 'Find a training opportunity',
       };
+// The athlete registry is an AIDA Estonia responsibility, so it stays on the
+// freediving page only.
+const showAthletes = data.translationKey === 'sport-freediving';
+const athletesAnchor = locale === 'et' ? 'sportlased-ja-rekordid' : 'athletes-and-records';
+// The first seven sections keep their published `#section-N` anchors; anything
+// added later gets a stable named anchor instead.
+const tableOfContents = [
+  { label: labels.what, href: '#section-1' },
+  { label: labels.who, href: '#section-2' },
+  { label: labels.start, href: '#section-3' },
+  { label: labels.disciplines, href: '#section-4' },
+  { label: labels.safety, href: '#section-5' },
+  { label: labels.training, href: '#section-6' },
+  { label: labels.competition, href: '#section-7' },
+  ...(showAthletes ? [{ label: labels.athletes, href: `#${athletesAnchor}` }] : []),
+];
 ---
 
 <PageHero
@@ -62,11 +85,7 @@ const labels =
     <aside>
       <p class="eyebrow">{locale === 'et' ? 'Lehel' : 'On this page'}</p>
       <nav aria-label={locale === 'et' ? 'Lehe sisukord' : 'Table of contents'}>
-        {
-          Object.values(labels)
-            .slice(0, 7)
-            .map((label, index) => <a href={`#section-${index + 1}`}>{label}</a>)
-        }
+        {tableOfContents.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
     </aside>
     <div class="sport-content">
@@ -87,6 +106,15 @@ const labels =
       </section>
       <section id="section-6"><h2>{labels.training}</h2><p>{data.qualification}</p></section>
       <section id="section-7"><h2>{labels.competition}</h2><p>{data.competition}</p></section>
+      {
+        showAthletes && (
+          <section id={athletesAnchor}>
+            <h2>{labels.athletes}</h2>
+            <p>{labels.athletesIntro}</p>
+            <AthleteRecordsTable {locale} />
+          </section>
+        )
+      }
       {
         data.officialLinks.length > 0 && (
           <section>

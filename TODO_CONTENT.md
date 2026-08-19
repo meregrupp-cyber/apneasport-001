@@ -32,6 +32,8 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Allveevõitluse lõplik terminoloogia, võistlus- ja ohutusreeglid.
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
+- [ ] Vabasukeldumise sportlaste registri kinnitatud andmed: staatused, distsipliinide tulemused,
+      Eesti/Euroopa/maailma rankingud, Eesti ja maailmarekordid ning AIDA profiililingid.
 
 ## Klubid, kontaktid ja visuaalid
 
