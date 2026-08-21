@@ -109,6 +109,27 @@ test('athlete status application opens, validates and closes without leaving the
   await expect(link).toBeFocused();
 });
 
+test('?apply=1 deep link opens the application dialog and stays shareable', async ({ page }) => {
+  await page.goto('/spordialad/vabasukeldumine/?apply=1');
+
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('heading', { level: 2 })).toContainText(
+    'AIDA Estonia sportlasstaatuse avaldus',
+  );
+  // The parameter has to stay put, or the link survives neither sharing nor a reload.
+  await expect(page).toHaveURL(/\?apply=1$/);
+
+  // It is the same dialog the button opens, so it closes the same way.
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/\?apply=1$/);
+
+  // Without the parameter the page opens exactly as before.
+  await page.goto('/spordialad/vabasukeldumine/');
+  await expect(page.getByRole('dialog')).toBeHidden();
+});
+
 test('key pages have no serious automated accessibility violations', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const path of ['/', '/en/', '/dokumendid/', '/spordialad/vabasukeldumine/']) {
