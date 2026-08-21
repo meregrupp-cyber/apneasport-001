@@ -24,27 +24,21 @@ const labels =
         athlete: 'Sportlane',
         sex: 'Sugu',
         status: 'Staatus',
-        nationalRank: 'Eesti koht',
-        europeanRank: 'Euroopa koht',
-        worldRank: 'Maailma koht',
         nationalRecord: 'Eesti rekord',
         worldRecord: 'Maailmarekord',
         aidaProfile: 'AIDA profiil',
         caption:
-          'Vabasukeldumise sportlaste register: staatus, distsipliinide tulemused, rankingud ja rekordid. Kinnitamata väli on tähistatud sümboliga —. Sportlase nimi avab tema profiili.',
+          'Vabasukeldumise sportlaste register: staatus, distsipliinide tulemused ja rekordid. Kinnitamata väli on tähistatud sümboliga —. Sportlase nimi avab tema profiili.',
       }
     : {
         athlete: 'Athlete',
         sex: 'Sex',
         status: 'Status',
-        nationalRank: 'National rank',
-        europeanRank: 'European rank',
-        worldRank: 'World rank',
         nationalRecord: 'National record',
         worldRecord: 'World record',
         aidaProfile: 'AIDA profile',
         caption:
-          'Freediving athlete registry: status, discipline results, rankings and records. A field awaiting approval is marked with —. The athlete name opens their profile.',
+          'Freediving athlete registry: status, discipline results and records. A field awaiting approval is marked with —. The athlete name opens their profile.',
       };
 
 interface Column {
@@ -61,9 +55,6 @@ const columns: Column[] = [
     code: true,
     value: (athlete: Athlete) => athlete.disciplines[discipline]?.pb,
   })),
-  { label: labels.nationalRank, value: (athlete) => athlete.nationalRank },
-  { label: labels.europeanRank, value: (athlete) => athlete.europeanRank },
-  { label: labels.worldRank, value: (athlete) => athlete.worldRank },
   { label: labels.nationalRecord, value: (athlete) => recordSummary(athlete.nationalRecords) },
   { label: labels.worldRecord, value: (athlete) => recordSummary(athlete.worldRecords) },
   { label: labels.aidaProfile, value: (athlete) => athlete.aidaProfile },

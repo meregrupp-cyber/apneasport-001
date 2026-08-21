@@ -12,6 +12,11 @@
  * records page for Estonia. Only AIDA sources belong here - never CMAS,
  * aggregator or club data.
  *
+ * Rankings are per discipline, the way AIDA publishes them: the national,
+ * continental and world place shown on the athlete's own AIDA profile. AIDA
+ * gives no as-of date for them, so they are a snapshot and move whenever
+ * anyone else competes.
+ *
  * A value that no official AIDA source confirms is left out, and the UI
  * renders `unknownValue` instead. Nothing here may be estimated or invented
  * (see docs/CONTENT_GUIDE.md).
@@ -69,12 +74,8 @@ export interface Athlete {
   /** AIDA season this status belongs to. */
   season: number;
   status: AthleteStatus;
-  /** Results per discipline; a missing code stays unknown. */
+  /** Results and rankings per discipline; a missing code stays unknown. */
   disciplines: Partial<Record<DisciplineCode, DisciplineResult>>;
-  /** Overall standing of the athlete, separate from the per discipline ranks. */
-  nationalRank?: AthleteEntry;
-  europeanRank?: AthleteEntry;
-  worldRank?: AthleteEntry;
   /** Estonian records held by the athlete, kept apart from a personal best. */
   nationalRecords: AthleteRecord[];
   worldRecords: AthleteRecord[];
@@ -86,6 +87,13 @@ export interface Athlete {
 /** Shown in every field that has no approved value yet. */
 export const unknownValue = '—';
 
+/**
+ * The day the rankings below were read off the AIDA profiles. AIDA publishes
+ * no as-of date of its own, so the UI shows this one. Update it in the same
+ * commit that refreshes the ranking values.
+ */
+export const rankingSnapshotDate = '2026-08-21';
+
 export const freedivingAthletes: Athlete[] = [
   {
     firstName: 'Alo',
@@ -95,9 +103,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:24', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' } },
-      DYN: { pb: { value: '99 m', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' } },
-      DNF: { pb: { value: '83 m', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' } },
+      STA: {
+        pb: { value: '4:24', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' },
+        nationalRank: { value: '#20' },
+        europeanRank: { value: '#2319' },
+        worldRank: { value: '#4112' },
+      },
+      DYN: {
+        pb: { value: '99 m', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' },
+        nationalRank: { value: '#13' },
+        europeanRank: { value: '#1897' },
+        worldRank: { value: '#3090' },
+      },
+      DNF: {
+        pb: { value: '83 m', date: '2014-02-08', venue: 'RIGA FREEDIVING CUP 2014 AIDA' },
+        nationalRank: { value: '#10' },
+        europeanRank: { value: '#1330' },
+        worldRank: { value: '#2294' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -114,8 +137,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      CWT: { pb: { value: '46 m', date: '2010-09-26', venue: 'Triple Depth 2010' } },
-      CNF: { pb: { value: '30 m', date: '2010-09-26', venue: 'Triple Depth 2010' } },
+      CWT: {
+        pb: { value: '46 m', date: '2010-09-26', venue: 'Triple Depth 2010' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#588' },
+        worldRank: { value: '#1188' },
+      },
+      CNF: {
+        pb: { value: '30 m', date: '2010-09-26', venue: 'Triple Depth 2010' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#495' },
+        worldRank: { value: '#1037' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -132,8 +165,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      DYN: { pb: { value: '74 m', date: '2025-02-16', venue: 'Riga Freediving Cup 2025 (AIDA)' } },
-      DYNB: { pb: { value: '59 m', date: '2025-02-15', venue: 'Riga Freediving Cup 2025 (AIDA)' } },
+      DYN: {
+        pb: { value: '74 m', date: '2025-02-16', venue: 'Riga Freediving Cup 2025 (AIDA)' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#1054' },
+        worldRank: { value: '#2134' },
+      },
+      DYNB: {
+        pb: { value: '59 m', date: '2025-02-15', venue: 'Riga Freediving Cup 2025 (AIDA)' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#557' },
+        worldRank: { value: '#2332' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -150,9 +193,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:04', date: '2006-04-14', venue: 'Finnish National Championships' } },
-      DYN: { pb: { value: '109 m', date: '2006-04-14', venue: 'Finnish National Championships' } },
-      DNF: { pb: { value: '92 m', date: '2006-04-14', venue: 'Finnish National Championships' } },
+      STA: {
+        pb: { value: '5:04', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#14' },
+        europeanRank: { value: '#1494' },
+        worldRank: { value: '#2459' },
+      },
+      DYN: {
+        pb: { value: '109 m', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#10' },
+        europeanRank: { value: '#1363' },
+        worldRank: { value: '#2215' },
+      },
+      DNF: {
+        pb: { value: '92 m', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#7' },
+        europeanRank: { value: '#1078' },
+        worldRank: { value: '#1836' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -169,10 +227,30 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:13', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' } },
-      DYN: { pb: { value: '100 m', date: '2019-02-10', venue: 'Riga Freediving Cup 2019 AIDA' } },
-      DYNB: { pb: { value: '107 m', date: '2020-02-09', venue: 'AIDA Riga Freediving Cup 2020' } },
-      DNF: { pb: { value: '74 m', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' } },
+      STA: {
+        pb: { value: '5:13', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' },
+        nationalRank: { value: '#13' },
+        europeanRank: { value: '#1289' },
+        worldRank: { value: '#2082' },
+      },
+      DYN: {
+        pb: { value: '100 m', date: '2019-02-10', venue: 'Riga Freediving Cup 2019 AIDA' },
+        nationalRank: { value: '#12' },
+        europeanRank: { value: '#1822' },
+        worldRank: { value: '#2925' },
+      },
+      DYNB: {
+        pb: { value: '107 m', date: '2020-02-09', venue: 'AIDA Riga Freediving Cup 2020' },
+        nationalRank: { value: '#6' },
+        europeanRank: { value: '#557' },
+        worldRank: { value: '#1518' },
+      },
+      DNF: {
+        pb: { value: '74 m', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' },
+        nationalRank: { value: '#12' },
+        europeanRank: { value: '#1697' },
+        worldRank: { value: '#3039' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -195,22 +273,56 @@ export const freedivingAthletes: Athlete[] = [
           date: '2019-06-22',
           venue: 'XVI Polish Freediving Pool Championships',
         },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#343' },
+        worldRank: { value: '#513' },
       },
-      DYN: { pb: { value: '203 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' } },
+      DYN: {
+        pb: { value: '203 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#145' },
+        worldRank: { value: '#225' },
+      },
       DYNB: {
         pb: {
           value: '160 m',
           date: '2019-06-23',
           venue: 'XVI Polish Freediving Pool Championships',
         },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#175' },
+        worldRank: { value: '#405' },
       },
       DNF: {
         pb: { value: '153 m', date: '2018-04-07', venue: 'FFO 2018 - Freediving Finnish Open' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#155' },
+        worldRank: { value: '#240' },
       },
-      CWT: { pb: { value: '57 m', date: '2018-09-19', venue: 'Authentic Big Blue 2018' } },
-      CWTB: { pb: { value: '47 m', date: '2019-08-13', venue: 'Crystal Clear Water Competition' } },
-      CNF: { pb: { value: '47 m', date: '2016-10-03', venue: 'Infinity Depth Games II' } },
-      FIM: { pb: { value: '60 m', date: '2018-09-20', venue: 'Authentic Big Blue 2018' } },
+      CWT: {
+        pb: { value: '57 m', date: '2018-09-19', venue: 'Authentic Big Blue 2018' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#421' },
+        worldRank: { value: '#840' },
+      },
+      CWTB: {
+        pb: { value: '47 m', date: '2019-08-13', venue: 'Crystal Clear Water Competition' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#260' },
+        worldRank: { value: '#789' },
+      },
+      CNF: {
+        pb: { value: '47 m', date: '2016-10-03', venue: 'Infinity Depth Games II' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#231' },
+        worldRank: { value: '#476' },
+      },
+      FIM: {
+        pb: { value: '60 m', date: '2018-09-20', venue: 'Authentic Big Blue 2018' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#359' },
+        worldRank: { value: '#732' },
+      },
     },
     nationalRecords: [
       { discipline: 'CWT', result: '57 m' },
@@ -230,11 +342,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '2:11', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
+      STA: {
+        pb: { value: '2:11', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#24' },
+        europeanRank: { value: '#4009' },
+        worldRank: { value: '#7845' },
+      },
       DYNB: {
         pb: { value: '112 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#509' },
+        worldRank: { value: '#1344' },
       },
-      DNF: { pb: { value: '83 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
+      DNF: {
+        pb: { value: '83 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#9' },
+        europeanRank: { value: '#1321' },
+        worldRank: { value: '#2282' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -251,11 +376,36 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '2:44', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYN: { pb: { value: '91 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYNB: { pb: { value: '80 m', date: '2025-11-15', venue: 'Riga Kickoff Comps 2025 AIDA' } },
-      CWTB: { pb: { value: '32 m', date: '2025-04-28', venue: 'ONLY ONE AIDA COMPETITION' } },
-      FIM: { pb: { value: '35 m', date: '2025-04-29', venue: 'ONLY ONE AIDA COMPETITION' } },
+      STA: {
+        pb: { value: '2:44', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#7' },
+        europeanRank: { value: '#1399' },
+        worldRank: { value: '#3519' },
+      },
+      DYN: {
+        pb: { value: '91 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#784' },
+        worldRank: { value: '#1590' },
+      },
+      DYNB: {
+        pb: { value: '80 m', date: '2025-11-15', venue: 'Riga Kickoff Comps 2025 AIDA' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#462' },
+        worldRank: { value: '#1717' },
+      },
+      CWTB: {
+        pb: { value: '32 m', date: '2025-04-28', venue: 'ONLY ONE AIDA COMPETITION' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#227' },
+        worldRank: { value: '#782' },
+      },
+      FIM: {
+        pb: { value: '35 m', date: '2025-04-29', venue: 'ONLY ONE AIDA COMPETITION' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#334' },
+        worldRank: { value: '#841' },
+      },
     },
     nationalRecords: [
       { discipline: 'CWTB', result: '32 m' },
@@ -275,10 +425,30 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:21', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' } },
-      DYN: { pb: { value: '77 m', date: '2019-02-10', venue: 'Riga Freediving Cup 2019 AIDA' } },
-      DYNB: { pb: { value: '102 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' } },
-      DNF: { pb: { value: '93 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' } },
+      STA: {
+        pb: { value: '4:21', date: '2019-02-09', venue: 'Riga Freediving Cup 2019 AIDA' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#656' },
+        worldRank: { value: '#1453' },
+      },
+      DYN: {
+        pb: { value: '77 m', date: '2019-02-10', venue: 'Riga Freediving Cup 2019 AIDA' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#969' },
+        worldRank: { value: '#1957' },
+      },
+      DYNB: {
+        pb: { value: '102 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#352' },
+        worldRank: { value: '#1102' },
+      },
+      DNF: {
+        pb: { value: '93 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#364' },
+        worldRank: { value: '#717' },
+      },
     },
     nationalRecords: [
       { discipline: 'DYNB', result: '102 m' },
@@ -298,9 +468,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:02', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' } },
-      DYNB: { pb: { value: '107 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' } },
-      DNF: { pb: { value: '104 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' } },
+      STA: {
+        pb: { value: '5:02', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#17' },
+        europeanRank: { value: '#1594' },
+        worldRank: { value: '#2644' },
+      },
+      DYNB: {
+        pb: { value: '107 m', date: '2019-04-21', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#7' },
+        europeanRank: { value: '#560' },
+        worldRank: { value: '#1538' },
+      },
+      DNF: {
+        pb: { value: '104 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#6' },
+        europeanRank: { value: '#830' },
+        worldRank: { value: '#1375' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -317,9 +502,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '3:08', date: '2020-02-08', venue: 'AIDA Riga Freediving Cup 2020' } },
-      DYNB: { pb: { value: '55 m', date: '2020-02-09', venue: 'AIDA Riga Freediving Cup 2020' } },
-      DNF: { pb: { value: '58 m', date: '2020-02-08', venue: 'AIDA Riga Freediving Cup 2020' } },
+      STA: {
+        pb: { value: '3:08', date: '2020-02-08', venue: 'AIDA Riga Freediving Cup 2020' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#1265' },
+        worldRank: { value: '#3132' },
+      },
+      DYNB: {
+        pb: { value: '55 m', date: '2020-02-09', venue: 'AIDA Riga Freediving Cup 2020' },
+        nationalRank: { value: '#6' },
+        europeanRank: { value: '#572' },
+        worldRank: { value: '#2424' },
+      },
+      DNF: {
+        pb: { value: '58 m', date: '2020-02-08', venue: 'AIDA Riga Freediving Cup 2020' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#831' },
+        worldRank: { value: '#1761' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -336,8 +536,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:44', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
-      DYN: { pb: { value: '100 m', date: '2006-04-14', venue: 'Finnish National Championships' } },
+      STA: {
+        pb: { value: '4:44', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#19' },
+        europeanRank: { value: '#1869' },
+        worldRank: { value: '#3192' },
+      },
+      DYN: {
+        pb: { value: '100 m', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#14' },
+        europeanRank: { value: '#2293' },
+        worldRank: { value: '#3752' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -356,6 +566,9 @@ export const freedivingAthletes: Athlete[] = [
     disciplines: {
       STA: {
         pb: { value: '5:02', date: '2004-07-31', venue: 'Finnish Freediving Championship 2004' },
+        nationalRank: { value: '#16' },
+        europeanRank: { value: '#1564' },
+        worldRank: { value: '#2596' },
       },
     },
     nationalRecords: [],
@@ -373,8 +586,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:04', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYNB: { pb: { value: '77 m', date: '2025-02-15', venue: 'Riga Freediving Cup 2025 (AIDA)' } },
+      STA: {
+        pb: { value: '5:04', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#15' },
+        europeanRank: { value: '#1512' },
+        worldRank: { value: '#2495' },
+      },
+      DYNB: {
+        pb: { value: '77 m', date: '2025-02-15', venue: 'Riga Freediving Cup 2025 (AIDA)' },
+        nationalRank: { value: '#9' },
+        europeanRank: { value: '#828' },
+        worldRank: { value: '#2734' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -391,7 +614,12 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:37', date: '2020-10-05', venue: 'Apnea Pirates Cup AIDA 2020' } },
+      STA: {
+        pb: { value: '4:37', date: '2020-10-05', venue: 'Apnea Pirates Cup AIDA 2020' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#522' },
+        worldRank: { value: '#1096' },
+      },
     },
     nationalRecords: [{ discipline: 'STA', result: '4:37' }],
     worldRecords: [],
@@ -408,17 +636,48 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:23', date: '2019-03-29', venue: 'AFA Pool Nationals 2019' } },
+      STA: {
+        pb: { value: '5:23', date: '2019-03-29', venue: 'AFA Pool Nationals 2019' },
+        nationalRank: { value: '#11' },
+        europeanRank: { value: '#1093' },
+        worldRank: { value: '#1748' },
+      },
       DYN: {
         pb: { value: '177 m', date: '2018-05-13', venue: 'Australian pool national championship' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#298' },
+        worldRank: { value: '#479' },
       },
-      DYNB: { pb: { value: '156 m', date: '2019-03-31', venue: 'AFA Pool Nationals 2019' } },
+      DYNB: {
+        pb: { value: '156 m', date: '2019-03-31', venue: 'AFA Pool Nationals 2019' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#200' },
+        worldRank: { value: '#470' },
+      },
       DNF: {
         pb: { value: '112 m', date: '2018-05-12', venue: 'Australian pool national championship' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#608' },
+        worldRank: { value: '#1010' },
       },
-      CWT: { pb: { value: '48 m', date: '2018-10-23', venue: 'AFA Depth Nationals 2018' } },
-      CNF: { pb: { value: '24 m', date: '2018-10-24', venue: 'AFA Depth Nationals 2018' } },
-      FIM: { pb: { value: '45 m', date: '2018-10-22', venue: 'AFA Depth Nationals 2018' } },
+      CWT: {
+        pb: { value: '48 m', date: '2018-10-23', venue: 'AFA Depth Nationals 2018' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#571' },
+        worldRank: { value: '#1148' },
+      },
+      CNF: {
+        pb: { value: '24 m', date: '2018-10-24', venue: 'AFA Depth Nationals 2018' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#596' },
+        worldRank: { value: '#1266' },
+      },
+      FIM: {
+        pb: { value: '45 m', date: '2018-10-22', venue: 'AFA Depth Nationals 2018' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#588' },
+        worldRank: { value: '#1282' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -435,8 +694,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:15', date: '2014-04-12', venue: 'Gili Pool Comp' } },
-      DYN: { pb: { value: '75 m', date: '2014-04-12', venue: 'Gili Pool Comp' } },
+      STA: {
+        pb: { value: '5:15', date: '2014-04-12', venue: 'Gili Pool Comp' },
+        nationalRank: { value: '#12' },
+        europeanRank: { value: '#1250' },
+        worldRank: { value: '#2018' },
+      },
+      DYN: {
+        pb: { value: '75 m', date: '2014-04-12', venue: 'Gili Pool Comp' },
+        nationalRank: { value: '#16' },
+        europeanRank: { value: '#2579' },
+        worldRank: { value: '#4238' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -453,14 +722,30 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '7:43', date: '2023-08-06', venue: 'AIDA GetEcSTAtic! - Summer Buzz' } },
+      STA: {
+        pb: { value: '7:43', date: '2023-08-06', venue: 'AIDA GetEcSTAtic! - Summer Buzz' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#78' },
+        worldRank: { value: '#102' },
+      },
       DYN: {
         pb: { value: '272 m', date: '2025-09-13', venue: 'AIDA Get EcSTAtic! (Into The) Unknown' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#11' },
+        worldRank: { value: '#16' },
       },
       DYNB: {
         pb: { value: '261 m', date: '2022-12-05', venue: 'AIDA Ultimate Freediving Challenge 4' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#5' },
+        worldRank: { value: '#9' },
       },
-      DNF: { pb: { value: '200 m', date: '2022-02-19', venue: 'AAS AIDA Mini Comp 2022' } },
+      DNF: {
+        pb: { value: '200 m', date: '2022-02-19', venue: 'AAS AIDA Mini Comp 2022' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#18' },
+        worldRank: { value: '#24' },
+      },
     },
     nationalRecords: [
       { discipline: 'STA', result: '7:43' },
@@ -482,8 +767,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:15', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYNB: { pb: { value: '88 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
+      STA: {
+        pb: { value: '4:15', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#21' },
+        europeanRank: { value: '#2513' },
+        worldRank: { value: '#4484' },
+      },
+      DYNB: {
+        pb: { value: '88 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#8' },
+        europeanRank: { value: '#740' },
+        worldRank: { value: '#2376' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -500,14 +795,35 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:55', date: '2022-04-23', venue: 'AIDA Finnish Super Open' } },
-      DYN: { pb: { value: '200 m', date: '2022-04-23', venue: 'AIDA Finnish Super Open' } },
-      DNF: { pb: { value: '157 m', date: '2022-04-24', venue: 'AIDA Finnish Super Open' } },
+      STA: {
+        pb: { value: '5:55', date: '2022-04-23', venue: 'AIDA Finnish Super Open' },
+        nationalRank: { value: '#8' },
+        europeanRank: { value: '#670' },
+        worldRank: { value: '#1040' },
+      },
+      DYN: {
+        pb: { value: '200 m', date: '2022-04-23', venue: 'AIDA Finnish Super Open' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#183' },
+        worldRank: { value: '#287' },
+      },
+      DNF: {
+        pb: { value: '157 m', date: '2022-04-24', venue: 'AIDA Finnish Super Open' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#122' },
+        worldRank: { value: '#177' },
+      },
       CWTB: {
         pb: { value: '48 m', date: '2019-08-18', venue: 'AIDA Asikkala Depth Challenge 2019' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#255' },
+        worldRank: { value: '#776' },
       },
       CNF: {
         pb: { value: '52 m', date: '2021-10-22', venue: 'AIDA Triton Cup October- Calm Zone' },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#172' },
+        worldRank: { value: '#341' },
       },
     },
     nationalRecords: [
@@ -528,13 +844,21 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '4:03', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' } },
+      STA: {
+        pb: { value: '4:03', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#870' },
+        worldRank: { value: '#2000' },
+      },
       DYN: {
         pb: {
           value: '100 m',
           date: '2015-03-28',
           venue: 'Svenska dam mästerskapen poolfridykning 2015',
         },
+        nationalRank: { value: '#1' },
+        europeanRank: { value: '#689' },
+        worldRank: { value: '#1357' },
       },
       DNF: {
         pb: {
@@ -542,6 +866,9 @@ export const freedivingAthletes: Athlete[] = [
           date: '2015-03-28',
           venue: 'Svenska dam mästerskapen poolfridykning 2015',
         },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#593' },
+        worldRank: { value: '#1203' },
       },
     },
     nationalRecords: [{ discipline: 'DYN', result: '100 m' }],
@@ -559,9 +886,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '6:09', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' } },
-      DYN: { pb: { value: '77 m', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' } },
-      DNF: { pb: { value: '61 m', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' } },
+      STA: {
+        pb: { value: '6:09', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' },
+        nationalRank: { value: '#6' },
+        europeanRank: { value: '#462' },
+        worldRank: { value: '#715' },
+      },
+      DYN: {
+        pb: { value: '77 m', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' },
+        nationalRank: { value: '#15' },
+        europeanRank: { value: '#2421' },
+        worldRank: { value: '#3971' },
+      },
+      DNF: {
+        pb: { value: '61 m', date: '2015-02-07', venue: 'Riga Freediving Cup 2015 AIDA' },
+        nationalRank: { value: '#14' },
+        europeanRank: { value: '#2040' },
+        worldRank: { value: '#3789' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -580,12 +922,21 @@ export const freedivingAthletes: Athlete[] = [
     disciplines: {
       STA: {
         pb: { value: '3:07', date: '2024-02-03', venue: 'AIDA Lithuania Open Pool Championship' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#1273' },
+        worldRank: { value: '#3152' },
       },
       DYNB: {
         pb: { value: '56 m', date: '2024-02-04', venue: 'AIDA Lithuania Open Pool Championship' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#569' },
+        worldRank: { value: '#2399' },
       },
       DNF: {
         pb: { value: '37 m', date: '2024-02-03', venue: 'AIDA Lithuania Open Pool Championship' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#1053' },
+        worldRank: { value: '#2428' },
       },
     },
     nationalRecords: [],
@@ -603,8 +954,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '3:04', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYNB: { pb: { value: '76 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
+      STA: {
+        pb: { value: '3:04', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#6' },
+        europeanRank: { value: '#1299' },
+        worldRank: { value: '#3230' },
+      },
+      DYNB: {
+        pb: { value: '76 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#491' },
+        worldRank: { value: '#1869' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -621,8 +982,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '6:01', date: '2013-02-09', venue: 'Riga Freediving Cup 2013' } },
-      DNF: { pb: { value: '90 m', date: '2013-02-09', venue: 'Riga Freediving Cup 2013' } },
+      STA: {
+        pb: { value: '6:01', date: '2013-02-09', venue: 'Riga Freediving Cup 2013' },
+        nationalRank: { value: '#7' },
+        europeanRank: { value: '#604' },
+        worldRank: { value: '#942' },
+      },
+      DNF: {
+        pb: { value: '90 m', date: '2013-02-09', venue: 'Riga Freediving Cup 2013' },
+        nationalRank: { value: '#8' },
+        europeanRank: { value: '#1125' },
+        worldRank: { value: '#1921' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -639,8 +1010,18 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '3:27', date: '2006-04-14', venue: 'Finnish National Championships' } },
-      DYN: { pb: { value: '62 m', date: '2006-04-14', venue: 'Finnish National Championships' } },
+      STA: {
+        pb: { value: '3:27', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#23' },
+        europeanRank: { value: '#3721' },
+        worldRank: { value: '#7133' },
+      },
+      DYN: {
+        pb: { value: '62 m', date: '2006-04-14', venue: 'Finnish National Championships' },
+        nationalRank: { value: '#17' },
+        europeanRank: { value: '#3124' },
+        worldRank: { value: '#5126' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -659,9 +1040,15 @@ export const freedivingAthletes: Athlete[] = [
     disciplines: {
       STA: {
         pb: { value: '6:34', date: '2026-05-02', venue: 'RIGA SPRING - AIDA STATIC PERFORMANCES' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#284' },
+        worldRank: { value: '#424' },
       },
       DYNB: {
         pb: { value: '154 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#214' },
+        worldRank: { value: '#513' },
       },
     },
     nationalRecords: [],
@@ -679,9 +1066,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '5:49', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
-      DYN: { pb: { value: '116 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
-      DNF: { pb: { value: '60 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
+      STA: {
+        pb: { value: '5:49', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#9' },
+        europeanRank: { value: '#724' },
+        worldRank: { value: '#1118' },
+      },
+      DYN: {
+        pb: { value: '116 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#9' },
+        europeanRank: { value: '#1226' },
+        worldRank: { value: '#1978' },
+      },
+      DNF: {
+        pb: { value: '60 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#15' },
+        europeanRank: { value: '#2093' },
+        worldRank: { value: '#3903' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -698,10 +1100,30 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '6:21', date: '2022-04-23', venue: 'AIDA Finnish Super Open' } },
-      DYN: { pb: { value: '150 m', date: '2022-04-23', venue: 'AIDA Finnish Super Open' } },
-      DNF: { pb: { value: '130 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' } },
-      FIM: { pb: { value: '31 m', date: '2016-10-03', venue: 'Infinity Depth Games II' } },
+      STA: {
+        pb: { value: '6:21', date: '2022-04-23', venue: 'AIDA Finnish Super Open' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#368' },
+        worldRank: { value: '#555' },
+      },
+      DYN: {
+        pb: { value: '150 m', date: '2022-04-23', venue: 'AIDA Finnish Super Open' },
+        nationalRank: { value: '#5' },
+        europeanRank: { value: '#618' },
+        worldRank: { value: '#1008' },
+      },
+      DNF: {
+        pb: { value: '130 m', date: '2019-04-20', venue: 'Finnish Freediving Open 2019' },
+        nationalRank: { value: '#4' },
+        europeanRank: { value: '#343' },
+        worldRank: { value: '#540' },
+      },
+      FIM: {
+        pb: { value: '31 m', date: '2016-10-03', venue: 'Infinity Depth Games II' },
+        nationalRank: { value: '#3' },
+        europeanRank: { value: '#888' },
+        worldRank: { value: '#1993' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -714,9 +1136,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '7:05', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
-      DYN: { pb: { value: '105 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
-      DNF: { pb: { value: '79 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' } },
+      STA: {
+        pb: { value: '7:05', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#2' },
+        europeanRank: { value: '#153' },
+        worldRank: { value: '#228' },
+      },
+      DYN: {
+        pb: { value: '105 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#11' },
+        europeanRank: { value: '#1519' },
+        worldRank: { value: '#2455' },
+      },
+      DNF: {
+        pb: { value: '79 m', date: '2010-02-13', venue: 'Riga Freediving Cup 2010' },
+        nationalRank: { value: '#11' },
+        europeanRank: { value: '#1524' },
+        worldRank: { value: '#2668' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -733,9 +1170,24 @@ export const freedivingAthletes: Athlete[] = [
     season: 2026,
     status: 'INACTIVE',
     disciplines: {
-      STA: { pb: { value: '3:00', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYN: { pb: { value: '50 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
-      DYNB: { pb: { value: '49 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' } },
+      STA: {
+        pb: { value: '3:00', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#22' },
+        europeanRank: { value: '#3642' },
+        worldRank: { value: '#6948' },
+      },
+      DYN: {
+        pb: { value: '50 m', date: '2026-02-15', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#18' },
+        europeanRank: { value: '#3155' },
+        worldRank: { value: '#5190' },
+      },
+      DYNB: {
+        pb: { value: '49 m', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
+        nationalRank: { value: '#10' },
+        europeanRank: { value: '#958' },
+        worldRank: { value: '#3481' },
+      },
     },
     nationalRecords: [],
     worldRecords: [],
@@ -754,12 +1206,21 @@ export const freedivingAthletes: Athlete[] = [
     disciplines: {
       STA: {
         pb: { value: '5:01', date: '2018-02-10', venue: 'RIGA FREEDIVING CUP 2018 WR status' },
+        nationalRank: { value: '#18' },
+        europeanRank: { value: '#1632' },
+        worldRank: { value: '#2728' },
       },
       DYN: {
         pb: { value: '130 m', date: '2018-02-11', venue: 'RIGA FREEDIVING CUP 2018 WR status' },
+        nationalRank: { value: '#8' },
+        europeanRank: { value: '#902' },
+        worldRank: { value: '#1458' },
       },
       DNF: {
         pb: { value: '62 m', date: '2018-02-10', venue: 'RIGA FREEDIVING CUP 2018 WR status' },
+        nationalRank: { value: '#13' },
+        europeanRank: { value: '#1985' },
+        worldRank: { value: '#3672' },
       },
     },
     nationalRecords: [],
