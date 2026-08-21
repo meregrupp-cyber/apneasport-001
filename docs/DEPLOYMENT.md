@@ -55,6 +55,23 @@ DNS-i ei muudeta selle branchi ega PR-i raames. Pärast kinnitatud preview'd:
 - DNS-i rollback'i vajadus tekib ainult custom domain'i cutover'i ajal; säilita enne muutmist vana
   GitHub Pagesi kirjed ja TTL-id eraldi muudatusplaanis.
 
+## Sportlasstaatuse avalduse vorm
+
+Vabasukeldumise lehe vorm postitab `/api/athlete-application` Pages Functionile,
+mis saadab avalduse e-kirjaga aadressile `estonia@apneasport.ee`. Saaja aadress ja
+kodakondsus on funktsioonis fikseeritud ega tule kunagi päringust.
+
+Vajalikud Cloudflare secret'id (mitte `PUBLIC_` prefiksiga, mitte repos):
+
+- `RESEND_API_KEY` - Resendi API võti.
+- `APPLICATION_FROM_EMAIL` - kinnitatud saatja, näiteks `AIDA Estonia <noreply@apneasport.ee>`.
+
+Enne esimest kasutust tuleb Resendis kinnitada saatja domeen (SPF/DKIM kirjed).
+Kui secret'id puuduvad, vastab endpoint `503` ja vorm näitab kasutajale veateadet -
+avaldust vaikselt kaotsi ei lähe.
+
+Vorm on kaitstud honeypot-väljaga ja ühe avaldusega minutis IP kohta.
+
 ## Pages Function
 
 `functions/api/social/facebook.ts` kasutab Graph API-d ainult siis, kui serveripoolsed väärtused on

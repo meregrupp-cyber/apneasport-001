@@ -7,6 +7,7 @@ import freedivingImage from '../../assets/eapsl/freediving.png';
 import mermaidingImage from '../../assets/eapsl/mermaiding.png';
 import waterfightingImage from '../../assets/eapsl/waterfighting.png';
 import PageHero from '../common/PageHero.astro';
+import AthleteApplication from './AthleteApplication.astro';
 import AthleteRecordsTable from './AthleteRecordsTable.astro';
 
 interface Props {
@@ -112,6 +113,7 @@ const tableOfContents = [
             <h2>{labels.athletes}</h2>
             <p>{labels.athletesIntro}</p>
             <AthleteRecordsTable {locale} />
+            <AthleteApplication {locale} />
           </section>
         )
       }

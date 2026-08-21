@@ -1,0 +1,551 @@
+---
+import type { Locale } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const endpoint = '/api/athlete-application';
+const copy =
+  locale === 'et'
+    ? {
+        cta: 'Esitan avalduse oma AIDA sportlasstaatuse uuendamiseks',
+        title: 'AIDA Estonia sportlasstaatuse avaldus',
+        intro:
+          'Selle vormi kaudu saab Eesti kodanik taotleda AIDA Estonia sportlasstaatuse aktiveerimist, iga-aastase litsentsi pikendamist või oma sportlase andmete eemaldamist AIDA Estonia veebilehelt.',
+        close: 'Sulge avalduse vorm',
+        personal: 'Isikuandmed',
+        firstName: 'Eesnimi',
+        lastName: 'Perekonnanimi',
+        dateOfBirth: 'Sünniaeg',
+        citizenship: 'Kodakondsus',
+        citizenshipValue: '🇪🇪 Eesti',
+        citizenshipNote:
+          'AIDA Estonia saab AIDA Internationali süsteemis registreerida Eesti kodanikke. Teise riigi kodanik peab üldjuhul pöörduma oma kodakondsusriigi AIDA Nationali poole, kui see on olemas.',
+        email: 'E-post',
+        phone: 'Telefon',
+        aidaProfile: 'AIDA International profiil / AIDA ID',
+        aidaProfileNote:
+          'Kui sul on juba AIDA Internationali konto, lisa võimalusel oma profiili link või AIDA ID. Esmakordsel registreerimisel võib selle välja tühjaks jätta.',
+        typeLegend: 'Soovin',
+        types: [
+          {
+            value: 'activate',
+            label: 'Aktiveerida oma AIDA Estonia sportlasstaatus – €35',
+            note: 'Esmaregistreerimine. 2026. aastal registreerudes kehtib tasu 2026. ja 2027. aasta kohta.',
+          },
+          {
+            value: 'renew',
+            label: 'Pikendada oma AIDA Estonia sportlaslitsentsi – €15 / aasta',
+            note: 'Iga-aastane pikendamine alates 2028. aastast. Litsents tuleb pikendada ajavahemikus 1. jaanuar – 28. veebruar. Kui aktiivsesse staatusesse jääb paus, rakendub järgmisel registreerimisel uuesti esmaregistreerimise tasu.',
+          },
+          {
+            value: 'removal',
+            label: 'Soovin, et minu sportlase kirjed AIDA Estonia veebilehelt kustutatakse',
+            note: 'See puudutab AIDA Estonia veebilehel avaldatavaid sportlase andmeid. Vajadusel võtab EAPSL ühendust, kui taotlus puudutab ka AIDA Internationali süsteemis olevat National Membership staatust.',
+          },
+        ],
+        consentLegend: 'Kinnitused',
+        consents: [
+          {
+            name: 'citizen',
+            label: 'Kinnitan, et olen Eesti kodanik ja esitatud andmed on õiged.',
+          },
+          {
+            name: 'dataProcessing',
+            label:
+              'Nõustun, et AIDA Estonia (EAPSL) töötleb minu esitatud isikuandmeid avalduse menetlemiseks, AIDA Internationali sportlasstaatuse haldamiseks ning minuga ühenduse võtmiseks.',
+          },
+          {
+            name: 'publishResults',
+            label:
+              'Nõustun, et AIDA Estonia võib avaldada apneasport.ee veebilehel minu nime, võistlustulemused, isiklikud rekordid ning Eesti, Euroopa ja maailma edetabelipositsioonid.',
+          },
+          {
+            name: 'publishStatus',
+            label:
+              'Nõustun, et AIDA Estonia võib avalikult kuvada minu AIDA sportlaslitsentsi staatust: ACTIVE või INACTIVE.',
+          },
+        ],
+        consentNote: 'Avalikult ei kuvata sünniaega, e-posti aadressi ega telefoninumbrit.',
+        submit: 'ESITA AVALDUS',
+        sending: 'Saadan…',
+        required: 'Kohustuslik väli',
+        success:
+          'Avaldus on saadetud. AIDA Estonia võtab vajadusel sinuga ühendust avalduses märgitud e-posti aadressil.',
+        errorGeneric: 'Avalduse saatmine ebaõnnestus. Proovi mõne hetke pärast uuesti.',
+        errorNetwork: 'Ühendust ei õnnestunud luua. Kontrolli internetiühendust ja proovi uuesti.',
+        errorRate: 'Avaldus saadeti äsja. Oota hetk ja proovi siis uuesti.',
+        errorValidation: 'Kontrolli üle punasega märgitud väljad ja proovi uuesti.',
+      }
+    : {
+        cta: 'Submit an application to update my AIDA athlete status',
+        title: 'AIDA Estonia Athlete Status Application',
+        intro:
+          'This form allows Estonian citizens to apply for activation of their AIDA Estonia athlete status, renew their annual athlete licence, or request removal of their athlete records from the AIDA Estonia website.',
+        close: 'Close application form',
+        personal: 'Personal details',
+        firstName: 'First name',
+        lastName: 'Last name',
+        dateOfBirth: 'Date of birth',
+        citizenship: 'Citizenship',
+        citizenshipValue: '🇪🇪 Estonia',
+        citizenshipNote:
+          'AIDA Estonia can register Estonian citizens in the AIDA International system. Citizens of another country must normally register through the AIDA National corresponding to their citizenship, if an AIDA National exists in that country.',
+        email: 'Email',
+        phone: 'Phone',
+        aidaProfile: 'AIDA International profile / AIDA ID',
+        aidaProfileNote:
+          'If you already have an AIDA International account, please provide your profile link or AIDA ID if possible. This field may be left empty for a first-time registration.',
+        typeLegend: 'I would like to',
+        types: [
+          {
+            value: 'activate',
+            label: 'Activate my AIDA Estonia athlete status – €35',
+            note: 'First registration. Applications submitted in 2026 cover both the 2026 and 2027 seasons.',
+          },
+          {
+            value: 'renew',
+            label: 'Renew my AIDA Estonia athlete licence – €15 / year',
+            note: 'Annual renewal applies from 2028. The licence must be renewed between 1 January and 28 February. If there is a break in active status, the next application will again be treated as a first registration.',
+          },
+          {
+            value: 'removal',
+            label: 'Request removal of my athlete records from the AIDA Estonia website',
+            note: 'This applies to athlete information published on the AIDA Estonia website. EAPSL may contact you if the request also concerns your National Membership status in the AIDA International system.',
+          },
+        ],
+        consentLegend: 'Confirmations',
+        consents: [
+          {
+            name: 'citizen',
+            label:
+              'I confirm that I am an Estonian citizen and that the information provided is correct.',
+          },
+          {
+            name: 'dataProcessing',
+            label:
+              'I consent to AIDA Estonia (EAPSL) processing the personal data submitted in this form for handling my application, administering my AIDA International athlete status, and contacting me regarding the application.',
+          },
+          {
+            name: 'publishResults',
+            label:
+              'I consent to AIDA Estonia publishing my name, competition results, personal bests, and Estonian, European and World ranking positions on apneasport.ee.',
+          },
+          {
+            name: 'publishStatus',
+            label:
+              'I consent to AIDA Estonia publicly displaying my athlete licence status as ACTIVE or INACTIVE.',
+          },
+        ],
+        consentNote:
+          'Date of birth, email address and phone number will not be displayed publicly.',
+        submit: 'SUBMIT APPLICATION',
+        sending: 'Sending…',
+        required: 'Required field',
+        success:
+          'Your application has been submitted. AIDA Estonia will contact you at the email address provided if further information is required.',
+        errorGeneric: 'The application could not be sent. Please try again in a moment.',
+        errorNetwork: 'No connection could be made. Check your network and try again.',
+        errorRate: 'An application was just sent. Please wait a moment and try again.',
+        errorValidation: 'Please check the highlighted fields and try again.',
+      };
+---
+
+<p class="application-cta">
+  <button type="button" class="application-cta-link" data-athlete-application-open disabled>
+    {copy.cta}
+    <span aria-hidden="true">→</span>
+  </button>
+</p>
+
+<dialog
+  id="athlete-application"
+  class="application-dialog"
+  aria-labelledby="athlete-application-title"
+  data-athlete-application
+>
+  <article class="application-card">
+    <header class="application-head">
+      <h2 id="athlete-application-title">{copy.title}</h2>
+      <button
+        type="button"
+        class="application-close"
+        aria-label={copy.close}
+        data-athlete-application-close
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+    <p class="application-intro">{copy.intro}</p>
+
+    <form
+      class="application-form"
+      method="post"
+      action={endpoint}
+      data-athlete-application-form
+      data-locale={locale}
+      data-message-generic={copy.errorGeneric}
+      data-message-network={copy.errorNetwork}
+      data-message-rate={copy.errorRate}
+      data-message-validation={copy.errorValidation}
+      data-label-submit={copy.submit}
+      data-label-sending={copy.sending}
+    >
+      <fieldset>
+        <legend>{copy.personal}</legend>
+        <div class="application-grid">
+          <p class="application-field">
+            <label for="application-first-name">{copy.firstName} *</label>
+            <input
+              id="application-first-name"
+              name="firstName"
+              type="text"
+              maxlength="80"
+              autocomplete="given-name"
+              required
+            />
+          </p>
+          <p class="application-field">
+            <label for="application-last-name">{copy.lastName} *</label>
+            <input
+              id="application-last-name"
+              name="lastName"
+              type="text"
+              maxlength="80"
+              autocomplete="family-name"
+              required
+            />
+          </p>
+          <p class="application-field">
+            <label for="application-birth">{copy.dateOfBirth} *</label>
+            <input
+              id="application-birth"
+              name="dateOfBirth"
+              type="date"
+              min="1900-01-01"
+              autocomplete="bday"
+              required
+            />
+          </p>
+          <p class="application-field">
+            <span class="application-label">{copy.citizenship} *</span>
+            <span class="application-fixed" data-citizenship>{copy.citizenshipValue}</span>
+          </p>
+          <p class="application-field">
+            <label for="application-email">{copy.email} *</label>
+            <input
+              id="application-email"
+              name="email"
+              type="email"
+              maxlength="160"
+              autocomplete="email"
+              required
+            />
+          </p>
+          <p class="application-field">
+            <label for="application-phone">{copy.phone} *</label>
+            <input
+              id="application-phone"
+              name="phone"
+              type="tel"
+              inputmode="tel"
+              maxlength="32"
+              pattern="[+0-9][0-9 ()\-]{5,31}"
+              placeholder="+372 5xx xxxx"
+              autocomplete="tel"
+              required
+            />
+          </p>
+        </div>
+        <p class="application-note">{copy.citizenshipNote}</p>
+        <p class="application-field">
+          <label for="application-aida">{copy.aidaProfile}</label>
+          <input id="application-aida" name="aidaProfile" type="text" maxlength="200" />
+        </p>
+        <p class="application-note">{copy.aidaProfileNote}</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>{copy.typeLegend} *</legend>
+        {
+          copy.types.map((type) => (
+            <label class="application-choice">
+              <input
+                type="radio"
+                name="applicationType"
+                value={type.value}
+                aria-describedby={`application-type-${type.value}`}
+                required
+              />
+              <span>
+                <strong>{type.label}</strong>
+                <small id={`application-type-${type.value}`}>{type.note}</small>
+              </span>
+            </label>
+          ))
+        }
+      </fieldset>
+
+      <fieldset>
+        <legend>{copy.consentLegend}</legend>
+        {
+          copy.consents.map((consent) => (
+            <label class="application-choice">
+              <input type="checkbox" name={consent.name} value="yes" required />
+              <span>{consent.label}</span>
+            </label>
+          ))
+        }
+        <p class="application-note">{copy.consentNote}</p>
+      </fieldset>
+
+      {/* Spam trap: a real applicant never sees or fills this. */}
+      <p class="application-trap" aria-hidden="true">
+        <label for="application-confirm-url">Do not fill this field</label>
+        <input
+          id="application-confirm-url"
+          name="_confirm_url"
+          type="text"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </p>
+
+      <p class="application-actions">
+        <button type="submit" class="button button--ink" data-athlete-application-submit>
+          {copy.submit}
+        </button>
+      </p>
+      <p class="application-status" role="alert" data-athlete-application-error hidden></p>
+    </form>
+
+    <p class="application-success" role="status" data-athlete-application-success hidden>
+      {copy.success}
+    </p>
+  </article>
+</dialog>
+
+<script>
+  import { initialiseAthleteApplication } from '../../scripts/athlete-application';
+  initialiseAthleteApplication();
+</script>
+
+<style>
+  .application-cta {
+    margin-top: var(--space-3);
+  }
+  /* Reads as a link, but it is a real button because it opens a dialog. */
+  .application-cta-link {
+    padding: 0;
+    border: 0;
+    color: var(--color-brand);
+    background: none;
+    font-family: var(--font-display);
+    font-size: var(--step--1);
+    font-weight: 750;
+    text-align: left;
+  }
+  .application-cta-link:enabled {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+  .application-cta-link:enabled:hover {
+    color: var(--color-aqua-dark);
+  }
+  /* The dialog itself scrolls: a grid row would keep its content height and
+     the box would clip the end of the form instead. */
+  .application-dialog {
+    width: min(100% - 2rem, 44rem);
+    max-height: min(90vh, 52rem);
+    padding: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: var(--radius-lg);
+    color: var(--color-ink);
+    background: var(--color-foam);
+    box-shadow: var(--shadow-deep);
+  }
+  .application-dialog::backdrop {
+    background: rgb(2 11 20 / 62%);
+    backdrop-filter: blur(4px);
+  }
+  .application-card {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+  .application-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .application-head h2 {
+    font-size: var(--step-2);
+  }
+  .application-close {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    color: var(--color-brand);
+    background: transparent;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .application-close:hover {
+    background: var(--color-ice);
+  }
+  .application-intro {
+    max-width: 60ch;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+  }
+  .application-form {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .application-form fieldset {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    margin: 0;
+  }
+  .application-form legend {
+    padding-inline: 0.4rem;
+    color: var(--color-brand);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .application-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+  .application-field {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    margin: 0;
+  }
+  .application-field label,
+  .application-label {
+    color: var(--color-muted);
+    font-size: 0.76rem;
+    font-weight: 650;
+  }
+  .application-field input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.55rem;
+    color: var(--color-ink);
+    background: var(--color-foam);
+  }
+  .application-field input:user-invalid {
+    border-color: var(--color-coral);
+  }
+  /* Citizenship is fixed: it is shown, never edited, and set again on the server. */
+  .application-fixed {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding-inline: 0.75rem;
+    border: 1px dashed var(--color-line);
+    border-radius: 0.55rem;
+    color: var(--color-ink);
+    background: var(--color-ice);
+  }
+  .application-note {
+    max-width: 62ch;
+    color: var(--color-muted);
+    font-size: 0.74rem;
+    line-height: 1.5;
+  }
+  .application-choice {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.6rem;
+    font-size: 0.86rem;
+  }
+  .application-choice input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.2rem;
+  }
+  .application-choice strong {
+    display: block;
+    font-family: var(--font-display);
+  }
+  .application-choice small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-muted);
+    font-size: 0.74rem;
+    line-height: 1.5;
+  }
+  .application-trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .application-actions {
+    margin: 0;
+  }
+  .application-actions button {
+    width: 100%;
+  }
+  .application-status {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-coral);
+    border-radius: var(--radius-md);
+    margin: 0;
+    color: var(--color-ink);
+    background: rgb(255 130 108 / 12%);
+    font-size: 0.86rem;
+  }
+  .application-success {
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-aqua-dark);
+    border-radius: var(--radius-md);
+    margin: 0;
+    color: var(--color-ink);
+    background: rgb(69 215 196 / 12%);
+  }
+  @media (max-width: 38rem) {
+    .application-dialog {
+      width: calc(100% - 1.5rem);
+      max-height: 88dvh;
+    }
+    .application-grid {
+      grid-template-columns: 1fr;
+    }
+    .application-head h2 {
+      font-size: var(--step-1);
+    }
+  }
+</style>

@@ -206,16 +206,14 @@ const entryText = (entry: AthleteEntry | undefined) => entry?.value ?? unknownVa
 </dialog>
 
 <style>
-  /* `display` only under [open]: an author `display` value would beat the user
-     agent rule that keeps a closed dialog hidden. */
-  .athlete-dialog[open] {
-    display: grid;
-  }
+  /* The dialog itself scrolls: a grid row would keep its content height and
+     the box would clip the end of the card instead. */
   .athlete-dialog {
     width: min(100% - 2rem, 46rem);
     max-height: min(88vh, 46rem);
     padding: 0;
-    overflow: hidden;
+    overflow: auto;
+    overscroll-behavior: contain;
     border: 0;
     border-radius: var(--radius-lg);
     color: var(--color-ink);
@@ -231,7 +229,6 @@ const entryText = (entry: AthleteEntry | undefined) => entry?.value ?? unknownVa
     align-content: start;
     gap: var(--space-4);
     padding: clamp(1.25rem, 4vw, 2rem);
-    overflow-y: auto;
   }
   .athlete-profile-head {
     display: flex;

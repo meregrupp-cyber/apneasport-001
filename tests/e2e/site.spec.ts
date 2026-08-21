@@ -73,6 +73,39 @@ test('athlete name opens that athlete profile dialog and returns focus on close'
   await expect(page.getByRole('dialog')).toBeHidden();
 });
 
+test('athlete status application opens, validates and closes without leaving the page', async ({
+  page,
+}) => {
+  await page.goto('/spordialad/vabasukeldumine/');
+  const link = page.getByRole('button', {
+    name: /Esitan avalduse oma AIDA sportlasstaatuse uuendamiseks/,
+  });
+  await link.click();
+
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('heading', { level: 2 })).toContainText(
+    'AIDA Estonia sportlasstaatuse avaldus',
+  );
+  // Citizenship is shown, never offered as an editable control.
+  await expect(dialog.getByText('🇪🇪 Eesti')).toBeVisible();
+  await expect(dialog.locator('input[name="citizenship"]')).toHaveCount(0);
+
+  // An empty form never reaches the network.
+  let posted = 0;
+  await page.route('**/api/athlete-application', async (route) => {
+    posted += 1;
+    await route.fulfill({ status: 200, body: '{"status":"ok"}' });
+  });
+  await dialog.getByRole('button', { name: 'ESITA AVALDUS' }).click();
+  expect(posted).toBe(0);
+  await expect(page).toHaveURL(/\/spordialad\/vabasukeldumine\/$/);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(link).toBeFocused();
+});
+
 test('key pages have no serious automated accessibility violations', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const path of ['/', '/en/', '/dokumendid/', '/spordialad/vabasukeldumine/']) {

@@ -13,6 +13,7 @@ public/**/*.svg
 .pnpm-home
 .pnpm-store
 .playwright-browsers
+.wrangler
 
 # Generated GitHub Pages snapshot (synchronized from dist/)
 **/*.html
