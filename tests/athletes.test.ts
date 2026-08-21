@@ -27,15 +27,18 @@ function fixture(lastName: string): Athlete {
   };
 }
 
+const fullName = (athlete: Athlete) => `${athlete.firstName} ${athlete.lastName}`;
+const personalBests = freedivingAthletes.flatMap((athlete) =>
+  Object.entries(athlete.disciplines).map(([code, result]) => ({ code, value: result.pb?.value })),
+);
+
 describe('freediving athlete registry', () => {
   it('sorts by surname no matter how the source array is ordered', () => {
     const reversed = [...freedivingAthletes].reverse();
+    const sorted = athletesByLastName(reversed).map((athlete) => athlete.lastName);
 
-    expect(athletesByLastName(reversed).map((athlete) => athlete.lastName)).toEqual([
-      'Pedak',
-      'Rudžinskis',
-      'Uustal',
-    ]);
+    expect(sorted).toEqual(athletesByLastName().map((athlete) => athlete.lastName));
+    expect(sorted[0]).toBe('Arumae');
   });
 
   it('orders diacritics by Estonian collation, not by code point', () => {
@@ -46,20 +49,78 @@ describe('freediving athlete registry', () => {
   });
 
   it('capitalizes the surname in the rendered name', () => {
-    const rudzinskis = freedivingAthletes.find((athlete) => athlete.lastName === 'Rudžinskis');
+    expect(athleteName(fixture('Rudzinskis'))).toBe('Fixture RUDZINSKIS');
+  });
 
-    expect(rudzinskis && athleteName(rudzinskis)).toBe('Tomas RUDŽINSKIS');
+  it('stores surnames in natural case, so the helper can capitalize them', () => {
+    for (const athlete of freedivingAthletes) {
+      expect(athlete.lastName).not.toBe(athlete.lastName.toLocaleUpperCase('et'));
+    }
   });
 
   it('builds element ids that survive diacritics and stay unique', () => {
     const slugs = freedivingAthletes.map(athleteSlug);
 
-    expect(slugs).toEqual(['pedak-kristin', 'rudzinskis-tomas', 'uustal-marco']);
     expect(new Set(slugs).size).toBe(slugs.length);
+    expect(slugs).toContain('pedak-kristin');
   });
 
   it('derives the flag from the country code', () => {
     expect(countryFlag('EE')).toBe('🇪🇪');
+  });
+
+  it('keeps the registry on one roster: every athlete Estonian, 2026, inactive', () => {
+    const names = freedivingAthletes.map(fullName);
+
+    expect(new Set(names).size).toBe(names.length);
+    expect(names).toContain('Kristin Pedak');
+    expect(names).toContain('Marco Uustal');
+    for (const athlete of freedivingAthletes) {
+      expect(athlete.country).toBe('EE');
+      expect(athlete.season).toBe(2026);
+      expect(athlete.status).toBe('INACTIVE');
+      expect(['F', 'M']).toContain(athlete.sex);
+    }
+  });
+
+  it('holds only AIDA discipline codes and bare result values', () => {
+    for (const { code, value } of personalBests) {
+      expect(disciplineCodes).toContain(code);
+      expect(value).toBeDefined();
+      // A result cell carries the result alone: no PB/NR/WR marker, no points,
+      // no ranking place.
+      expect(value).not.toMatch(/\b(PB|NR|WR)\b|#|pts|points/);
+      expect(value).toMatch(code === 'STA' ? /^\d:\d{2}$/ : /^\d+ m$/);
+    }
+  });
+
+  it('links only to official AIDA athlete profiles', () => {
+    for (const athlete of freedivingAthletes) {
+      if (!athlete.aidaProfile) continue;
+      expect(athlete.aidaProfile.url).toMatch(
+        /^https:\/\/www\.aidainternational\.org\/Athletes\/Profile-/,
+      );
+    }
+  });
+
+  it('claims a record only on a supported discipline, and no world records yet', () => {
+    for (const athlete of freedivingAthletes) {
+      expect(athlete.worldRecords).toEqual([]);
+      for (const record of athlete.nationalRecords) {
+        expect(disciplineCodes).toContain(record.discipline);
+        expect(record.result.trim()).not.toBe('');
+      }
+    }
+  });
+
+  it('leaves unverifiable fields out rather than guessing them', () => {
+    for (const athlete of freedivingAthletes) {
+      // Rankings shift whenever anyone else competes and AIDA publishes no
+      // as-of date, so the registry stays out of them; the competition count
+      // is not exactly verifiable from an AIDA profile either.
+      expect(athlete.aidaCompetitions).toBeUndefined();
+      expect(athlete.nationalRank ?? athlete.europeanRank ?? athlete.worldRank).toBeUndefined();
+    }
   });
 
   it('keeps every published entry renderable, so unknown fields stay absent', () => {
@@ -70,30 +131,13 @@ describe('freediving athlete registry', () => {
         result.europeanRank,
         result.worldRank,
       ]),
-      athlete.nationalRank,
-      athlete.europeanRank,
-      athlete.worldRank,
       athlete.aidaProfile,
     ]);
 
-    // An empty or placeholder value belongs nowhere in the data: the UI
-    // renders the em dash itself for every field with no approved value.
     for (const entry of entries.filter((entry) => entry !== undefined)) {
       expect(entry.value.trim()).not.toBe('');
       expect(entry.value.trim()).not.toBe(unknownValue);
       if (entry.url) expect(entry.url.startsWith('https://')).toBe(true);
-    }
-  });
-
-  it('keeps records on supported disciplines only', () => {
-    const records = freedivingAthletes.flatMap((athlete) => [
-      ...athlete.nationalRecords,
-      ...athlete.worldRecords,
-    ]);
-
-    for (const record of records) {
-      expect(disciplineCodes).toContain(record.discipline);
-      expect(record.result.trim()).not.toBe('');
     }
   });
 

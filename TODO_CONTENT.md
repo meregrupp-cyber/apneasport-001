@@ -32,9 +32,15 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Allveevõitluse lõplik terminoloogia, võistlus- ja ohutusreeglid.
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
-- [ ] Vabasukeldumise sportlaste registri kinnitatud andmed: staatused, distsipliinide tulemused,
-      Eesti/Euroopa/maailma rankingud, Eesti ja maailmarekordid, AIDA võistluste arv ning AIDA
-      profiililingid.
+- [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (praegu on kõik INACTIVE) ning hooaja
+      kinnitamine. Distsipliinide PB-d ja Eesti rekordid on võetud AIDA Internationali ametlikest
+      allikatest.
+- [ ] Otsustada, kas avaldada AIDA profiililt loetavad Eesti/kontinendi/maailma rankingukohad; need
+      muutuvad ajas ega kanna AIDA-s seisuga-kuupäeva.
+- [ ] AIDA võistluste arv sportlase kohta: ametlikul profiilil ei ole üheselt loetavat koguarvu.
+- [ ] Kristin PEDAKu ja Marco UUSTALi AIDA profiilid ja tulemused, kui need on olemas; AIDA Estonia
+      rankingus neid praegu ei ole.
+- [ ] Ken Tomsonil on AIDA-s kaks profiili, mille vahel tulemused jagunevad; kinnitada kanooniline.
 
 ## Klubid, kontaktid ja visuaalid
 
