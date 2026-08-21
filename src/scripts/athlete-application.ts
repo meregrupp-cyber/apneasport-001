@@ -48,6 +48,19 @@ function showVerificationResult(): void {
   window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
 }
 
+/**
+ * Deep link straight into the form: ?apply=1 opens the dialog on load, so a
+ * shared link can drop someone right at the application.
+ *
+ * The parameter stays in the address bar on purpose - the link has to survive
+ * being reloaded and passed on. That is the opposite of `application=`, which
+ * reports a one-off outcome and is cleaned away once shown.
+ */
+function openFromDeepLink(dialog: HTMLDialogElement): void {
+  if (new URL(window.location.href).searchParams.get('apply') !== '1') return;
+  if (!dialog.open) dialog.showModal();
+}
+
 export function initialiseAthleteApplication(): void {
   showVerificationResult();
 
@@ -180,4 +193,7 @@ export function initialiseAthleteApplication(): void {
       resend.disabled = resendStatus.textContent === form.dataset.messageResendLimit;
     }
   });
+
+  // Last, so the dialog only opens by itself once every control inside it works.
+  openFromDeepLink(dialog);
 }
