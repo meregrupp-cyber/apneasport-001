@@ -115,11 +115,21 @@ describe('freediving athlete registry', () => {
 
   it('leaves unverifiable fields out rather than guessing them', () => {
     for (const athlete of freedivingAthletes) {
-      // Rankings shift whenever anyone else competes and AIDA publishes no
-      // as-of date, so the registry stays out of them; the competition count
-      // is not exactly verifiable from an AIDA profile either.
+      // The competition count is not exactly verifiable from an AIDA profile.
       expect(athlete.aidaCompetitions).toBeUndefined();
-      expect(athlete.nationalRank ?? athlete.europeanRank ?? athlete.worldRank).toBeUndefined();
+    }
+  });
+
+  it('keeps rankings per discipline, in AIDA place format, never without a result', () => {
+    for (const athlete of freedivingAthletes) {
+      for (const result of Object.values(athlete.disciplines)) {
+        const places = [result.nationalRank, result.europeanRank, result.worldRank];
+        for (const place of places.filter((place) => place !== undefined)) {
+          expect(place.value).toMatch(/^#\d+$/);
+          // A place without a performance behind it would be a guess.
+          expect(result.pb?.value).toBeDefined();
+        }
+      }
     }
   });
 
