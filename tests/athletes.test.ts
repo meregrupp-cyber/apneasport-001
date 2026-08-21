@@ -7,6 +7,7 @@ import {
   disciplineCodes,
   formatRecord,
   freedivingAthletes,
+  rankingSnapshotDate,
   recordSummary,
   unknownValue,
   type Athlete,
@@ -118,6 +119,13 @@ describe('freediving athlete registry', () => {
       // The competition count is not exactly verifiable from an AIDA profile.
       expect(athlete.aidaCompetitions).toBeUndefined();
     }
+  });
+
+  it('dates the ranking snapshot, because AIDA publishes no as-of date', () => {
+    expect(rankingSnapshotDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(new Date(`${rankingSnapshotDate}T00:00:00Z`).toISOString()).toContain(
+      rankingSnapshotDate,
+    );
   });
 
   it('keeps rankings per discipline, in AIDA place format, never without a result', () => {

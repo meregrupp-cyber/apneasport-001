@@ -5,6 +5,7 @@ import {
   countryFlag,
   disciplineCodes,
   formatRecord,
+  rankingSnapshotDate,
   unknownValue,
   type Athlete,
   type AthleteEntry,
@@ -35,6 +36,7 @@ const labels =
         competitions: 'AIDA võistlusi',
         profile: 'AIDA profiil',
         close: 'Sulge sportlase profiil',
+        snapshot: 'AIDA rankingud seisuga',
         results: `${athleteName(athlete)} tulemused distsipliinide kaupa`,
       }
     : {
@@ -48,6 +50,7 @@ const labels =
         competitions: 'AIDA competitions',
         profile: 'AIDA profile',
         close: 'Close athlete profile',
+        snapshot: 'AIDA rankings as of',
         results: `${athleteName(athlete)} results by discipline`,
       };
 
@@ -59,6 +62,12 @@ const rows = disciplineCodes.map((discipline) => {
     cells: [result?.pb, result?.nationalRank, result?.europeanRank, result?.worldRank],
   };
 });
+const snapshot = new Intl.DateTimeFormat(locale === 'et' ? 'et-EE' : 'en-GB', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${rankingSnapshotDate}T00:00:00Z`));
 const records: { label: string; records: AthleteRecord[] }[] = [
   { label: labels.nationalRecord, records: athlete.nationalRecords },
   { label: labels.worldRecord, records: athlete.worldRecords },
@@ -129,6 +138,11 @@ const entryText = (entry: AthleteEntry | undefined) => entry?.value ?? unknownVa
         </tbody>
       </table>
     </div>
+
+    <p class="athlete-profile-snapshot">
+      {labels.snapshot}
+      <time datetime={rankingSnapshotDate}>{snapshot}</time>
+    </p>
 
     <dl class="athlete-profile-facts">
       {
@@ -270,6 +284,11 @@ const entryText = (entry: AthleteEntry | undefined) => entry?.value ?? unknownVa
   }
   .athlete-unknown {
     color: var(--color-muted);
+  }
+  .athlete-profile-snapshot {
+    margin: -0.35rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.76rem;
   }
   .athlete-profile-facts {
     display: grid;

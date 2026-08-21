@@ -87,6 +87,13 @@ export interface Athlete {
 /** Shown in every field that has no approved value yet. */
 export const unknownValue = '—';
 
+/**
+ * The day the rankings below were read off the AIDA profiles. AIDA publishes
+ * no as-of date of its own, so the UI shows this one. Update it in the same
+ * commit that refreshes the ranking values.
+ */
+export const rankingSnapshotDate = '2026-08-21';
+
 export const freedivingAthletes: Athlete[] = [
   {
     firstName: 'Alo',
