@@ -74,28 +74,46 @@ kirjed, seega eraldi ajastatud tööd pole vaja.
 
 ### Cloudflare seadistus
 
-D1 andmebaas ja binding `ATHLETE_APPLICATIONS`:
+D1 andmebaas on juba loodud ja migreeritud (21.08.2026):
+
+|             |                                                        |
+| ----------- | ------------------------------------------------------ |
+| Nimi        | `apneasport-athlete-applications`                      |
+| Database id | `5e6d0032-2a39-4cb8-b5bb-ea2b9c947bd5`                 |
+| Regioon     | EEUR (Ida-Euroopa, EL)                                 |
+| Skeem       | `migrations/0001_athlete_applications.sql`, rakendatud |
+| Binding     | `ATHLETE_APPLICATIONS`, kirjas `wrangler.jsonc` failis |
+
+D1 loomise API ei võta eraldi jurisdiction-lippu; asukoht on määratud
+`primary_location_hint` väärtusega `eeur`, seega baas asub EL-is.
+
+Uue migratsiooni saab hiljem rakendada:
 
 ```bash
-npx wrangler d1 create apneasport-athlete-applications
-# kopeeri saadud database_id wrangler.jsonc faili
-npx wrangler d1 execute apneasport-athlete-applications --remote \
-  --file migrations/0001_athlete_applications.sql
+npx wrangler d1 execute apneasport-athlete-applications --remote --file migrations/<uus>.sql
 ```
 
-Secret'id (mitte `PUBLIC_` prefiksiga, mitte repos):
+Puudu on veel kaks secret'i, mis peavad olema Pages projekti keskkonnas
+(mitte repos, mitte `PUBLIC_` prefiksiga):
 
-- `RESEND_API_KEY` - Resendi API võti.
-- `APPLICATION_FROM_EMAIL` - kinnitatud saatja, näiteks `AIDA Estonia <noreply@apneasport.ee>`.
+- `RESEND_API_KEY`
+- `APPLICATION_FROM_EMAIL` - saatja aadress kinnitatud domeenil
+
+```bash
+npx wrangler pages secret put RESEND_API_KEY --project-name apneasport
+npx wrangler pages secret put APPLICATION_FROM_EMAIL --project-name apneasport
+```
 
 `MAIL_API_URL` jäta seadmata: see on ainult kohalikuks testimiseks võlts-API vastu.
 
-Enne esimest kasutust tuleb Resendis kinnitada saatja domeen (SPF/DKIM kirjed).
-Kui binding või secret'id puuduvad, vastab endpoint `503` ja vorm näitab
-kasutajale veateadet.
+### Functions vajavad Cloudflare Pages deployment'i
 
-Kaitsed: honeypot, üks avaldus ja üks kinnituskiri minutis IP kohta ning
-maksimaalselt kolm kordussaatmist avalduse kohta.
+Praegu teenindab `apneasport.ee` lehte GitHub Pages (vastuse päised tulevad
+Fastly'lt), seega `functions/` kataloogi endpoint'e ei käivitata: nii
+`/api/social/facebook` kui `/api/aida-athlete/*` vastavad avalikus veebis
+`404`-ga. Avalduse vorm hakkab tööle alles siis, kui sait on Cloudflare
+Pages'is deployitud ja custom domain sinna üle viidud - see cutover on
+kirjeldatud allpool ning vajab eraldi kinnitust.
 
 ### Kohalik test
 
