@@ -44,26 +44,31 @@ test('athlete name opens that athlete profile dialog and returns focus on close'
   page,
 }) => {
   await page.goto('/spordialad/vabasukeldumine/');
-  const names = page.getByRole('button', { name: /RUDŽINSKIS|PEDAK|UUSTAL/ });
-  await expect(names).toHaveCount(3);
+  const names = page.locator('.athlete-name-button');
+  await expect(names.first()).toBeEnabled();
 
-  await names.filter({ hasText: 'RUDŽINSKIS' }).click();
+  const melnikov = names.filter({ hasText: 'MELNIKOV' });
+  await melnikov.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('heading', { level: 2 })).toContainText('Tomas RUDŽINSKIS');
+  await expect(dialog.getByRole('heading', { level: 2 })).toContainText('Dmitri MELNIKOV');
   await expect(dialog).toContainText('AIDA athlete');
   await expect(dialog).toContainText('INACTIVE');
   await expect(dialog.getByRole('rowheader')).toHaveCount(8);
+  // Confirmed AIDA personal best and national record reach the dialog.
+  await expect(dialog).toContainText('7:43');
+  await expect(dialog).toContainText('DYN 272 m');
   await expect(page).toHaveURL(/\/spordialad\/vabasukeldumine\/$/);
 
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
-  await expect(names.filter({ hasText: 'RUDŽINSKIS' })).toBeFocused();
+  await expect(melnikov).toBeFocused();
 
+  // An athlete with no confirmed AIDA data shows em dashes, never a guess.
   await names.filter({ hasText: 'PEDAK' }).click();
-  await expect(page.getByRole('dialog').getByRole('heading', { level: 2 })).toContainText(
-    'Kristin PEDAK',
-  );
+  const pedak = page.getByRole('dialog');
+  await expect(pedak.getByRole('heading', { level: 2 })).toContainText('Kristin PEDAK');
+  await expect(pedak).not.toContainText(/\b(null|undefined|N\/A)\b/);
   await page.getByRole('button', { name: 'Sulge sportlase profiil' }).click();
   await expect(page.getByRole('dialog')).toBeHidden();
 });
