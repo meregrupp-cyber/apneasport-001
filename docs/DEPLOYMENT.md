@@ -1,129 +1,101 @@
-# Cloudflare Pages deployment ja rollback
+# Deployment ja rollback
 
-## Valitud viis
+## Kaks eraldi sihtkohta
 
-Kasuta Cloudflare Pages GitHub Git integration'it repositooriumiga
-`meregrupp-cyber/apneasport-001`.
+| Osa                       | Host              | Kuidas jõuab tootmisse                                                   |
+| ------------------------- | ----------------- | ------------------------------------------------------------------------ |
+| Veebisait `apneasport.ee` | GitHub Pages      | juurkausta sünkroniseeritud `dist/` build, `main` harust                 |
+| API `api.apneasport.ee`   | Cloudflare Worker | `worker/` kataloog, `npx wrangler deploy --config worker/wrangler.jsonc` |
 
-| Seade                  | Väärtus                                         |
-| ---------------------- | ----------------------------------------------- |
-| Production branch      | `main`                                          |
-| Build command          | `npm run build`                                 |
-| Build output directory | `dist`                                          |
-| Node.js                | `22.12.0` või uuem toetatud 22.x                |
-| Preview branches       | kõik non-production harud või vähemalt `feat/*` |
+Sait jääb GitHub Pages'ile. Cloudflare'i alt käib ainult üks hostinimi -
+`api.apneasport.ee` - ja see kuulub Workerile. `apneasport.ee` DNS-i ja origin'it
+ei muudeta; Cloudflare Pages projekti selle saidi jaoks ei looda.
 
-Git-integratsiooni valik on teadlik: PR-id saavad atomaarse preview URL-i ja Cloudflare'i check run'i.
-Direct Upload projektile hiljem ümber lülituda ei saa ilma uut Pages projekti loomata.
+## Sait: GitHub Pages
 
-## Preview enne tootmist
+`main` haru juurkaust ongi avaldatav sait. Peale `npm run build` sünkroniseeritakse
+`dist/` sisu juurkausta ja commititakse; `.nojekyll` hoiab `_astro` varad alles ning
+`CNAME` seob apex-domeeni.
 
-1. Ühenda GitHubi repo Cloudflare Pages projektiga.
-2. Veendu, et production branch on `main`; ära ühenda veel custom domain'i.
-3. Luba preview harud ning ava `feat/site-v1` preview.
-4. Kontrolli buildi, ET/EN seoseid, mobiili, klaviatuuri, reduced-motion'it, dokumenti ja fallback'i.
-5. Kontrolli preview vastusest `X-Robots-Tag: noindex`.
-6. Lisa preview URL draft PR-i ning kogu review.
+Rollback: revert vigane commit `main` harus, ehita ja sünkroniseeri uuesti.
 
 ## Keskkonnamuutujad ja secrets
 
+Saidi build:
+
 - `PUBLIC_FACEBOOK_PAGE_URL`: avalik build-muutuja. Kinnitatud vaikeväärtus on `src/data/site.ts`
   failis, seega seadista see ainult siis, kui keskkond vajab muud lehte.
-- `FACEBOOK_PAGE_ID`: Pages Function environment value.
-- `FACEBOOK_PAGE_ACCESS_TOKEN`: encrypted secret, mitte avalik build-muutuja.
-- `FACEBOOK_API_VERSION`: Pages Function environment value.
+- `PUBLIC_API_BASE_URL`: suunab buildi mujal jooksva Workeri peale. Tootmises jäta seadmata -
+  vaikimisi kasutatakse `https://api.apneasport.ee`.
 
-Sait töötab ilma nende väärtusteta. Adapter vastab `status: unconfigured` ja UI näitab staatilist
-fallback'i. Secret'i ei tohi lisada `.env`, `.dev.vars`, logisse ega brauserikoodi.
+`FACEBOOK_*` väärtused kuuluvad `functions/api/social/facebook.ts` adapterile, mis oli mõeldud
+Pages Functions'ile. GitHub Pages'il see ei käivitu ja UI näitab staatilist fallback'i.
 
-## Custom domain ja DNS - eraldi kinnitatav cutover
+## Sportlasstaatuse avaldus: api.apneasport.ee Worker
 
-DNS-i ei muudeta selle branchi ega PR-i raames. Pärast kinnitatud preview'd:
+Vorm saidil kutsub Workerit teiselt originilt. Avaldust ei saadeta liidule enne,
+kui taotleja on oma e-posti aadressi kinnitanud.
 
-1. lisa `apneasport.ee` Pages custom domain'ina;
-2. kontrolli sertifikaati ja apex-domeeni canonicali;
-3. lisa `www.apneasport.ee` 301 redirect apexile;
-4. lisa projekti `pages.dev` hosti 301 redirect canonicalile, säilitades preview hostid;
-5. kinnita alles siis vana GitHub Pages `CNAME` eemaldamine ja GitHub Pagesi väljalülitamine.
+1. `POST https://api.apneasport.ee/aida-athlete/apply` valideerib avalduse, paneb
+   selle D1-sse ootele ja saadab taotleja aadressile kinnituslingi.
+2. `GET https://api.apneasport.ee/aida-athlete/verify?token=...` kinnitab avalduse,
+   saadab selle `estonia@apneasport.ee` aadressile, saadab taotlejale kviitungi ja
+   suunab brauseri tagasi saidile (`?application=confirmed`), ilma tokenita.
+3. `POST https://api.apneasport.ee/aida-athlete/resend` saadab kinnituskirja uuesti
+   (kuni 3 korda).
 
-## Rollback
+CORS lubab ainult `https://apneasport.ee`; muu origin saab `403` ega saa CORS-päist.
+Saaja aadress ja kodakondsus on koodis fikseeritud. Kinnituslink kehtib 24 tundi,
+tokenist hoitakse ainult SHA-256 räsi, isikuandmed kustutatakse baasist kohe pärast
+edastamist ja kinnitamata read 48 tunni pärast.
 
-- Kui viga ilmneb enne merge'i, ära merge'i; preview ei mõjuta tootmist.
-- Kui viga ilmneb pärast merge'i, vali Cloudflare Pages Deployments vaates viimane kinnitatud
-  production deployment ja kasuta rollback'i.
-- Paranda põhjus uues feature-harus ning korda preview/review protsessi.
-- DNS-i rollback'i vajadus tekib ainult custom domain'i cutover'i ajal; säilita enne muutmist vana
-  GitHub Pagesi kirjed ja TTL-id eraldi muudatusplaanis.
-
-## Sportlasstaatuse avalduse vorm
-
-Vabasukeldumise lehe vorm kasutab kahesammulist kinnitust: avaldust ei saadeta
-liidule enne, kui taotleja on oma e-posti aadressi kinnitanud.
-
-1. `POST /api/aida-athlete/apply` valideerib avalduse, paneb selle D1-sse ootele
-   ja saadab taotleja aadressile kinnituslingi.
-2. `GET /api/aida-athlete/verify?token=...` kinnitab avalduse, saadab selle
-   `estonia@apneasport.ee` aadressile ja taotlejale lühikese kinnituskirja.
-3. `POST /api/aida-athlete/resend` saadab kinnituskirja uuesti (kuni 3 korda).
-
-Saaja aadress ja kodakondsus on funktsioonides fikseeritud ega tule kunagi
-päringust. Kinnituslink kehtib 24 tundi, tokenist hoitakse ainult SHA-256
-räsi ning avalduse isikuandmed kustutatakse baasist kohe pärast edastamist.
-Kinnitamata read kustutatakse 48 tunni pärast: iga päring koristab aegunud
-kirjed, seega eraldi ajastatud tööd pole vaja.
-
-### Cloudflare seadistus
-
-D1 andmebaas on juba loodud ja migreeritud (21.08.2026):
-
-|             |                                                        |
-| ----------- | ------------------------------------------------------ |
-| Nimi        | `apneasport-athlete-applications`                      |
-| Database id | `5e6d0032-2a39-4cb8-b5bb-ea2b9c947bd5`                 |
-| Regioon     | EEUR (Ida-Euroopa, EL)                                 |
-| Skeem       | `migrations/0001_athlete_applications.sql`, rakendatud |
-| Binding     | `ATHLETE_APPLICATIONS`, kirjas `wrangler.jsonc` failis |
-
-D1 loomise API ei võta eraldi jurisdiction-lippu; asukoht on määratud
-`primary_location_hint` väärtusega `eeur`, seega baas asub EL-is.
-
-Uue migratsiooni saab hiljem rakendada:
+### Worker deployment
 
 ```bash
-npx wrangler d1 execute apneasport-athlete-applications --remote --file migrations/<uus>.sql
+npx wrangler deploy --config worker/wrangler.jsonc
 ```
 
-Puudu on veel kaks secret'i, mis peavad olema Pages projekti keskkonnas
-(mitte repos, mitte `PUBLIC_` prefiksiga):
+`wrangler.jsonc` sisaldab custom domain'i `api.apneasport.ee`, D1 bindingut ja
+avalikku konfiguratsiooni. Esimene deploy loob custom domain'i ja selle DNS-kirje
+automaatselt; `apneasport.ee` kirjeid see ei puuduta.
 
-- `RESEND_API_KEY`
-- `APPLICATION_FROM_EMAIL` - saatja aadress kinnitatud domeenil
+### D1
+
+|             |                                                               |
+| ----------- | ------------------------------------------------------------- |
+| Nimi        | `apneasport-athlete-applications`                             |
+| Database id | `5e6d0032-2a39-4cb8-b5bb-ea2b9c947bd5`                        |
+| Regioon     | EEUR (Ida-Euroopa, EL)                                        |
+| Skeem       | `worker/migrations/0001_athlete_applications.sql`, rakendatud |
+| Binding     | `ATHLETE_APPLICATIONS`                                        |
 
 ```bash
-npx wrangler pages secret put RESEND_API_KEY --project-name apneasport
-npx wrangler pages secret put APPLICATION_FROM_EMAIL --project-name apneasport
+npx wrangler d1 execute apneasport-athlete-applications --remote \
+  --config worker/wrangler.jsonc --file worker/migrations/<uus>.sql
 ```
 
-`MAIL_API_URL` jäta seadmata: see on ainult kohalikuks testimiseks võlts-API vastu.
+### Ainus secret
 
-### Functions vajavad Cloudflare Pages deployment'i
+```bash
+npx wrangler secret put RESEND_API_KEY --config worker/wrangler.jsonc
+```
 
-Praegu teenindab `apneasport.ee` lehte GitHub Pages (vastuse päised tulevad
-Fastly'lt), seega `functions/` kataloogi endpoint'e ei käivitata: nii
-`/api/social/facebook` kui `/api/aida-athlete/*` vastavad avalikus veebis
-`404`-ga. Avalduse vorm hakkab tööle alles siis, kui sait on Cloudflare
-Pages'is deployitud ja custom domain sinna üle viidud - see cutover on
-kirjeldatud allpool ning vajab eraldi kinnitust.
+`APPLICATION_FROM_EMAIL`, `SITE_ORIGIN` ja `API_ORIGIN` ei ole salajased ja elavad
+`worker/wrangler.jsonc` failis. `MAIL_API_URL` on ainult kohalikuks testimiseks.
+
+Enne esimest kasutust tuleb Resendis kinnitada saatja domeen `send.apneasport.ee`.
+Kui secret puudub, vastab API `503` ja vorm näitab kasutajale veateadet.
 
 ### Kohalik test
 
 ```bash
-npm run build
-npx wrangler d1 execute apneasport-athlete-applications --local \
-  --persist-to .wrangler/state --file migrations/0001_athlete_applications.sql
-npx wrangler pages dev dist --d1 ATHLETE_APPLICATIONS=<sama id mis wrangler.jsonc failis> \
-  --binding RESEND_API_KEY=test --binding "APPLICATION_FROM_EMAIL=test@example.com" \
-  --binding MAIL_API_URL=http://127.0.0.1:8790/emails
+PUBLIC_API_BASE_URL=http://127.0.0.1:8787 npm run build
+npx wrangler d1 execute apneasport-athlete-applications --local --persist-to .wrangler/state \
+  --config worker/wrangler.jsonc --file worker/migrations/0001_athlete_applications.sql
+npx wrangler dev --config worker/wrangler.jsonc --port 8787 --persist-to .wrangler/state \
+  --var RESEND_API_KEY:test --var "SITE_ORIGIN:http://127.0.0.1:4321" \
+  --var "API_ORIGIN:http://127.0.0.1:8787" --var "ALLOWED_ORIGINS:http://127.0.0.1:4321"
+npx astro preview --port 4321
 ```
 
 ## Pages Function

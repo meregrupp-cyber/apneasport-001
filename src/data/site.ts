@@ -20,6 +20,18 @@ export const site = {
 } as const;
 
 /**
+ * The athlete application API. The website itself stays on GitHub Pages; only
+ * this one subdomain is a Cloudflare Worker. `PUBLIC_API_BASE_URL` points a
+ * local build at a Worker running on localhost.
+ */
+export const apiBaseUrl = 'https://api.apneasport.ee';
+
+export function getApiBaseUrl(): string {
+  const value = import.meta.env.PUBLIC_API_BASE_URL?.trim();
+  return (value ? value : apiBaseUrl).replace(/\/$/, '');
+}
+
+/**
  * Confirmed EAPSL Facebook page, approved for publication by the League.
  * This module is the single source of truth: never repeat the URL elsewhere.
  * `PUBLIC_FACEBOOK_PAGE_URL` still overrides it per environment.

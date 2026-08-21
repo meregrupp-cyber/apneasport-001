@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   APPLICATION_TYPES,
   applicationMail,
+  corsHeaders,
+  originRefused,
+  preflight,
+  resultRedirect,
   clean,
   confirmationMail,
   createToken,
@@ -10,7 +14,7 @@ import {
   validate,
   verificationMail,
   verificationUrl,
-} from '../functions/api/aida-athlete/_shared';
+} from '../worker/src/application';
 
 const submitted = {
   locale: 'et',
@@ -127,18 +131,18 @@ describe('athlete application, server side', () => {
   it('writes the confirmation mail to the applicant in their own language', () => {
     const et = verificationMail(
       validate({ ...submitted })!,
-      'https://apneasport.ee/verify?token=x',
+      'https://api.apneasport.ee/verify?token=x',
     );
     const en = verificationMail(
       validate({ ...submitted, locale: 'en' })!,
-      'https://apneasport.ee/verify?token=x',
+      'https://api.apneasport.ee/verify?token=x',
     );
 
     expect(et.to).toBe('jaan.tamm@example.com');
     expect(et.subject).toBe('Kinnita oma AIDA Estonia sportlasstaatuse avaldus');
     expect(et.text).toContain('Tere, Jaan');
     expect(et.text).toContain('Kinnituslink kehtib 24 tundi.');
-    expect(et.text).toContain('https://apneasport.ee/verify?token=x');
+    expect(et.text).toContain('https://api.apneasport.ee/verify?token=x');
     expect(et.html).toContain('KINNITAN AVALDUSE');
     expect(en.subject).toBe('Confirm your AIDA Estonia athlete status application');
     expect(en.text).toContain('Hello Jaan,');
@@ -158,10 +162,10 @@ describe('athlete application, server side', () => {
   });
 
   it('builds a verification link that carries nothing but the token', () => {
-    const url = new URL(verificationUrl('https://apneasport.ee/api/aida-athlete/apply', 'abc123'));
+    const url = new URL(verificationUrl({}, 'abc123'));
 
-    expect(url.origin).toBe('https://apneasport.ee');
-    expect(url.pathname).toBe('/api/aida-athlete/verify');
+    expect(url.origin).toBe('https://api.apneasport.ee');
+    expect(url.pathname).toBe('/aida-athlete/verify');
     expect([...url.searchParams.keys()]).toEqual(['token']);
     expect(url.searchParams.get('token')).toBe('abc123');
   });
@@ -183,5 +187,71 @@ describe('athlete application, server side', () => {
   it('masks the address shown back on the waiting screen', () => {
     expect(maskEmail('jaan.tamm@example.com')).toBe('ja***@example.com');
     expect(maskEmail('broken-address')).toBe('');
+  });
+
+  it('answers CORS only for the website, never with a wildcard', () => {
+    const env = { SITE_ORIGIN: 'https://apneasport.ee' };
+    const from = (origin?: string) =>
+      new Request('https://api.apneasport.ee/aida-athlete/apply', {
+        method: 'POST',
+        ...(origin ? { headers: { Origin: origin } } : {}),
+      });
+
+    expect(corsHeaders(from('https://apneasport.ee'), env)).toEqual({
+      'Access-Control-Allow-Origin': 'https://apneasport.ee',
+      Vary: 'Origin',
+    });
+    expect(corsHeaders(from('https://evil.example'), env)).toEqual({});
+    expect(corsHeaders(from(), env)).toEqual({});
+    expect(Object.values(corsHeaders(from('https://apneasport.ee'), env))).not.toContain('*');
+  });
+
+  it('refuses a browser request from an origin that is not ours', () => {
+    const env = { SITE_ORIGIN: 'https://apneasport.ee' };
+    const from = (origin?: string) =>
+      new Request('https://api.apneasport.ee/aida-athlete/apply', {
+        method: 'POST',
+        ...(origin ? { headers: { Origin: origin } } : {}),
+      });
+
+    expect(originRefused(from('https://evil.example'), env)).toBe(true);
+    expect(originRefused(from('https://apneasport.ee'), env)).toBe(false);
+    // A plain client has no Origin; validation and rate limits cover it.
+    expect(originRefused(from(), env)).toBe(false);
+  });
+
+  it('answers the preflight for the website and blocks other origins', () => {
+    const env = { SITE_ORIGIN: 'https://apneasport.ee', ALLOWED_ORIGINS: 'http://127.0.0.1:4321' };
+    const options = (origin: string) =>
+      new Request('https://api.apneasport.ee/aida-athlete/apply', {
+        method: 'OPTIONS',
+        headers: { Origin: origin },
+      });
+
+    const allowed = preflight(options('https://apneasport.ee'), env);
+    expect(allowed.status).toBe(204);
+    expect(allowed.headers.get('Access-Control-Allow-Origin')).toBe('https://apneasport.ee');
+    expect(allowed.headers.get('Access-Control-Allow-Methods')).toContain('POST');
+    expect(allowed.headers.get('Access-Control-Allow-Headers')).toContain('Content-Type');
+
+    expect(preflight(options('http://127.0.0.1:4321'), env).status).toBe(204);
+    expect(preflight(options('https://evil.example'), env).status).toBe(403);
+  });
+
+  it('sends the applicant back to their own language page, without the token', () => {
+    const env = { SITE_ORIGIN: 'https://apneasport.ee' };
+
+    const et = resultRedirect(env, 'et', 'confirmed');
+    expect(et.status).toBe(303);
+    const etUrl = new URL(et.headers.get('Location') ?? '');
+    expect(etUrl.origin).toBe('https://apneasport.ee');
+    expect(etUrl.pathname).toBe('/spordialad/vabasukeldumine/');
+    expect(etUrl.searchParams.get('application')).toBe('confirmed');
+    expect([...etUrl.searchParams.keys()]).toEqual(['application']);
+    expect(etUrl.hash).toBe('#sportlased-ja-rekordid');
+
+    const en = new URL(resultRedirect(env, 'en', 'expired').headers.get('Location') ?? '');
+    expect(en.pathname).toBe('/en/sports/freediving/');
+    expect(en.searchParams.get('application')).toBe('expired');
   });
 });

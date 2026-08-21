@@ -1,4 +1,5 @@
 ---
+import { getApiBaseUrl } from '../../data/site';
 import type { Locale } from '../../i18n/routes';
 
 interface Props {
@@ -6,8 +7,9 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const endpoint = '/api/aida-athlete/apply';
-const resendEndpoint = '/api/aida-athlete/resend';
+const api = getApiBaseUrl();
+const endpoint = `${api}/aida-athlete/apply`;
+const resendEndpoint = `${api}/aida-athlete/resend`;
 const copy =
   locale === 'et'
     ? {
@@ -87,6 +89,15 @@ const copy =
         resendDone: 'Kinnituskiri on uuesti saadetud.',
         resendLimit:
           'Kinnituskirja on juba mitu korda saadetud. Kontrolli oma e-posti ja rämpsposti kausta.',
+        results: {
+          confirmed:
+            'Avaldus on kinnitatud. Sinu e-posti aadress on kinnitatud ja avaldus on edukalt AIDA Estoniale edastatud. AIDA Estonia võtab vajadusel sinuga ühendust avalduses märgitud kontaktandmetel.',
+          already: 'See avaldus on juba kinnitatud ja AIDA Estoniale edastatud.',
+          expired: 'Kinnituslink on aegunud. Palun esita avaldus uuesti.',
+          invalid: 'Kinnituslink ei ole kehtiv. Palun esita avaldus uuesti.',
+          failed:
+            'Kinnitamine ei õnnestunud. Sinu kinnituslink kehtib edasi - proovi mõne minuti pärast uuesti.',
+        },
         errorGeneric: 'Avalduse saatmine ebaõnnestus. Proovi mõne hetke pärast uuesti.',
         errorNetwork: 'Ühendust ei õnnestunud luua. Kontrolli internetiühendust ja proovi uuesti.',
         errorRate: 'Avaldus saadeti äsja. Oota hetk ja proovi siis uuesti.',
@@ -172,12 +183,31 @@ const copy =
         resendDone: 'The confirmation email has been sent again.',
         resendLimit:
           'The confirmation email has already been sent several times. Please check your inbox and spam folder.',
+        results: {
+          confirmed:
+            'Application confirmed. Your email address has been verified and your application has been successfully forwarded to AIDA Estonia. AIDA Estonia will contact you using the details provided if further information is required.',
+          already: 'This application has already been confirmed and forwarded to AIDA Estonia.',
+          expired: 'This confirmation link has expired. Please submit the application again.',
+          invalid: 'This confirmation link is not valid. Please submit the application again.',
+          failed:
+            'Confirmation did not go through. Your confirmation link still works - please try again in a few minutes.',
+        },
         errorGeneric: 'The application could not be sent. Please try again in a moment.',
         errorNetwork: 'No connection could be made. Check your network and try again.',
         errorRate: 'An application was just sent. Please wait a moment and try again.',
         errorValidation: 'Please check the highlighted fields and try again.',
       };
 ---
+
+<div class="application-result" role="status" data-athlete-application-result hidden>
+  {
+    Object.entries(copy.results).map(([kind, message]) => (
+      <p data-result={kind} hidden>
+        {message}
+      </p>
+    ))
+  }
+</div>
 
 <p class="application-cta">
   <button type="button" class="application-cta-link" data-athlete-application-open disabled>
@@ -381,6 +411,27 @@ const copy =
 </script>
 
 <style>
+  /* Shown once the Worker has sent the applicant back from the link in their
+     mail; hidden until the script finds the outcome in the query string. */
+  .application-result {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-aqua-dark);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+    background: rgb(69 215 196 / 12%);
+    font-size: 0.92rem;
+  }
+  .application-result p {
+    margin: 0;
+    max-width: 70ch;
+  }
+  .application-result[data-state='expired'],
+  .application-result[data-state='invalid'],
+  .application-result[data-state='failed'] {
+    border-left-color: var(--color-warning);
+    background: rgb(164 92 0 / 10%);
+  }
   .application-cta {
     margin-top: var(--space-3);
   }

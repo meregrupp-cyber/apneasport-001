@@ -12,7 +12,7 @@ export default tseslint.config(
       '.pnpm-home/**',
       '.pnpm-store/**',
       '.playwright-browsers/**',
-      '.wrangler/**',
+      '**/.wrangler/**',
       'dist/**',
       'node_modules/**',
       'legacy/**',

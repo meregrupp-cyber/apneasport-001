@@ -1,19 +1,25 @@
 /**
- * AIDA Estonia athlete status application: shared server logic.
+ * AIDA Estonia athlete status application: the logic behind api.apneasport.ee.
  *
- * The application is only forwarded to the League after the applicant has
- * confirmed their own email address, so a submission is stored in D1 until the
- * verification link is opened. The recipient and the citizenship are fixed
- * here and never read from a request. Personal data is dropped from the row as
- * soon as the application has been forwarded.
- *
- * Files under `functions/` starting with `_` are not routed by Pages.
+ * The website itself stays on GitHub Pages; this Worker is only the API. An
+ * application is forwarded to the League after the applicant has confirmed
+ * their own email address, so a submission waits in D1 until the verification
+ * link is opened. The recipient and the citizenship are fixed here and never
+ * read from a request. Personal data is dropped from the row as soon as the
+ * application has been forwarded.
  */
 
 export interface Env {
   ATHLETE_APPLICATIONS?: D1Database;
+  /** The only secret. Everything else below is plain configuration. */
   RESEND_API_KEY?: string;
   APPLICATION_FROM_EMAIL?: string;
+  /** Where the browser is sent back to after verifying, and the CORS origin. */
+  SITE_ORIGIN?: string;
+  /** This Worker's own public origin, used to build the link that is mailed. */
+  API_ORIGIN?: string;
+  /** Comma separated; the site origin is always allowed on top of these. */
+  ALLOWED_ORIGINS?: string;
   /** Overrides the mail API. Unset in production; used by local end to end runs. */
   MAIL_API_URL?: string;
 }
@@ -140,8 +146,15 @@ export async function hashToken(token: string): Promise<string> {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-export function verificationUrl(requestUrl: string, token: string): string {
-  const url = new URL('/api/aida-athlete/verify', requestUrl);
+/**
+ * Built from configuration rather than from the incoming request, so the link
+ * that lands in someone's inbox is always the public https address.
+ */
+export function verificationUrl(env: Env, token: string): string {
+  const url = new URL(
+    '/aida-athlete/verify',
+    env.API_ORIGIN?.trim() || 'https://api.apneasport.ee',
+  );
   url.searchParams.set('token', token);
   return url.toString();
 }
@@ -154,12 +167,17 @@ interface Mail {
   replyTo?: string;
 }
 
-export async function sendMail(env: Env, mail: Mail): Promise<boolean> {
+/**
+ * `idempotencyKey` lets Resend collapse a repeated send: a retry after a
+ * network hiccup delivers the same mail once, not twice.
+ */
+export async function sendMail(env: Env, mail: Mail, idempotencyKey?: string): Promise<boolean> {
   const response = await fetch(env.MAIL_API_URL?.trim() || 'https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${env.RESEND_API_KEY ?? ''}`,
       'Content-Type': 'application/json',
+      ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
     },
     body: JSON.stringify({
       from: env.APPLICATION_FROM_EMAIL,
@@ -317,119 +335,72 @@ export function confirmationMail(application: Application): Mail {
 
 export type ResultKind = 'confirmed' | 'already' | 'expired' | 'invalid' | 'failed';
 
-const RESULTS: Record<Locale, Record<ResultKind, { title: string; body: string[] }>> = {
-  et: {
-    confirmed: {
-      title: 'Avaldus on kinnitatud',
-      body: [
-        'Sinu e-posti aadress on kinnitatud ja avaldus on edukalt AIDA Estoniale edastatud.',
-        'AIDA Estonia võtab vajadusel sinuga ühendust avalduses märgitud kontaktandmetel.',
-      ],
-    },
-    already: {
-      title: 'Avaldus on juba kinnitatud',
-      body: ['See avaldus on juba kinnitatud ja AIDA Estoniale edastatud.'],
-    },
-    expired: {
-      title: 'Kinnituslink on aegunud',
-      body: [
-        'Palun esita avaldus uuesti või taotle uus kinnituskiri, kui resend-funktsioon on implementeeritud.',
-      ],
-    },
-    invalid: {
-      title: 'Kinnituslink ei ole kehtiv',
-      body: ['Palun esita avaldus uuesti.'],
-    },
-    failed: {
-      title: 'Kinnitamine ei õnnestunud',
-      body: [
-        'Avaldust ei saanud praegu AIDA Estoniale edastada. Sinu kinnituslink kehtib edasi - proovi mõne minuti pärast uuesti.',
-      ],
-    },
-  },
-  en: {
-    confirmed: {
-      title: 'Application confirmed',
-      body: [
-        'Your email address has been verified and your application has been successfully forwarded to AIDA Estonia.',
-        'AIDA Estonia will contact you using the details provided if further information is required.',
-      ],
-    },
-    already: {
-      title: 'Application already confirmed',
-      body: ['This application has already been confirmed and forwarded to AIDA Estonia.'],
-    },
-    expired: {
-      title: 'This confirmation link has expired',
-      body: [
-        'Please submit the application again or request a new confirmation email if resend functionality is available.',
-      ],
-    },
-    invalid: {
-      title: 'This confirmation link is not valid',
-      body: ['Please submit the application again.'],
-    },
-    failed: {
-      title: 'Confirmation did not go through',
-      body: [
-        'The application could not be forwarded to AIDA Estonia right now. Your confirmation link still works - please try again in a few minutes.',
-      ],
-    },
-  },
+const SITE_PATHS: Record<Locale, string> = {
+  et: '/spordialad/vabasukeldumine/',
+  en: '/en/sports/freediving/',
 };
 
-/**
- * The verification result page. It is served by the function rather than the
- * static site so that the token never reaches a rendered page or a client
- * script, and it carries no technical or token detail.
- */
-export function resultPage(locale: Locale, kind: ResultKind): Response {
-  const result = RESULTS[locale][kind];
-  const back = locale === 'et' ? '/spordialad/vabasukeldumine/' : '/en/sports/freediving/';
-  const backLabel =
-    locale === 'et' ? 'Tagasi vabasukeldumise lehele' : 'Back to the freediving page';
-  const body = result.body.map((line) => `<p>${escapeHtml(line)}</p>`).join('');
-  const html = `<!doctype html>
-<html lang="${locale}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
-<title>${escapeHtml(result.title)} | AIDA Estonia</title>
-<style>
-  :root { color-scheme: light; }
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
-    background: #f2f7f8; color: #071822;
-    font-family: 'Source Sans 3 Variable', 'Segoe UI', system-ui, sans-serif; line-height: 1.6; }
-  main { width: min(100%, 34rem); padding: clamp(1.5rem, 5vw, 2.5rem); border-radius: 1.75rem;
-    background: #ffffff; box-shadow: 0 24px 80px rgb(2 11 20 / 12%); }
-  p.eyebrow { margin: 0 0 0.75rem; color: #16786f; font-size: 0.78rem; font-weight: 750;
-    letter-spacing: 0.14em; text-transform: uppercase; }
-  h1 { margin: 0 0 1rem; font-size: clamp(1.55rem, 1.2rem + 1.4vw, 2.1rem); line-height: 1.1;
-    letter-spacing: -0.035em; }
-  p { margin: 0 0 0.75rem; }
-  a.back { display: inline-block; margin-top: 1.25rem; padding: 0.75rem 1.15rem; border-radius: 999px;
-    background: #07345f; color: #ffffff; font-weight: 700; text-decoration: none; }
-  a.back:focus-visible { outline: 3px solid #45d7c4; outline-offset: 4px; }
-</style>
-</head>
-<body>
-<main>
-  <p class="eyebrow">AIDA Estonia</p>
-  <h1>${escapeHtml(result.title)}</h1>
-  ${body}
-  <a class="back" href="${back}">${escapeHtml(backLabel)}</a>
-</main>
-</body>
-</html>`;
+export function siteOrigin(env: Env): string {
+  return env.SITE_ORIGIN?.trim() || 'https://apneasport.ee';
+}
 
-  return new Response(html, {
-    status: kind === 'invalid' ? 404 : kind === 'failed' ? 503 : 200,
+/**
+ * After verifying, the browser goes back to the website, which shows the
+ * message. The token is dropped here on purpose: it must not survive in the
+ * address bar or in history, and the redirect carries the outcome and nothing
+ * about the applicant.
+ */
+export function resultRedirect(env: Env, locale: Locale, kind: ResultKind): Response {
+  const url = new URL(SITE_PATHS[locale], siteOrigin(env));
+  url.searchParams.set('application', kind);
+  url.hash = locale === 'et' ? 'sportlased-ja-rekordid' : 'athletes-and-records';
+  return new Response(null, {
+    status: 303,
     headers: {
-      'Content-Type': 'text/html; charset=utf-8',
+      Location: url.toString(),
       'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'no-referrer',
+    },
+  });
+}
+
+function allowedOrigins(env: Env): string[] {
+  const extra = (env.ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  return [siteOrigin(env), ...extra];
+}
+
+/** Echoes the origin only when it is on the list. Never a wildcard. */
+export function corsHeaders(request: Request, env: Env): Record<string, string> {
+  const origin = request.headers.get('Origin');
+  if (!origin || !allowedOrigins(env).includes(origin)) return {};
+  return { 'Access-Control-Allow-Origin': origin, Vary: 'Origin' };
+}
+
+/**
+ * A request without an Origin header is not a cross-site browser request -
+ * that is a plain client, which the validation and rate limits already cover.
+ * A browser request from an origin that is not ours is refused outright.
+ */
+export function originRefused(request: Request, env: Env): boolean {
+  const origin = request.headers.get('Origin');
+  return Boolean(origin) && !allowedOrigins(env).includes(origin as string);
+}
+
+export function preflight(request: Request, env: Env): Response {
+  const headers = corsHeaders(request, env);
+  if (!headers['Access-Control-Allow-Origin']) {
+    return new Response(null, { status: 403 });
+  }
+  return new Response(null, {
+    status: 204,
+    headers: {
+      ...headers,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
     },
   });
 }

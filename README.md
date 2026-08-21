@@ -9,7 +9,7 @@ ingliskeelsed URL-id algavad `/en/`.
 - Astro content collections + Zod skeemid;
 - lokaalselt pakendatud Manrope ja Source Sans 3 variable-font;
 - väikesed framework'ita TypeScripti täiustused dokumentide filtrile, Canvas-sügavusele ja 3D-tilt'ile;
-- Cloudflare Pages Git integration, valikuline Pages Function Facebooki serveriadapterile.
+- veebisait GitHub Pages'il, sportlasstaatuse avalduse API eraldi Cloudflare Workerina (`worker/`).
 
 ## Käivitamine
 

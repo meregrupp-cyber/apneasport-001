@@ -23,7 +23,34 @@ function messageFor(form: HTMLFormElement, kind: ErrorKind): string {
   return messages[kind] ?? messages.generic ?? '';
 }
 
+const RESULT_KINDS = ['confirmed', 'already', 'expired', 'invalid', 'failed'];
+
+/**
+ * The Worker sends the applicant back here after they open the link in their
+ * mail, with the outcome in the query string and no token in sight. Showing
+ * it is the last step; the parameter is then dropped from the address bar.
+ */
+function showVerificationResult(): void {
+  const panel = document.querySelector<HTMLElement>('[data-athlete-application-result]');
+  if (!panel) return;
+
+  const url = new URL(window.location.href);
+  const kind = url.searchParams.get('application') ?? '';
+  if (!RESULT_KINDS.includes(kind)) return;
+
+  const message = panel.querySelector<HTMLElement>(`[data-result="${kind}"]`);
+  if (!message) return;
+  message.hidden = false;
+  panel.dataset.state = kind;
+  panel.hidden = false;
+
+  url.searchParams.delete('application');
+  window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
 export function initialiseAthleteApplication(): void {
+  showVerificationResult();
+
   const dialog = document.querySelector<HTMLDialogElement>('dialog[data-athlete-application]');
   const trigger = document.querySelector<HTMLButtonElement>('[data-athlete-application-open]');
   if (!dialog || !trigger) return;
