@@ -93,10 +93,13 @@ test('athlete status application opens, validates and closes without leaving the
 
   // An empty form never reaches the network.
   let posted = 0;
-  await page.route('**/api/athlete-application', async (route) => {
+  await page.route('**/api/aida-athlete/apply', async (route) => {
     posted += 1;
     await route.fulfill({ status: 200, body: '{"status":"ok"}' });
   });
+  // The applicant is told about the confirmation step before submitting.
+  await expect(dialog).toContainText('Avaldus edastatakse AIDA Estoniale alles pärast');
+
   await dialog.getByRole('button', { name: 'ESITA AVALDUS' }).click();
   expect(posted).toBe(0);
   await expect(page).toHaveURL(/\/spordialad\/vabasukeldumine\/$/);

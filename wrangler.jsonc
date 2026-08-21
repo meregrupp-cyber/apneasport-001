@@ -3,4 +3,16 @@
   "name": "apneasport",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-08-08",
+  // Athlete status applications wait here until the applicant confirms their
+  // email. Create the database and paste its id before deploying:
+  //   npx wrangler d1 create apneasport-athlete-applications
+  //   npx wrangler d1 execute apneasport-athlete-applications --remote \
+  //     --file migrations/0001_athlete_applications.sql
+  "d1_databases": [
+    {
+      "binding": "ATHLETE_APPLICATIONS",
+      "database_name": "apneasport-athlete-applications",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+    },
+  ],
 }

@@ -57,20 +57,56 @@ DNS-i ei muudeta selle branchi ega PR-i raames. Pärast kinnitatud preview'd:
 
 ## Sportlasstaatuse avalduse vorm
 
-Vabasukeldumise lehe vorm postitab `/api/athlete-application` Pages Functionile,
-mis saadab avalduse e-kirjaga aadressile `estonia@apneasport.ee`. Saaja aadress ja
-kodakondsus on funktsioonis fikseeritud ega tule kunagi päringust.
+Vabasukeldumise lehe vorm kasutab kahesammulist kinnitust: avaldust ei saadeta
+liidule enne, kui taotleja on oma e-posti aadressi kinnitanud.
 
-Vajalikud Cloudflare secret'id (mitte `PUBLIC_` prefiksiga, mitte repos):
+1. `POST /api/aida-athlete/apply` valideerib avalduse, paneb selle D1-sse ootele
+   ja saadab taotleja aadressile kinnituslingi.
+2. `GET /api/aida-athlete/verify?token=...` kinnitab avalduse, saadab selle
+   `estonia@apneasport.ee` aadressile ja taotlejale lühikese kinnituskirja.
+3. `POST /api/aida-athlete/resend` saadab kinnituskirja uuesti (kuni 3 korda).
+
+Saaja aadress ja kodakondsus on funktsioonides fikseeritud ega tule kunagi
+päringust. Kinnituslink kehtib 24 tundi, tokenist hoitakse ainult SHA-256
+räsi ning avalduse isikuandmed kustutatakse baasist kohe pärast edastamist.
+Kinnitamata read kustutatakse 48 tunni pärast: iga päring koristab aegunud
+kirjed, seega eraldi ajastatud tööd pole vaja.
+
+### Cloudflare seadistus
+
+D1 andmebaas ja binding `ATHLETE_APPLICATIONS`:
+
+```bash
+npx wrangler d1 create apneasport-athlete-applications
+# kopeeri saadud database_id wrangler.jsonc faili
+npx wrangler d1 execute apneasport-athlete-applications --remote \
+  --file migrations/0001_athlete_applications.sql
+```
+
+Secret'id (mitte `PUBLIC_` prefiksiga, mitte repos):
 
 - `RESEND_API_KEY` - Resendi API võti.
 - `APPLICATION_FROM_EMAIL` - kinnitatud saatja, näiteks `AIDA Estonia <noreply@apneasport.ee>`.
 
-Enne esimest kasutust tuleb Resendis kinnitada saatja domeen (SPF/DKIM kirjed).
-Kui secret'id puuduvad, vastab endpoint `503` ja vorm näitab kasutajale veateadet -
-avaldust vaikselt kaotsi ei lähe.
+`MAIL_API_URL` jäta seadmata: see on ainult kohalikuks testimiseks võlts-API vastu.
 
-Vorm on kaitstud honeypot-väljaga ja ühe avaldusega minutis IP kohta.
+Enne esimest kasutust tuleb Resendis kinnitada saatja domeen (SPF/DKIM kirjed).
+Kui binding või secret'id puuduvad, vastab endpoint `503` ja vorm näitab
+kasutajale veateadet.
+
+Kaitsed: honeypot, üks avaldus ja üks kinnituskiri minutis IP kohta ning
+maksimaalselt kolm kordussaatmist avalduse kohta.
+
+### Kohalik test
+
+```bash
+npm run build
+npx wrangler d1 execute apneasport-athlete-applications --local \
+  --persist-to .wrangler/state --file migrations/0001_athlete_applications.sql
+npx wrangler pages dev dist --d1 ATHLETE_APPLICATIONS=<sama id mis wrangler.jsonc failis> \
+  --binding RESEND_API_KEY=test --binding "APPLICATION_FROM_EMAIL=test@example.com" \
+  --binding MAIL_API_URL=http://127.0.0.1:8790/emails
+```
 
 ## Pages Function
 

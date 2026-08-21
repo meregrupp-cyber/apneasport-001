@@ -2,9 +2,13 @@
  * AIDA athlete status application dialog.
  *
  * The markup is rendered by AthleteApplication.astro; this wires up opening,
- * closing and submitting. A native <dialog> brings the focus trap, Escape
- * handling and focus restore with it. Nothing here logs or stores the
- * applicant's data: the payload goes straight to the Pages Function.
+ * closing, submitting and resending. A native <dialog> brings the focus trap,
+ * Escape handling and focus restore with it.
+ *
+ * Submitting only asks the server to send a confirmation mail - the League
+ * gets the application after the applicant opens the link in that mail. The
+ * browser keeps nothing but the opaque row id needed to resend that mail:
+ * no personal data is logged, stored or put in a URL.
  */
 
 type ErrorKind = 'generic' | 'network' | 'rate' | 'validation';
@@ -38,8 +42,13 @@ export function initialiseAthleteApplication(): void {
   const form = dialog.querySelector<HTMLFormElement>('[data-athlete-application-form]');
   const submit = dialog.querySelector<HTMLButtonElement>('[data-athlete-application-submit]');
   const error = dialog.querySelector<HTMLElement>('[data-athlete-application-error]');
-  const success = dialog.querySelector<HTMLElement>('[data-athlete-application-success]');
-  if (!form || !submit || !error || !success) return;
+  const pending = dialog.querySelector<HTMLElement>('[data-athlete-application-pending]');
+  const pendingEmail = dialog.querySelector<HTMLElement>('[data-athlete-application-email]');
+  const resend = dialog.querySelector<HTMLButtonElement>('[data-athlete-application-resend]');
+  const resendStatus = dialog.querySelector<HTMLElement>(
+    '[data-athlete-application-resend-status]',
+  );
+  if (!form || !submit || !error || !pending || !pendingEmail || !resend || !resendStatus) return;
 
   // Nobody was born tomorrow; the server checks this again.
   const birth = form.elements.namedItem('dateOfBirth');
@@ -52,7 +61,10 @@ export function initialiseAthleteApplication(): void {
     error.hidden = false;
   };
 
+  /** Only the opaque id, so the confirmation mail can be sent again. */
+  let applicationId: string | null = null;
   let sending = false;
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (sending) return;
@@ -89,10 +101,13 @@ export function initialiseAthleteApplication(): void {
       });
 
       if (response.ok) {
-        // The dialog stays open so the applicant sees the confirmation.
+        const result = (await response.json()) as { id?: string; email?: string };
+        applicationId = result.id ?? null;
+        resend.hidden = !applicationId;
+        pendingEmail.textContent = result.email ?? '';
+        // The dialog stays open: the applicant still has a step to take.
         form.hidden = true;
-        success.hidden = false;
-        success.focus?.();
+        pending.hidden = false;
         return;
       }
       if (response.status === 429) showError('rate');
@@ -105,6 +120,37 @@ export function initialiseAthleteApplication(): void {
       sending = false;
       submit.disabled = false;
       submit.textContent = form.dataset.labelSubmit ?? submit.textContent;
+    }
+  });
+
+  resend.addEventListener('click', async () => {
+    if (!applicationId || resend.disabled) return;
+
+    resend.disabled = true;
+    resend.textContent = resend.dataset.labelSending ?? resend.textContent;
+    resendStatus.hidden = true;
+
+    try {
+      const response = await fetch(resend.dataset.endpoint ?? '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: applicationId }),
+      });
+      const limited = response.status === 429;
+      resendStatus.textContent = limited
+        ? (form.dataset.messageResendLimit ?? '')
+        : response.ok
+          ? (form.dataset.messageResendDone ?? '')
+          : messageFor(form, 'generic');
+      resendStatus.hidden = false;
+      // Once the limit is reached, stop offering the button at all.
+      if (limited) return;
+    } catch {
+      resendStatus.textContent = messageFor(form, 'network');
+      resendStatus.hidden = false;
+    } finally {
+      resend.textContent = resend.dataset.label ?? resend.textContent;
+      resend.disabled = resendStatus.textContent === form.dataset.messageResendLimit;
     }
   });
 }

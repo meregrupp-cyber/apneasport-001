@@ -6,7 +6,8 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const endpoint = '/api/athlete-application';
+const endpoint = '/api/aida-athlete/apply';
+const resendEndpoint = '/api/aida-athlete/resend';
 const copy =
   locale === 'et'
     ? {
@@ -69,11 +70,23 @@ const copy =
           },
         ],
         consentNote: 'Avalikult ei kuvata sünniaega, e-posti aadressi ega telefoninumbrit.',
+        submitNotice:
+          'NB! Pärast vormi saatmist vaata oma e-posti ja kinnita avaldus. Avaldus edastatakse AIDA Estoniale alles pärast e-posti aadressi kinnitamist.',
+        submitNoticeHelp:
+          'Kui kinnituskirja mõne minuti jooksul ei saabu, kontrolli ka rämpsposti kausta.',
         submit: 'ESITA AVALDUS',
         sending: 'Saadan…',
         required: 'Kohustuslik väli',
-        success:
-          'Avaldus on saadetud. AIDA Estonia võtab vajadusel sinuga ühendust avalduses märgitud e-posti aadressil.',
+        pendingTitle: 'Kontrolli oma e-posti',
+        pendingSentTo: 'Kinnituskiri saadeti aadressile',
+        pendingNotYet: 'Avaldus ei ole veel AIDA Estoniale edastatud.',
+        pendingAction: 'Vaata oma e-posti ja kinnita avaldus!',
+        pendingSpam: 'Kui kirja mõne minuti jooksul ei saabu, kontrolli ka rämpsposti kausta.',
+        resend: 'Saada kinnituskiri uuesti',
+        resendSending: 'Saadan…',
+        resendDone: 'Kinnituskiri on uuesti saadetud.',
+        resendLimit:
+          'Kinnituskirja on juba mitu korda saadetud. Kontrolli oma e-posti ja rämpsposti kausta.',
         errorGeneric: 'Avalduse saatmine ebaõnnestus. Proovi mõne hetke pärast uuesti.',
         errorNetwork: 'Ühendust ei õnnestunud luua. Kontrolli internetiühendust ja proovi uuesti.',
         errorRate: 'Avaldus saadeti äsja. Oota hetk ja proovi siis uuesti.',
@@ -141,11 +154,24 @@ const copy =
         ],
         consentNote:
           'Date of birth, email address and phone number will not be displayed publicly.',
+        submitNotice:
+          'Important! After submitting the form, check your email and confirm your application. Your application will only be forwarded to AIDA Estonia after your email address has been verified.',
+        submitNoticeHelp:
+          'If you do not receive the confirmation email within a few minutes, please also check your spam folder.',
         submit: 'SUBMIT APPLICATION',
         sending: 'Sending…',
         required: 'Required field',
-        success:
-          'Your application has been submitted. AIDA Estonia will contact you at the email address provided if further information is required.',
+        pendingTitle: 'Check your email',
+        pendingSentTo: 'A confirmation email has been sent to',
+        pendingNotYet: 'Your application has not yet been forwarded to AIDA Estonia.',
+        pendingAction: 'Check your email and confirm your application!',
+        pendingSpam:
+          'If the email does not arrive within a few minutes, please also check your spam folder.',
+        resend: 'Resend confirmation email',
+        resendSending: 'Sending…',
+        resendDone: 'The confirmation email has been sent again.',
+        resendLimit:
+          'The confirmation email has already been sent several times. Please check your inbox and spam folder.',
         errorGeneric: 'The application could not be sent. Please try again in a moment.',
         errorNetwork: 'No connection could be made. Check your network and try again.',
         errorRate: 'An application was just sent. Please wait a moment and try again.',
@@ -192,6 +218,8 @@ const copy =
       data-message-validation={copy.errorValidation}
       data-label-submit={copy.submit}
       data-label-sending={copy.sending}
+      data-message-resend-done={copy.resendDone}
+      data-message-resend-limit={copy.resendLimit}
     >
       <fieldset>
         <legend>{copy.personal}</legend>
@@ -313,6 +341,8 @@ const copy =
         />
       </p>
 
+      <p class="application-notice">{copy.submitNotice}</p>
+      <p class="application-note">{copy.submitNoticeHelp}</p>
       <p class="application-actions">
         <button type="submit" class="button button--ink" data-athlete-application-submit>
           {copy.submit}
@@ -321,9 +351,27 @@ const copy =
       <p class="application-status" role="alert" data-athlete-application-error hidden></p>
     </form>
 
-    <p class="application-success" role="status" data-athlete-application-success hidden>
-      {copy.success}
-    </p>
+    <div class="application-pending" role="status" data-athlete-application-pending hidden>
+      <h3>{copy.pendingTitle}</h3>
+      <p>
+        {copy.pendingSentTo}
+        <strong data-athlete-application-email></strong>.
+      </p>
+      <p>{copy.pendingNotYet}</p>
+      <p><strong>{copy.pendingAction}</strong></p>
+      <p class="application-note">{copy.pendingSpam}</p>
+      <button
+        type="button"
+        class="button button--ghost"
+        data-athlete-application-resend
+        data-endpoint={resendEndpoint}
+        data-label={copy.resend}
+        data-label-sending={copy.resendSending}
+      >
+        {copy.resend}
+      </button>
+      <p class="application-note" role="status" data-athlete-application-resend-status hidden></p>
+    </div>
   </article>
 </dialog>
 
@@ -527,14 +575,36 @@ const copy =
     background: rgb(255 130 108 / 12%);
     font-size: 0.86rem;
   }
-  .application-success {
-    padding: 1rem;
+  /* The applicant must see before submitting that a confirmation step follows. */
+  .application-notice {
+    padding: 0.85rem 1rem;
     border: 1px solid var(--color-line);
     border-left: 4px solid var(--color-aqua-dark);
     border-radius: var(--radius-md);
     margin: 0;
     color: var(--color-ink);
     background: rgb(69 215 196 / 12%);
+    font-size: 0.86rem;
+  }
+  .application-pending {
+    display: grid;
+    justify-items: start;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-aqua-dark);
+    border-radius: var(--radius-md);
+    background: rgb(69 215 196 / 12%);
+  }
+  .application-pending h3 {
+    font-size: var(--step-1);
+  }
+  .application-pending p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .application-pending button {
+    margin-top: 0.4rem;
   }
   @media (max-width: 38rem) {
     .application-dialog {
