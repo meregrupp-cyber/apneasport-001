@@ -14,7 +14,7 @@ test('Estonian home is semantic and switches to the equivalent English page', as
   await page.locator('.language-switcher').click();
   await expect(page).toHaveURL(/\/en\/$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'We develop freediving, waterfighting, mermaiding and related underwater sports in Estonia — safely, fairly and openly.',
+    'We develop freediving, waterfighting, mermaiding and related underwater sports in Estonia',
   );
 });
 
