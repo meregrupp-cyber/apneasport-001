@@ -59,20 +59,21 @@ const copy = t(locale);
 </header>
 
 <style>
+  /* The header sits on paper, above the hero photo rather than inside it. */
   .site-header {
-    position: absolute;
+    position: relative;
     z-index: 50;
-    inset: 0 0 auto;
-    color: var(--color-foam);
+    color: var(--color-ink);
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
   }
 
   .header-inner {
     display: flex;
-    min-height: 5.5rem;
+    min-height: var(--header-height);
     align-items: center;
     justify-content: space-between;
     gap: 1.25rem;
-    border-bottom: 1px solid rgb(255 255 255 / 14%);
   }
 
   .brand,
@@ -93,23 +94,12 @@ const copy = t(locale);
     flex: 0 0 auto;
   }
 
+  /* The mark keeps its own colours; only the lettering beside it turns dark. */
   .brand-mark img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .brand-mark img {
-      animation: brand-rotation 48s linear infinite;
-    }
-  }
-
-  @keyframes brand-rotation {
-    to {
-      transform: rotate(360deg);
-    }
   }
 
   .brand-copy {
@@ -118,14 +108,16 @@ const copy = t(locale);
   }
 
   .brand-copy strong {
+    color: var(--color-ink);
     font-family: var(--font-display);
     font-size: 1.05rem;
+    font-weight: 750;
     letter-spacing: 0.08em;
   }
 
   .brand-copy small {
     margin-top: 0.25rem;
-    color: rgb(242 247 248 / 70%);
+    color: var(--color-muted);
     font-size: 0.66rem;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -139,20 +131,21 @@ const copy = t(locale);
     position: relative;
     min-height: 2.75rem;
     align-content: center;
+    color: var(--color-ink);
     font-family: var(--font-display);
-    font-size: 0.82rem;
-    font-weight: 650;
+    font-size: 0.86rem;
+    font-weight: 600;
     text-decoration: none;
   }
 
   .desktop-nav a::after {
     position: absolute;
     right: 0;
-    bottom: 0.35rem;
+    bottom: 0.55rem;
     left: 0;
-    height: 2px;
+    height: 1px;
     content: '';
-    background: var(--color-aqua);
+    background: var(--color-ink);
     transform: scaleX(0);
     transition: transform 160ms ease;
   }
@@ -169,14 +162,19 @@ const copy = t(locale);
   .contact-link {
     min-height: 2.75rem;
     align-content: center;
-    padding-inline: 1rem;
-    border-radius: 999px;
-    color: var(--color-abyss);
-    background: var(--color-aqua);
+    padding-inline: 1.15rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-paper);
+    background: var(--color-ink);
     font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 750;
+    font-size: 0.82rem;
+    font-weight: 700;
     text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+
+  .contact-link:hover {
+    background: var(--color-ink-deep);
   }
 
   .mobile-menu {
@@ -198,9 +196,10 @@ const copy = t(locale);
       min-width: 3.5rem;
       min-height: 2.75rem;
       align-content: center;
+      color: var(--color-ink);
       cursor: pointer;
       font-family: var(--font-display);
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 700;
       list-style: none;
       text-align: center;
@@ -216,29 +215,45 @@ const copy = t(locale);
       right: 0;
       display: grid;
       width: min(19rem, calc(100vw - 1.25rem));
-      padding: 0.75rem;
-      border: 1px solid rgb(255 255 255 / 15%);
-      border-radius: var(--radius-md);
-      background: rgb(3 27 44 / 96%);
-      box-shadow: var(--shadow-deep);
+      padding: 0.5rem;
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-foam);
+      box-shadow: var(--shadow-soft);
     }
 
     .mobile-menu nav a {
       min-height: 2.75rem;
       align-content: center;
       padding-inline: 0.75rem;
-      border-radius: 0.5rem;
+      border-radius: var(--radius-sm);
+      color: var(--color-ink);
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 600;
       text-decoration: none;
     }
 
     .mobile-menu nav a:hover {
-      background: rgb(255 255 255 / 8%);
+      background: var(--color-paper);
     }
   }
 
   @media (max-width: 30rem) {
     .brand-copy small {
       display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-mark img {
+      animation: brand-rotation 48s linear infinite;
+    }
+  }
+
+  @keyframes brand-rotation {
+    to {
+      transform: rotate(360deg);
     }
   }
 </style>

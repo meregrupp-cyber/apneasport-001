@@ -13,8 +13,7 @@ const { name, summary, website, logo, locale } = Astro.props;
 const wordmark = name.replace(/^(Spordiklubi|Spordikool|Sports Club)\s+/i, '');
 ---
 
-<a class="club-card" href={website} target="_blank" rel="noopener noreferrer" data-tilt>
-  <div class="club-art" aria-hidden="true"><span></span><span></span><span></span></div>
+<a class="club-card" href={website} target="_blank" rel="noopener noreferrer">
   <div class="club-logo">
     {
       logo ? (
@@ -46,106 +45,85 @@ const wordmark = name.replace(/^(Spordiklubi|Spordikool|Sports Club)\s+/i, '');
   .club-card {
     position: relative;
     display: grid;
-    min-height: 28rem;
-    grid-template-columns: minmax(12rem, 0.8fr) 1.2fr;
-    align-items: end;
-    gap: clamp(2rem, 6vw, 6rem);
-    overflow: hidden;
-    padding: clamp(1.5rem, 5vw, 4.5rem);
+    grid-template-columns: minmax(11rem, 0.7fr) 1.3fr;
+    align-items: center;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    color: var(--color-foam);
-    background: linear-gradient(115deg, rgb(2 11 20 / 96%), rgb(7 52 95 / 82%)), var(--color-brand);
-    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    background: var(--color-foam);
     text-decoration: none;
-    isolation: isolate;
+    transition: border-color 180ms ease;
+  }
+
+  .club-card:hover {
+    border-color: var(--color-line-firm);
   }
 
   .club-logo {
-    position: relative;
-    z-index: 2;
     display: grid;
-    min-height: 12rem;
+    min-height: 8.5rem;
     place-items: center;
-    padding: 1.5rem;
-    border: 1px solid rgb(255 255 255 / 17%);
-    border-radius: var(--radius-md);
-    background: rgb(255 255 255 / 92%);
-    transform: translateZ(2rem);
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-foam);
   }
 
   .club-logo img {
-    width: min(100%, 18rem);
+    width: min(100%, 14rem);
     height: auto;
-    max-height: 9rem;
-    /* Some club marks are solid-colour tiles rather than free-standing
-       lettering, so a small radius keeps every plate looking alike. */
+    max-height: 6.5rem;
     border-radius: var(--radius-sm);
     object-fit: contain;
   }
 
   .club-wordmark {
-    color: var(--color-brand);
+    color: var(--color-accent);
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
-    font-weight: 750;
+    font-size: clamp(1.2rem, 1rem + 0.9vw, 1.6rem);
+    font-weight: 700;
     letter-spacing: -0.02em;
     text-align: center;
     text-wrap: balance;
   }
-  .club-copy {
-    position: relative;
-    z-index: 2;
-    transform: translateZ(1.5rem);
-  }
-  .club-copy p:not(.eyebrow) {
-    max-width: 40rem;
-    margin-top: 1rem;
-    color: rgb(242 247 248 / 74%);
-  }
-  .club-copy > span {
-    display: inline-block;
-    margin-top: 2rem;
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 750;
+
+  .club-copy h3 {
+    color: var(--color-ink);
+    font-size: var(--step-2);
   }
 
-  .club-art,
-  .club-art span {
-    position: absolute;
-    border-radius: 50%;
+  .club-copy p:not(.eyebrow) {
+    max-width: 48rem;
+    margin-top: 0.75rem;
+    color: var(--color-muted);
   }
-  .club-art {
-    z-index: -1;
-    inset: 0;
+
+  .club-copy > span {
+    display: inline-block;
+    margin-top: 1.25rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
   }
-  .club-art span:nth-child(1) {
-    top: -12rem;
-    right: -8rem;
-    width: 30rem;
-    height: 30rem;
-    border: 1px solid rgb(69 215 196 / 28%);
-  }
-  .club-art span:nth-child(2) {
-    top: 2rem;
-    right: 4rem;
-    width: 18rem;
-    height: 18rem;
-    border: 1px solid rgb(255 255 255 / 12%);
-  }
-  .club-art span:nth-child(3) {
-    right: 11rem;
-    bottom: -4rem;
-    width: 8rem;
-    height: 8rem;
-    background: rgb(69 215 196 / 12%);
-    filter: blur(1rem);
+
+  .club-card:hover .club-copy > span {
+    color: var(--color-accent);
   }
 
   @media (max-width: 48rem) {
     .club-card {
       grid-template-columns: 1fr;
+    }
+
+    .club-logo {
+      min-height: 7rem;
+      justify-self: start;
+      width: min(100%, 15rem);
     }
   }
 </style>

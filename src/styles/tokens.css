@@ -1,21 +1,39 @@
 :root {
-  --color-abyss: #020b14;
-  --color-deep: #031b2c;
-  --color-brand: #07345f;
-  --color-water: #0f5f83;
-  --color-aqua: #45d7c4;
-  --color-aqua-dark: #16786f;
-  --color-ice: #f2f7f8;
+  /* Surfaces. The site reads as paper: dark ink is reserved for the footer and
+     for scrims laid over photography, not for whole content sections. */
+  --color-paper: #f5f4ef;
   --color-foam: #ffffff;
-  --color-ink: #071822;
-  --color-muted: #526872;
+  --color-ink: #132833;
+  --color-ink-deep: #0e1f29;
+  --color-muted: #465660;
+  --color-accent: #315b73;
+  /* The accent lightened enough to stay legible on ink. */
+  --color-accent-soft: #8fb2c6;
+
+  /* Names the components already use, pointed at the palette above so a colour
+     change stays a one-line edit here. */
+  --color-ice: var(--color-paper);
+  --color-abyss: var(--color-ink-deep);
+  --color-deep: var(--color-ink);
+  --color-brand: var(--color-accent);
+  --color-water: var(--color-accent);
+  --color-aqua: var(--color-accent);
+  --color-aqua-dark: #2a4f64;
+
   --color-warning: #a45c00;
   --color-coral: #ff826c;
-  --color-line: rgb(7 52 95 / 16%);
-  --shadow-soft: 0 24px 80px rgb(2 11 20 / 12%);
-  --shadow-deep: 0 36px 120px rgb(2 11 20 / 32%);
+  --color-line: rgb(19 40 51 / 18%);
+  --color-line-firm: rgb(19 40 51 / 32%);
+  --color-line-on-dark: rgb(245 244 239 / 18%);
+
+  --shadow-soft: 0 18px 48px rgb(14 31 41 / 8%);
+  --shadow-deep: 0 28px 80px rgb(14 31 41 / 22%);
+
+  /* Headings are serif; every interface label, button and table stays sans. */
+  --font-heading: 'Source Serif 4', Georgia, serif;
   --font-display: 'Manrope Variable', 'Avenir Next', sans-serif;
   --font-body: 'Source Sans 3 Variable', 'Segoe UI', sans-serif;
+
   --step--1: clamp(0.9rem, 0.86rem + 0.16vw, 1rem);
   --step-0: clamp(1rem, 0.94rem + 0.24vw, 1.16rem);
   --step-1: clamp(1.25rem, 1.14rem + 0.44vw, 1.55rem);
@@ -30,9 +48,13 @@
   --space-6: 3rem;
   --space-7: 4.5rem;
   --space-8: 7rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.75rem;
+
+  /* Edges are close to square; nothing on the page reads as a pill or a
+     rounded app card any more. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.5rem;
   --radius-pill: 999px;
   --container: 76rem;
+  --header-height: 5.25rem;
 }

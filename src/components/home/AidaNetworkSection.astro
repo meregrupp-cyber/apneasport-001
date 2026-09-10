@@ -40,7 +40,7 @@ const links = [
 ];
 ---
 
-<section class="aida-network section--dark">
+<section class="aida-network">
   <div class="network-art" aria-hidden="true">
     <span class="point point--estonia"></span>
     <span class="point point--one"></span>
@@ -78,8 +78,9 @@ const links = [
     position: relative;
     overflow: hidden;
     padding-block: var(--space-8);
-    background:
-      radial-gradient(circle at 72% 42%, rgb(15 95 131 / 55%), transparent 36%), var(--color-deep);
+    color: var(--color-ink);
+    background: var(--color-foam);
+    border-block: 1px solid var(--color-line);
     isolation: isolate;
   }
 
@@ -102,25 +103,32 @@ const links = [
 
   .aida-grid nav a {
     display: grid;
-    min-height: 4.5rem;
+    min-height: 3.25rem;
     grid-template-columns: 2.2rem 1fr auto;
     align-items: center;
     gap: 0.75rem;
-    border-bottom: 1px solid rgb(255 255 255 / 14%);
-    color: rgb(242 247 248 / 82%);
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink);
     font-family: var(--font-display);
-    font-weight: 650;
+    font-size: 0.95rem;
+    font-weight: 600;
     text-decoration: none;
   }
 
+  .aida-grid nav a:hover {
+    color: var(--color-accent);
+  }
+
   .aida-grid nav span {
-    color: var(--color-aqua);
+    color: var(--color-accent);
     font-size: 0.7rem;
   }
   .aida-grid nav b {
+    color: var(--color-muted);
     font-weight: 400;
   }
 
+  /* The constellation stays, drawn in the accent instead of turquoise. */
   .network-art,
   .point,
   .connection {
@@ -129,21 +137,20 @@ const links = [
   .network-art {
     z-index: -1;
     inset: 0;
-    opacity: 0.56;
+    opacity: 0.28;
   }
   .point {
-    width: 0.6rem;
-    height: 0.6rem;
-    border: 2px solid var(--color-aqua);
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--color-accent);
     border-radius: 50%;
-    box-shadow: 0 0 1.2rem var(--color-aqua);
   }
   .point--estonia {
     top: 22%;
     right: 24%;
-    width: 1rem;
-    height: 1rem;
-    background: var(--color-aqua);
+    width: 0.8rem;
+    height: 0.8rem;
+    background: var(--color-accent);
   }
   .point--one {
     top: 58%;
@@ -161,7 +168,7 @@ const links = [
     right: 24%;
     height: 1px;
     transform-origin: right center;
-    background: linear-gradient(90deg, transparent, var(--color-aqua));
+    background: linear-gradient(90deg, transparent, var(--color-accent));
   }
   .connection--one {
     top: 23%;
@@ -184,7 +191,7 @@ const links = [
       grid-template-columns: 1fr;
     }
     .network-art {
-      opacity: 0.24;
+      opacity: 0.16;
     }
   }
 </style>

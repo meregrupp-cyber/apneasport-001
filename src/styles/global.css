@@ -13,14 +13,14 @@
 html {
   color-scheme: light;
   scroll-behavior: smooth;
-  background: var(--color-ice);
+  background: var(--color-paper);
 }
 
 body {
   margin: 0;
   min-width: 20rem;
   color: var(--color-ink);
-  background: var(--color-foam);
+  background: var(--color-paper);
   font-family: var(--font-body);
   font-size: var(--step-0);
   line-height: 1.6;
@@ -51,27 +51,37 @@ a {
 }
 
 a:hover {
-  text-decoration-color: var(--color-aqua-dark);
+  text-decoration-color: var(--color-accent);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-aqua);
-  outline-offset: 4px;
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* On ink the accent is too dark to read as a focus ring. */
+.section--dark :focus-visible,
+.hero :focus-visible,
+.page-hero :focus-visible,
+.news-article-hero :focus-visible,
+.contact-panel :focus-visible,
+.site-footer :focus-visible {
+  outline-color: var(--color-foam);
 }
 
 ::selection {
-  color: var(--color-abyss);
-  background: var(--color-aqua);
+  color: var(--color-foam);
+  background: var(--color-accent);
 }
 
 h1,
 h2,
 h3 {
   margin: 0;
-  font-family: var(--font-display);
-  font-weight: 650;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 
@@ -112,16 +122,16 @@ ul {
 
 .section--dark {
   color: var(--color-foam);
-  background: var(--color-deep);
+  background: var(--color-ink);
 }
 
 .section--ice {
-  background: var(--color-ice);
+  background: var(--color-foam);
 }
 
 .eyebrow {
   margin-bottom: var(--space-3);
-  color: var(--color-aqua-dark);
+  color: var(--color-accent);
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 750;
@@ -131,8 +141,10 @@ ul {
 }
 
 .section--dark .eyebrow,
-.hero .eyebrow {
-  color: var(--color-aqua);
+.hero .eyebrow,
+.page-hero .eyebrow,
+.news-article-hero .eyebrow {
+  color: rgb(245 244 239 / 82%);
 }
 
 .lede {
@@ -145,8 +157,10 @@ ul {
 }
 
 .section--dark .lede,
-.hero .lede {
-  color: rgb(242 247 248 / 78%);
+.hero .lede,
+.page-hero .lede,
+.news-article-hero .lede {
+  color: rgb(245 244 239 / 82%);
 }
 
 .button-row {
@@ -162,44 +176,99 @@ ul {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  padding: 0.75rem 1.15rem;
+  padding: 0.7rem 1.25rem;
   border: 1px solid transparent;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: var(--step--1);
   font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
   transition:
-    transform 180ms ease,
-    background-color 180ms ease,
-    border-color 180ms ease;
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
-.button:hover {
-  transform: translateY(-2px);
-}
-
-.button--primary {
-  color: var(--color-abyss);
-  background: var(--color-aqua);
-}
-
-.button--secondary {
-  border-color: rgb(242 247 248 / 32%);
-  color: var(--color-foam);
-  background: rgb(255 255 255 / 7%);
-}
-
+/* Primary action on a light surface: solid ink. */
+.button--primary,
 .button--ink {
+  color: var(--color-paper);
+  background: var(--color-ink);
+}
+
+.button--primary:hover,
+.button--ink:hover {
+  background: var(--color-ink-deep);
+}
+
+.button--primary:active,
+.button--ink:active {
+  background: #061219;
+}
+
+/* Primary action laid over photography: paper on ink-free ground. */
+.button--onphoto {
+  color: var(--color-ink);
+  background: var(--color-paper);
+}
+
+.button--onphoto:hover {
+  background: var(--color-foam);
+}
+
+.button--onphoto:active {
+  background: #e6e4dc;
+}
+
+/* Secondary action: a plain underlined text link, no frame. */
+.button--secondary,
+.button--quiet {
+  min-height: 2.75rem;
+  padding-inline: 0;
+  border: 0;
+  color: var(--color-ink);
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+}
+
+.button--secondary:hover,
+.button--quiet:hover {
+  color: var(--color-accent);
+}
+
+.hero .button--secondary,
+.section--dark .button--secondary,
+.site-footer .button--secondary {
   color: var(--color-foam);
-  background: var(--color-brand);
+  text-decoration-color: rgb(245 244 239 / 55%);
+}
+
+.hero .button--secondary:hover,
+.section--dark .button--secondary:hover {
+  color: var(--color-foam);
+  text-decoration-color: var(--color-foam);
 }
 
 .button--ghost {
-  border-color: var(--color-line);
-  color: var(--color-brand);
+  border-color: var(--color-line-firm);
+  color: var(--color-ink);
   background: transparent;
+}
+
+.button--ghost:hover {
+  border-color: var(--color-ink);
+  background: rgb(19 40 51 / 5%);
+}
+
+.button[aria-disabled='true'],
+.button:disabled {
+  border-color: var(--color-line);
+  color: var(--color-muted);
+  background: rgb(19 40 51 / 6%);
+  cursor: not-allowed;
 }
 
 .grid {
@@ -231,9 +300,9 @@ ul {
 .status-note {
   padding: var(--space-4);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-muted);
-  background: rgb(242 247 248 / 70%);
+  background: var(--color-paper);
   font-size: var(--step--1);
 }
 
@@ -247,9 +316,9 @@ ul {
   display: inline-block;
   padding: 0.25rem 0.55rem;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   color: var(--color-muted);
-  background: rgb(242 247 248 / 80%);
+  background: var(--color-paper);
   font-family: var(--font-display);
   font-size: 0.66rem;
   font-weight: 750;
@@ -257,9 +326,9 @@ ul {
 }
 
 .status-pill--active {
-  border-color: rgb(22 120 111 / 32%);
-  color: var(--color-aqua-dark);
-  background: rgb(69 215 196 / 14%);
+  border-color: rgb(49 91 115 / 34%);
+  color: var(--color-accent);
+  background: rgb(49 91 115 / 10%);
 }
 
 /* Compact data table shared by the athlete overview and the profile dialog. */
@@ -286,8 +355,8 @@ ul {
 }
 
 .data-table thead th {
-  color: var(--color-brand);
-  background: var(--color-ice);
+  color: var(--color-accent);
+  background: var(--color-paper);
   font-family: var(--font-display);
   font-size: 0.7rem;
   font-weight: 750;
@@ -346,8 +415,8 @@ body:has(dialog[open]) {
   top: 0.75rem;
   left: 0.75rem;
   padding: 0.75rem 1rem;
-  color: var(--color-abyss);
-  background: var(--color-aqua);
+  color: var(--color-paper);
+  background: var(--color-ink);
   border-radius: var(--radius-sm);
   font-weight: 700;
   transform: translateY(-150%);
