@@ -5,7 +5,7 @@ import type { ImageMetadata } from 'astro';
 interface Props {
   title: string;
   summary: string;
-  safety: string;
+  safety?: string | undefined;
   href: string;
   index: string;
   accent: 'aqua' | 'cobalt' | 'coral';
@@ -45,7 +45,7 @@ const {
     <p class="sport-feature-index" aria-hidden="true">{index}</p>
     <h2>{title}</h2>
     <p class="sport-feature-summary">{summary}</p>
-    <span class="safety-chip">{safety}</span>
+    {safety && <span class="safety-chip">{safety}</span>}
     {
       logoSrc && (
         <img

@@ -147,13 +147,13 @@ export const staticPages: StaticPage[] = [
     {
       eyebrow: 'Kolm veealust maailma',
       title: 'Spordialad',
-      intro: 'Leia ala, mis ühendab sinu jaoks oskuse, liikumise ja teadliku ohutuse.',
+      intro: '',
       sections: [],
     },
     {
       eyebrow: 'Three underwater worlds',
       title: 'Sports',
-      intro: 'Find the discipline that connects skill, movement and deliberate safety for you.',
+      intro: '',
       sections: [],
     },
   ),

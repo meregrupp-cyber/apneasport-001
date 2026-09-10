@@ -16,6 +16,17 @@ interface Props {
 }
 const { page } = Astro.props;
 const copy = t(page.locale);
+// With no sections, no placeholder and no legal note there is nothing to
+// render, and an empty band would open a gap under the page header.
+const showsLegalNote = [
+  'league',
+  'mission',
+  'governance',
+  'membership',
+  'safetyIntegrity',
+].includes(page.routeKey);
+const hasProse = page.sections.length > 0 || page.placeholder || showsLegalNote;
+
 const clubs =
   page.routeKey === 'memberClubs'
     ? (await getCollection('clubs'))
@@ -28,8 +39,6 @@ const sportCards =
     ? [
         {
           title: 'Vabasukeldumine',
-          summary: 'Üks hingetõmme, tehnika ja teadlik ohutus.',
-          safety: 'Ära sukeldu üksi',
           href: routeFor('freediving', 'et'),
           accent: 'aqua' as const,
           logoSrc: '/brand/aida-logo-negative.svg',
@@ -38,8 +47,6 @@ const sportCards =
         },
         {
           title: 'Merineitsisport',
-          summary: 'Monolesta tehnika, liikumine ja esitus.',
-          safety: 'Pädev järelevalve',
           href: routeFor('mermaiding', 'et'),
           accent: 'coral' as const,
           image: mermaidingImage,
@@ -47,8 +54,6 @@ const sportCards =
         },
         {
           title: 'Veevõitlus',
-          summary: 'Reguleeritud paarisala kontrollitud keskkonnas.',
-          safety: 'Juhendatud treening',
           href: routeFor('waterfighting', 'et'),
           accent: 'cobalt' as const,
           image: waterfightingImage,
@@ -58,8 +63,6 @@ const sportCards =
     : [
         {
           title: 'Freediving',
-          summary: 'One breath, technique and deliberate safety.',
-          safety: 'Never dive alone',
           href: routeFor('freediving', 'en'),
           accent: 'aqua' as const,
           logoSrc: '/brand/aida-logo-negative.svg',
@@ -68,8 +71,6 @@ const sportCards =
         },
         {
           title: 'Mermaiding',
-          summary: 'Monofin technique, movement and performance.',
-          safety: 'Competent supervision',
           href: routeFor('mermaiding', 'en'),
           accent: 'coral' as const,
           image: mermaidingImage,
@@ -77,8 +78,6 @@ const sportCards =
         },
         {
           title: 'Waterfighting',
-          summary: 'A regulated paired sport in a controlled setting.',
-          safety: 'Supervised training',
           href: routeFor('waterfighting', 'en'),
           accent: 'cobalt' as const,
           image: waterfightingImage,
@@ -126,50 +125,48 @@ const trainingCards =
 
 <PageHero locale={page.locale} eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
 
-<div class="section">
-  <div class="narrow page-sections">
-    {page.placeholder && <p class="status-note">{copy.placeholder}</p>}
-    {
-      page.sections.map((section) => (
-        <section class="page-section" data-reveal>
-          <h2>{section.title}</h2>
-          <div class="prose">
-            {section.paragraphs.map((paragraph) => (
-              <p>{paragraph}</p>
-            ))}
-            {section.items && (
-              <ul>
-                {section.items.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            )}
-            {section.links && (
-              <div class="button-row">
-                {section.links.map((link) => (
-                  <a
-                    class="button button--ghost"
-                    href={link.href}
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
-                  >
-                    {link.label}
-                    {link.external && <span aria-hidden="true">↗</span>}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      ))
-    }
-    {
-      ['league', 'mission', 'governance', 'membership', 'safetyIntegrity'].includes(
-        page.routeKey,
-      ) && <p class="legal-note">{copy.legalDocumentNote}</p>
-    }
-  </div>
-</div>
+{
+  hasProse && (
+    <div class="section">
+      <div class="narrow page-sections">
+        {page.placeholder && <p class="status-note">{copy.placeholder}</p>}
+        {page.sections.map((section) => (
+          <section class="page-section" data-reveal>
+            <h2>{section.title}</h2>
+            <div class="prose">
+              {section.paragraphs.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+              {section.items && (
+                <ul>
+                  {section.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+              {section.links && (
+                <div class="button-row">
+                  {section.links.map((link) => (
+                    <a
+                      class="button button--ghost"
+                      href={link.href}
+                      target={link.external ? '_blank' : undefined}
+                      rel={link.external ? 'noopener noreferrer' : undefined}
+                    >
+                      {link.label}
+                      {link.external && <span aria-hidden="true">↗</span>}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        ))}
+        {showsLegalNote && <p class="legal-note">{copy.legalDocumentNote}</p>}
+      </div>
+    </div>
+  )
+}
 
 {
   page.routeKey === 'sports' && (

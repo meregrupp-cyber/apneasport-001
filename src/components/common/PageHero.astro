@@ -8,6 +8,7 @@ interface Props {
   locale: Locale;
   eyebrow: string;
   title: string;
+  /** Optional; an empty string renders no lead paragraph. */
   intro: string;
   image?: ImageMetadata | undefined;
 }
@@ -41,7 +42,7 @@ const { locale, eyebrow, title, intro, image } = Astro.props;
     <Breadcrumbs {locale} current={title} />
     <p class="eyebrow">{eyebrow}</p>
     <h1>{title}</h1>
-    <p class="lede">{intro}</p>
+    {intro && <p class="lede">{intro}</p>}
   </div>
 </header>
 

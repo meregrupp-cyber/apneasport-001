@@ -78,11 +78,6 @@ const home =
         aboutText:
           'Loome Eestis ohutud, ausad ja üldkättesaadavad tingimused apneasportide harrastamiseks, treenimiseks, võistlemiseks ja rahvusvaheliseks esindamiseks.',
         aboutCta: 'Tutvu eesmärkidega',
-        sportSafety: {
-          'sport-freediving': 'Ära sukeldu üksi',
-          'sport-mermaiding': 'Pädev järelevalve',
-          'sport-waterfighting': 'Juhendatud treening',
-        } as Record<string, string>,
         clubEyebrow: 'Liikmesklubid',
         clubTitle: 'Sport kasvab klubides.',
         clubText:
@@ -126,11 +121,6 @@ const home =
         aboutText:
           'We create safe, fair and accessible conditions in Estonia for practising, training, competing and representing apnea sports internationally.',
         aboutCta: 'Explore our mission',
-        sportSafety: {
-          'sport-freediving': 'Never dive alone',
-          'sport-mermaiding': 'Competent supervision',
-          'sport-waterfighting': 'Supervised training',
-        } as Record<string, string>,
         clubEyebrow: 'Member clubs',
         clubTitle: 'Sport grows in clubs.',
         clubText:
@@ -194,7 +184,6 @@ const home =
             <SportShowcase
               title={sport.data.title}
               summary={sport.data.summary}
-              safety={home.sportSafety[sport.data.translationKey] ?? ''}
               href={sportRoute(sport.data.translationKey)}
               index={`0${index + 1}`}
               accent={sport.data.accent}

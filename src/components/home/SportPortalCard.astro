@@ -4,8 +4,8 @@ import type { ImageMetadata } from 'astro';
 
 interface Props {
   title: string;
-  summary: string;
-  safety: string;
+  summary?: string | undefined;
+  safety?: string | undefined;
   href: string;
   index: string;
   accent: 'aqua' | 'cobalt' | 'coral';
@@ -47,8 +47,8 @@ const { title, summary, safety, href, index, accent, cta, logoSrc, image, imageA
   }
   <div class="sport-copy">
     <h2>{title}</h2>
-    <p>{summary}</p>
-    <span class="safety-chip">{safety}</span>
+    {summary && <p>{summary}</p>}
+    {safety && <span class="safety-chip">{safety}</span>}
     <span class="card-cta">{cta} <span aria-hidden="true">↗</span></span>
   </div>
 </a>
