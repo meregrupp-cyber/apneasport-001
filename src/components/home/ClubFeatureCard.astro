@@ -78,6 +78,9 @@ const wordmark = name.replace(/^(Spordiklubi|Spordikool|Sports Club)\s+/i, '');
     width: min(100%, 18rem);
     height: auto;
     max-height: 9rem;
+    /* Some club marks are solid-colour tiles rather than free-standing
+       lettering, so a small radius keeps every plate looking alike. */
+    border-radius: var(--radius-sm);
     object-fit: contain;
   }
 

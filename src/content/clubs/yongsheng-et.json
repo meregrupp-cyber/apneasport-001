@@ -4,7 +4,7 @@
   "name": "Spordiklubi Yongsheng",
   "summary": "Veevõitlus.",
   "website": "https://yongsheng.ee/",
-  "logo": "",
+  "logo": "/brand/yongsheng-logo.webp",
   "location": "Tallinn",
   "sports": ["Veevõitlus"],
   "featured": true,

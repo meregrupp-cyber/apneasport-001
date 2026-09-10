@@ -4,7 +4,7 @@
   "name": "Spordiklubi AquaStar",
   "summary": "Allveespordiklubi Paldiskis. Klubi ala on allveesport, harrastatav distsipliin lestaujumine, ja treeningud toimuvad Paldiski spordikeskuses.",
   "website": "https://www.facebook.com/skaquastar/",
-  "logo": "",
+  "logo": "/brand/aquastar-logo.webp",
   "location": "Paldiski",
   "sports": ["Allveesport", "Lestaujumine"],
   "featured": true,
