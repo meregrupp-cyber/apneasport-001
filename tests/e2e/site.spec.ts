@@ -5,7 +5,7 @@ test('Estonian home is semantic and switches to the equivalent English page', as
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'et');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Arendame Eestis vabasukeldumist, veevõitlust, merineitsisporti ja nendega seotud allveespordialasid — ohutult, ausalt ja avatult.',
+    'Arendame Eestis vabasukeldumist, veevõitlust, merineitsisporti ja nendega seotud allveespordialasid',
   );
   await expect(page.locator('link[hreflang="en"]')).toHaveAttribute(
     'href',
