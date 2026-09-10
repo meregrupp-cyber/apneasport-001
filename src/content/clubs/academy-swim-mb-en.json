@@ -1,0 +1,20 @@
+{
+  "translationKey": "club-academy-swim-mb",
+  "locale": "en",
+  "name": "Academy Swim MB",
+  "summary": "A swimming school in Tallinn: group and personal training for adults, swimming lessons for children, monofin and short fin technique, and competition preparation.",
+  "website": "https://asmb.ee/",
+  "logo": "/brand/asmb-logo.webp",
+  "location": "Tallinn",
+  "sports": [
+    "Swimming",
+    "Group training for adults",
+    "Personal training",
+    "Swimming lessons for children",
+    "Monofin technique",
+    "Short fins",
+    "Competition preparation"
+  ],
+  "featured": true,
+  "order": 4
+}

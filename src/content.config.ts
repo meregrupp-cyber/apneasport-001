@@ -43,6 +43,8 @@ const clubs = defineCollection({
     location: z.string().nullable(),
     sports: z.array(z.string()),
     featured: z.boolean().default(false),
+    /** Display order in the member club list; lower comes first. */
+    order: z.number().default(99),
   }),
 });
 

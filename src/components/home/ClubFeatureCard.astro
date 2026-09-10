@@ -8,12 +8,28 @@ interface Props {
 }
 
 const { name, summary, website, logo, locale } = Astro.props;
+// Until a club supplies its own mark, the plate carries the club name so every
+// card keeps the same shape and weight in the list.
+const wordmark = name.replace(/^(Spordiklubi|Spordikool|Sports Club)\s+/i, '');
 ---
 
 <a class="club-card" href={website} target="_blank" rel="noopener noreferrer" data-tilt>
   <div class="club-art" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="club-logo">
-    <img src={logo} alt={`${name} logo`} width="360" height="120" loading="lazy" decoding="async" />
+    {
+      logo ? (
+        <img
+          src={logo}
+          alt={`${name} logo`}
+          width="360"
+          height="120"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span class="club-wordmark">{wordmark}</span>
+      )
+    }
   </div>
   <div class="club-copy">
     <p class="eyebrow">{locale === 'et' ? 'Liikmesklubi' : 'Member club'}</p>
@@ -61,7 +77,18 @@ const { name, summary, website, logo, locale } = Astro.props;
   .club-logo img {
     width: min(100%, 18rem);
     height: auto;
+    max-height: 9rem;
     object-fit: contain;
+  }
+
+  .club-wordmark {
+    color: var(--color-brand);
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-wrap: balance;
   }
   .club-copy {
     position: relative;

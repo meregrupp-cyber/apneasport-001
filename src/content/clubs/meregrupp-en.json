@@ -16,5 +16,6 @@
     "Apnea stress-tolerance development",
     "Underwater photography and film"
   ],
-  "featured": true
+  "featured": true,
+  "order": 1
 }

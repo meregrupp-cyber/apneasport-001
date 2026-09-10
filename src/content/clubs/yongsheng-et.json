@@ -1,0 +1,12 @@
+{
+  "translationKey": "club-yongsheng",
+  "locale": "et",
+  "name": "Spordiklubi Yongsheng",
+  "summary": "Veevõitlus.",
+  "website": "https://yongsheng.ee/",
+  "logo": "",
+  "location": "Tallinn",
+  "sports": ["Veevõitlus"],
+  "featured": true,
+  "order": 5
+}

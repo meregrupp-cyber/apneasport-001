@@ -18,9 +18,9 @@ const { page } = Astro.props;
 const copy = t(page.locale);
 const clubs =
   page.routeKey === 'memberClubs'
-    ? (await getCollection('clubs')).filter(
-        (entry) => entry.data.locale === page.locale && entry.data.featured,
-      )
+    ? (await getCollection('clubs'))
+        .filter((entry) => entry.data.locale === page.locale && entry.data.featured)
+        .sort((a, b) => a.data.order - b.data.order)
     : [];
 
 const sportCards =
@@ -186,7 +186,7 @@ const trainingCards =
 {
   page.routeKey === 'memberClubs' && clubs.length > 0 && (
     <section class="section section--ice">
-      <div class="container">
+      <div class="container club-list">
         {clubs.map((club) => (
           <ClubFeatureCard {...club.data} locale={page.locale} />
         ))}
@@ -208,6 +208,10 @@ const trainingCards =
 }
 
 <style>
+  .club-list {
+    display: grid;
+    gap: var(--space-4);
+  }
   .page-sections {
     display: grid;
     gap: var(--space-7);

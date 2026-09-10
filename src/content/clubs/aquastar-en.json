@@ -1,0 +1,12 @@
+{
+  "translationKey": "club-aquastar",
+  "locale": "en",
+  "name": "Spordiklubi AquaStar",
+  "summary": "An underwater sports club in Paldiski. The club’s registered sport is underwater sports, its discipline is fin swimming, and training takes place at Paldiski sports centre.",
+  "website": "https://www.facebook.com/skaquastar/",
+  "logo": "",
+  "location": "Paldiski",
+  "sports": ["Underwater sports", "Fin swimming"],
+  "featured": true,
+  "order": 2
+}

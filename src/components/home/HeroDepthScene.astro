@@ -12,7 +12,6 @@ const content =
   locale === 'et'
     ? {
         overline: 'Eesti Apneaspordi Liit · AIDA Estonia',
-        title: 'Üks hingetõmme. Mitu maailma.',
         lead: 'Arendame Eestis vabasukeldumist, veevõitlust, merineitsisporti ja nendega seotud allveespordialasid — ohutult, ausalt ja avatult.',
         primary: 'Avasta spordialad',
         secondary: 'Tutvu liiduga',
@@ -21,7 +20,6 @@ const content =
       }
     : {
         overline: 'Estonian Apnea Sports League · AIDA Estonia',
-        title: 'One breath. Many worlds.',
         lead: 'We develop freediving, waterfighting, mermaiding and related underwater sports in Estonia — safely, fairly and openly.',
         primary: 'Explore the sports',
         secondary: 'About the League',
@@ -49,8 +47,7 @@ const content =
   </div>
   <div class="container hero-content">
     <p class="eyebrow hero-overline">{content.overline}</p>
-    <h1>{content.title}</h1>
-    <p class="lede">{content.lead}</p>
+    <h1 class="hero-statement">{content.lead}</h1>
     <div class="button-row">
       <a class="button button--primary" href={routeFor('sports', locale)}
         >{content.primary}<span aria-hidden="true">↓</span></a
@@ -115,12 +112,15 @@ const content =
     text-shadow: none;
   }
 
-  .hero h1 {
-    max-width: 12ch;
-  }
-
-  .hero .lede {
-    max-width: 38rem;
+  /* The lead sentence now carries the hero, so it is the h1: sized for a full
+     sentence rather than the short display headline it replaced. */
+  .hero-statement {
+    max-width: 34rem;
+    margin-top: var(--space-4);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
   }
 
   .depth-background,

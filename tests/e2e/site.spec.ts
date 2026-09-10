@@ -4,14 +4,18 @@ import { expect, test } from '@playwright/test';
 test('Estonian home is semantic and switches to the equivalent English page', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'et');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Üks hingetõmme. Mitu maailma.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'Arendame Eestis vabasukeldumist, veevõitlust, merineitsisporti ja nendega seotud allveespordialasid — ohutult, ausalt ja avatult.',
+  );
   await expect(page.locator('link[hreflang="en"]')).toHaveAttribute(
     'href',
     'https://apneasport.ee/en/',
   );
   await page.locator('.language-switcher').click();
   await expect(page).toHaveURL(/\/en\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('One breath. Many worlds.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'We develop freediving, waterfighting, mermaiding and related underwater sports in Estonia — safely, fairly and openly.',
+  );
 });
 
 test('document archive filters without blocking no-JS content', async ({ page }) => {

@@ -1,0 +1,20 @@
+{
+  "translationKey": "club-academy-swim-mb",
+  "locale": "et",
+  "name": "Academy Swim MB",
+  "summary": "Ujumiskool Tallinnas: rühma- ja eratreeningud täiskasvanutele, ujumisõpe lastele, monolesta ja lühilestade tehnika ning võistlusettevalmistus.",
+  "website": "https://asmb.ee/",
+  "logo": "/brand/asmb-logo.webp",
+  "location": "Tallinn",
+  "sports": [
+    "Ujumine",
+    "Rühmatreeningud täiskasvanutele",
+    "Eratreeningud",
+    "Ujumisõpe lastele",
+    "Monolesta tehnika",
+    "Lühilestad",
+    "Võistlusettevalmistus"
+  ],
+  "featured": true,
+  "order": 4
+}

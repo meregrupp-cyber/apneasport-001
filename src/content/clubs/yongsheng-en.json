@@ -1,0 +1,12 @@
+{
+  "translationKey": "club-yongsheng",
+  "locale": "en",
+  "name": "Spordiklubi Yongsheng",
+  "summary": "Waterfighting.",
+  "website": "https://yongsheng.ee/",
+  "logo": "",
+  "location": "Tallinn",
+  "sports": ["Waterfighting"],
+  "featured": true,
+  "order": 5
+}

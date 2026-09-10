@@ -16,5 +16,6 @@
     "Apnoe stressitaluvuse arendamine",
     "Allveefoto ja -film"
   ],
-  "featured": true
+  "featured": true,
+  "order": 1
 }

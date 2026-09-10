@@ -33,9 +33,9 @@ const sports = (await getCollection('sports'))
   .sort(
     (a, b) => sportOrder.indexOf(a.data.translationKey) - sportOrder.indexOf(b.data.translationKey),
   );
-const clubs = (await getCollection('clubs')).filter(
-  (entry) => entry.data.locale === locale && entry.data.featured,
-);
+const clubs = (await getCollection('clubs'))
+  .filter((entry) => entry.data.locale === locale && entry.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
 const documents = (await getCollection('documents')).filter((entry) => entry.data.featured);
 const news = (await publishedNews(locale)).slice(0, 3);
 
@@ -72,7 +72,7 @@ const sportVisuals: Record<string, { image: ImageMetadata; alt: { et: string; en
 const home =
   locale === 'et'
     ? {
-        title: 'Üks hingetõmme. Mitu maailma.',
+        title: 'Eesti Apneaspordi Liit',
         description:
           'Eesti Apneaspordi Liit arendab vabasukeldumist, veevõitlust ja merineitsisporti ohutult, ausalt ja avatult.',
         aboutEyebrow: 'Mis on EAPSL?',
@@ -80,10 +80,6 @@ const home =
         aboutText:
           'Loome Eestis ohutud, ausad ja üldkättesaadavad tingimused apneasportide harrastamiseks, treenimiseks, võistlemiseks ja rahvusvaheliseks esindamiseks.',
         aboutCta: 'Tutvu eesmärkidega',
-        sportsEyebrow: 'Kolm spordiala',
-        sportsTitle: 'Mitu maailma ühe veepinna all.',
-        sportsIntro:
-          'Igal alal on oma tehnika ja iseloom. Kõiki ühendavad oskus, kontroll ja teadlik ohutus.',
         sportSafety: {
           'sport-freediving': 'Ära sukeldu üksi',
           'sport-mermaiding': 'Pädev järelevalve',
@@ -124,7 +120,7 @@ const home =
           'Esimesed kinnitatud uudised lisanduvad siia. Mustandeid ega Facebooki postitusi automaatselt ei avaldata.',
       }
     : {
-        title: 'One breath. Many worlds.',
+        title: 'Estonian Apnea Sports League',
         description:
           'The Estonian Apnea Sports League develops freediving, waterfighting and mermaiding safely, fairly and openly.',
         aboutEyebrow: 'What is EAPSL?',
@@ -132,10 +128,6 @@ const home =
         aboutText:
           'We create safe, fair and accessible conditions in Estonia for practising, training, competing and representing apnea sports internationally.',
         aboutCta: 'Explore our mission',
-        sportsEyebrow: 'Three sports',
-        sportsTitle: 'Many worlds below one surface.',
-        sportsIntro:
-          'Each discipline has its own technique and character. Skill, control and deliberate safety connect them all.',
         sportSafety: {
           'sport-freediving': 'Never dive alone',
           'sport-mermaiding': 'Competent supervision',
@@ -212,11 +204,6 @@ const home =
       </section>
 
       <section class="section section--dark sports-section">
-        <div class="container section-heading">
-          <p class="eyebrow">{home.sportsEyebrow}</p>
-          <h2>{home.sportsTitle}</h2>
-          <p class="lede">{home.sportsIntro}</p>
-        </div>
         <div class="container sport-flow">
           {
             sports.map((sport, index) => (
@@ -395,6 +382,8 @@ const home =
     margin-top: var(--space-7);
   }
   .club-wrap {
+    display: grid;
+    gap: var(--space-4);
     margin-top: var(--space-6);
   }
   .training-section .section-heading {

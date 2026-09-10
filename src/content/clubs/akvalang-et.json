@@ -1,0 +1,18 @@
+{
+  "translationKey": "club-akvalang",
+  "locale": "et",
+  "name": "Spordikool Akvalang",
+  "summary": "Ujumis- ja sukeldumiskool Tallinnas: ujumise algõpetus, lestaujumine, sportsukeldumine ja vabasukeldumine ning OWD ja AOWD sukeldumiskursused.",
+  "website": "https://akvalang.eu/",
+  "logo": "",
+  "location": "Tallinn",
+  "sports": [
+    "Ujumise algõpetus",
+    "Lestaujumine",
+    "Sportsukeldumine",
+    "Vabasukeldumine",
+    "Sukeldumiskursused (OWD, AOWD)"
+  ],
+  "featured": true,
+  "order": 3
+}

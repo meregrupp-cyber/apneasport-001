@@ -148,37 +148,13 @@ export const staticPages: StaticPage[] = [
       eyebrow: 'Kolm veealust maailma',
       title: 'Spordialad',
       intro: 'Leia ala, mis ühendab sinu jaoks oskuse, liikumise ja teadliku ohutuse.',
-      sections: [
-        {
-          title: 'Ohutus algab enne vette minekut',
-          paragraphs: [
-            'Kõik EAPSL-i alad eeldavad oskustele vastavat keskkonda, pädevat juhendamist ja valmisolekut tegutseda kõrvalekalde korral.',
-          ],
-          items: [
-            'Ära harjuta hinge kinni hoidmist vees üksi.',
-            'Alusta juhendatud treeningust ja kasuta alale sobivat varustust.',
-            'Tutvu kinnitatud reeglitega enne võistlemist või sügavuse suurendamist.',
-          ],
-        },
-      ],
+      sections: [],
     },
     {
       eyebrow: 'Three underwater worlds',
       title: 'Sports',
       intro: 'Find the discipline that connects skill, movement and deliberate safety for you.',
-      sections: [
-        {
-          title: 'Safety starts before entering the water',
-          paragraphs: [
-            'Every EAPSL sport requires an appropriate environment, competent supervision and readiness to respond when something changes.',
-          ],
-          items: [
-            'Never practise breath-holding in water alone.',
-            'Begin with supervised training and use discipline-appropriate equipment.',
-            'Read approved rules before competing or increasing depth.',
-          ],
-        },
-      ],
+      sections: [],
     },
   ),
   ...pair(

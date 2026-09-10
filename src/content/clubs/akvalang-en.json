@@ -1,0 +1,18 @@
+{
+  "translationKey": "club-akvalang",
+  "locale": "en",
+  "name": "Spordikool Akvalang",
+  "summary": "A swimming and diving school in Tallinn: beginner swimming instruction, fin swimming, sport diving and freediving, plus OWD and AOWD diving courses.",
+  "website": "https://akvalang.eu/",
+  "logo": "",
+  "location": "Tallinn",
+  "sports": [
+    "Beginner swimming instruction",
+    "Fin swimming",
+    "Sport diving",
+    "Freediving",
+    "Diving courses (OWD, AOWD)"
+  ],
+  "featured": true,
+  "order": 3
+}
