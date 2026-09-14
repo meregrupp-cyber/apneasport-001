@@ -100,14 +100,17 @@ const content =
     text-shadow: 0 1px 12px rgb(14 31 41 / 55%);
   }
 
-  /* The lead sentence carries the hero, set in the serif at display size. */
+  /* The lead sentence carries the hero, set in the serif at display size. It
+     stays at the regular weight: light type on dark water already reads
+     heavier than it is, so the open leading and tracking carry the emphasis
+     instead of the stroke. */
   .hero-statement {
-    max-width: 26ch;
+    max-width: 28ch;
     font-family: var(--font-heading);
     font-size: clamp(1.9rem, 1.35rem + 1.75vw, 2.95rem);
-    font-weight: 600;
-    line-height: 1.14;
-    letter-spacing: -0.012em;
+    font-weight: 400;
+    line-height: 1.28;
+    letter-spacing: 0.004em;
     text-shadow: 0 1px 22px rgb(14 31 41 / 45%);
     text-wrap: balance;
   }
