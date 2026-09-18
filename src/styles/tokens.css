@@ -21,6 +21,9 @@
   --color-aqua-dark: #2a4f64;
 
   --color-warning: #a45c00;
+  /* Positive state (e.g. an active athlete). Passes AA on paper and white. */
+  --color-success: #1e6b3f;
+  --color-success-rgb: 30 107 63;
   --color-coral: #ff826c;
   --color-line: rgb(19 40 51 / 18%);
   --color-line-firm: rgb(19 40 51 / 32%);

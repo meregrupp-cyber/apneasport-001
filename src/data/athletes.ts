@@ -1247,7 +1247,7 @@ export const freedivingAthletes: Athlete[] = [
     sex: 'M',
     country: 'EE',
     season: 2026,
-    status: 'INACTIVE',
+    status: 'ACTIVE',
     disciplines: {},
     nationalRecords: [],
     worldRecords: [],

@@ -325,10 +325,11 @@ ul {
   letter-spacing: 0.08em;
 }
 
+/* Active reads as green so it stands apart from the muted inactive pill. */
 .status-pill--active {
-  border-color: rgb(49 91 115 / 34%);
-  color: var(--color-accent);
-  background: rgb(49 91 115 / 10%);
+  border-color: rgb(var(--color-success-rgb) / 45%);
+  color: var(--color-success);
+  background: rgb(var(--color-success-rgb) / 12%);
 }
 
 /* Compact data table shared by the athlete overview and the profile dialog. */
