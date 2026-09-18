@@ -70,7 +70,7 @@ describe('freediving athlete registry', () => {
     expect(countryFlag('EE')).toBe('🇪🇪');
   });
 
-  it('keeps the registry on one roster: every athlete Estonian, 2026, inactive', () => {
+  it('keeps the registry on one roster: every athlete Estonian, 2026', () => {
     const names = freedivingAthletes.map(fullName);
 
     expect(new Set(names).size).toBe(names.length);
@@ -79,9 +79,15 @@ describe('freediving athlete registry', () => {
     for (const athlete of freedivingAthletes) {
       expect(athlete.country).toBe('EE');
       expect(athlete.season).toBe(2026);
-      expect(athlete.status).toBe('INACTIVE');
+      expect(['ACTIVE', 'INACTIVE']).toContain(athlete.status);
       expect(['F', 'M']).toContain(athlete.sex);
     }
+  });
+
+  it('marks only the athletes confirmed active for the season', () => {
+    const active = freedivingAthletes.filter((athlete) => athlete.status === 'ACTIVE');
+
+    expect(active.map(fullName)).toEqual(['Marco Uustal']);
   });
 
   it('holds only AIDA discipline codes and bare result values', () => {
