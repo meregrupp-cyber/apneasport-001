@@ -87,7 +87,7 @@ describe('freediving athlete registry', () => {
   it('marks only the athletes confirmed active for the season', () => {
     const active = freedivingAthletes.filter((athlete) => athlete.status === 'ACTIVE');
 
-    expect(active.map(fullName)).toEqual(['Marco Uustal']);
+    expect(active.map(fullName).sort()).toEqual(['Aleksandr Krolov', 'Marco Uustal']);
   });
 
   it('holds only AIDA discipline codes and bare result values', () => {
