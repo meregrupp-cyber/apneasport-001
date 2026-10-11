@@ -69,10 +69,12 @@ test('athlete name opens that athlete profile dialog and returns focus on close'
   await expect(melnikov).toBeFocused();
 
   // An athlete with no confirmed AIDA data shows em dashes, never a guess.
-  await names.filter({ hasText: 'PEDAK' }).click();
-  const pedak = page.getByRole('dialog');
-  await expect(pedak.getByRole('heading', { level: 2 })).toContainText('Kristin PEDAK');
-  await expect(pedak).not.toContainText(/\b(null|undefined|N\/A)\b/);
+  await names.filter({ hasText: 'NIPADISTOVA' }).click();
+  const nipadistova = page.getByRole('dialog');
+  await expect(nipadistova.getByRole('heading', { level: 2 })).toContainText(
+    'Aleksandra NIPADISTOVA',
+  );
+  await expect(nipadistova).not.toContainText(/\b(null|undefined|N\/A)\b/);
   await page.getByRole('button', { name: 'Sulge sportlase profiil' }).click();
   await expect(page.getByRole('dialog')).toBeHidden();
 });

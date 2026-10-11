@@ -63,7 +63,7 @@ describe('freediving athlete registry', () => {
     const slugs = freedivingAthletes.map(athleteSlug);
 
     expect(new Set(slugs).size).toBe(slugs.length);
-    expect(slugs).toContain('pedak-kristin');
+    expect(slugs).toContain('nipadistova-aleksandra');
   });
 
   it('derives the flag from the country code', () => {
@@ -74,8 +74,9 @@ describe('freediving athlete registry', () => {
     const names = freedivingAthletes.map(fullName);
 
     expect(new Set(names).size).toBe(names.length);
-    expect(names).toContain('Kristin Pedak');
+    expect(names).toContain('Aleksandra Nipadistova');
     expect(names).toContain('Marco Uustal');
+    expect(names).not.toContain('Kristin Pedak');
     for (const athlete of freedivingAthletes) {
       expect(athlete.country).toBe('EE');
       expect(athlete.season).toBe(2026);
@@ -87,7 +88,11 @@ describe('freediving athlete registry', () => {
   it('marks only the athletes confirmed active for the season', () => {
     const active = freedivingAthletes.filter((athlete) => athlete.status === 'ACTIVE');
 
-    expect(active.map(fullName).sort()).toEqual(['Aleksandr Krolov', 'Marco Uustal']);
+    expect(active.map(fullName).sort()).toEqual([
+      'Aleksandr Krolov',
+      'Aleksandra Nipadistova',
+      'Marco Uustal',
+    ]);
   });
 
   it('holds only AIDA discipline codes and bare result values', () => {
