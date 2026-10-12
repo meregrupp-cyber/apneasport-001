@@ -32,15 +32,18 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Allveevõitluse lõplik terminoloogia, võistlus- ja ohutusreeglid.
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
-- [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (ACTIVE on praegu Krolov, Nipadistova ja
-      Uustal; teised INACTIVE) ning hooaja kinnitamine. Distsipliinide PB-d ja Eesti rekordid on
-      võetud AIDA Internationali ametlikest allikatest.
+- [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (ACTIVE on praegu Kask, Krolov,
+      Nipadistova ja Uustal; teised INACTIVE) ning hooaja kinnitamine. Distsipliinide PB-d ja Eesti
+      rekordid on võetud AIDA Internationali ametlikest allikatest.
 - [ ] Otsustada, kas avaldada AIDA profiililt loetavad Eesti/kontinendi/maailma rankingukohad; need
       muutuvad ajas ega kanna AIDA-s seisuga-kuupäeva.
 - [ ] AIDA võistluste arv sportlase kohta: ametlikul profiilil ei ole üheselt loetavat koguarvu.
 - [ ] Aleksandra NIPADISTOVA AIDA profiil ja tulemused, kui need tekivad; AIDA sportlaste otsingus
       ja AIDA Estonia rankingus teda praegu ei ole.
 - [ ] Ken Tomsonil on AIDA-s kaks profiili, mille vahel tulemused jagunevad; kinnitada kanooniline.
+- [ ] Marco UUSTALi Limassoli 2026 MM-i tulemused (CWT 41 m, CNF 40 m, FIM 52 m) on võetud AIDA
+      MM-i ametlikust protokollist ja Eesti kohad AIDA Estonia rankingust. Kui AIDA profiil need
+      avaldab, lisada Euroopa ja maailma kohad ning eemaldada sellekohane märkus andmefailist.
 
 ## Klubid, kontaktid ja visuaalid
 

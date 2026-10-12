@@ -91,6 +91,7 @@ describe('freediving athlete registry', () => {
     expect(active.map(fullName).sort()).toEqual([
       'Aleksandr Krolov',
       'Aleksandra Nipadistova',
+      'Liisa Kask',
       'Marco Uustal',
     ]);
   });
