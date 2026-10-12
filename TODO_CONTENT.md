@@ -33,8 +33,8 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
 - [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (ACTIVE on praegu Kask, Krolov,
-      Nipadistova ja Uustal; teised INACTIVE) ning hooaja kinnitamine. Distsipliinide PB-d ja Eesti
-      rekordid on võetud AIDA Internationali ametlikest allikatest.
+      Nipadistova, Oleshko ja Uustal; teised INACTIVE) ning hooaja kinnitamine. Distsipliinide PB-d
+      ja Eesti rekordid on võetud AIDA Internationali ametlikest allikatest.
 - [ ] Otsustada, kas avaldada AIDA profiililt loetavad Eesti/kontinendi/maailma rankingukohad; need
       muutuvad ajas ega kanna AIDA-s seisuga-kuupäeva.
 - [ ] AIDA võistluste arv sportlase kohta: ametlikul profiilil ei ole üheselt loetavat koguarvu.
