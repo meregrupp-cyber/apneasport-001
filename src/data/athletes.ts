@@ -765,7 +765,7 @@ export const freedivingAthletes: Athlete[] = [
     sex: 'M',
     country: 'EE',
     season: 2026,
-    status: 'INACTIVE',
+    status: 'ACTIVE',
     disciplines: {
       STA: {
         pb: { value: '4:15', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
