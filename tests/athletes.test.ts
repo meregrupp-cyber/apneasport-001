@@ -92,6 +92,7 @@ describe('freediving athlete registry', () => {
       'Aleksandr Krolov',
       'Aleksandr Oleshko',
       'Aleksandra Nipadistova',
+      'Jelena Savotskina',
       'Liisa Kask',
       'Marco Uustal',
     ]);
