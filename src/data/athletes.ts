@@ -92,7 +92,7 @@ export const unknownValue = '—';
  * no as-of date of its own, so the UI shows this one. Update it in the same
  * commit that refreshes the ranking values.
  */
-export const rankingSnapshotDate = '2026-10-29';
+export const rankingSnapshotDate = '2026-10-30';
 
 export const freedivingAthletes: Athlete[] = [
   {
@@ -340,7 +340,7 @@ export const freedivingAthletes: Athlete[] = [
     sex: 'M',
     country: 'EE',
     season: 2026,
-    status: 'INACTIVE',
+    status: 'ACTIVE',
     disciplines: {
       STA: {
         pb: { value: '2:11', date: '2026-02-14', venue: 'Riga Freediving Cup 2026 (AIDA)' },
@@ -1036,7 +1036,7 @@ export const freedivingAthletes: Athlete[] = [
     sex: 'M',
     country: 'EE',
     season: 2026,
-    status: 'INACTIVE',
+    status: 'ACTIVE',
     disciplines: {
       STA: {
         pb: { value: '6:34', date: '2026-05-02', venue: 'RIGA SPRING - AIDA STATIC PERFORMANCES' },
@@ -1233,6 +1233,17 @@ export const freedivingAthletes: Athlete[] = [
   {
     firstName: 'Aleksandra',
     lastName: 'Nipadistova',
+    sex: 'F',
+    country: 'EE',
+    season: 2026,
+    status: 'ACTIVE',
+    disciplines: {},
+    nationalRecords: [],
+    worldRecords: [],
+  },
+  {
+    firstName: 'Viktoria',
+    lastName: 'Tretjakova',
     sex: 'F',
     country: 'EE',
     season: 2026,
