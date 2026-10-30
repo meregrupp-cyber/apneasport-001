@@ -92,9 +92,12 @@ describe('freediving athlete registry', () => {
       'Aleksandr Krolov',
       'Aleksandr Oleshko',
       'Aleksandra Nipadistova',
+      'Aleksei Sosojev',
+      'Andrei Horev',
       'Jelena Savotskina',
       'Liisa Kask',
       'Marco Uustal',
+      'Viktoria Tretjakova',
     ]);
   });
 

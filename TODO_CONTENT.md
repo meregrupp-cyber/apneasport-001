@@ -32,14 +32,15 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Allveevõitluse lõplik terminoloogia, võistlus- ja ohutusreeglid.
 - [ ] Merineitsispordi koolitustee, võistlusdistsipliinid ja hindamiskriteeriumid.
 - [ ] Võistluskalender, tulemused, rekordid, litsentsid, koondis ning valikukord.
-- [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (ACTIVE on praegu Kask, Krolov,
-      Nipadistova, Oleshko, Savotskina ja Uustal; teised INACTIVE) ning hooaja kinnitamine.
-      Distsipliinide PB-d ja Eesti rekordid on võetud AIDA Internationali ametlikest allikatest.
+- [ ] Vabasukeldumise sportlaste registri EAPSL-i staatused (ACTIVE on praegu Horev, Kask, Krolov,
+      Nipadistova, Oleshko, Savotskina, Sosojev, Tretjakova ja Uustal; teised INACTIVE) ning hooaja
+      kinnitamine. Distsipliinide PB-d ja Eesti rekordid on võetud AIDA Internationali ametlikest
+      allikatest.
 - [ ] Otsustada, kas avaldada AIDA profiililt loetavad Eesti/kontinendi/maailma rankingukohad; need
       muutuvad ajas ega kanna AIDA-s seisuga-kuupäeva.
 - [ ] AIDA võistluste arv sportlase kohta: ametlikul profiilil ei ole üheselt loetavat koguarvu.
-- [ ] Aleksandra NIPADISTOVA AIDA profiil ja tulemused, kui need tekivad; AIDA sportlaste otsingus
-      ja AIDA Estonia rankingus teda praegu ei ole.
+- [ ] Aleksandra NIPADISTOVA ja Viktoria TRETJAKOVA AIDA profiilid ja tulemused, kui need tekivad;
+      AIDA sportlaste otsingus ja AIDA Estonia rankingus neid praegu ei ole.
 - [ ] Ken Tomsonil on AIDA-s kaks profiili, mille vahel tulemused jagunevad; kinnitada kanooniline.
 
 ## Klubid, kontaktid ja visuaalid
