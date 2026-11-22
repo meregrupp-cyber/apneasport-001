@@ -42,6 +42,9 @@ selget teadet „Info lisandub pärast kinnitamist” / “Information will be a
 - [ ] Aleksandra NIPADISTOVA ja Viktoria TRETJAKOVA AIDA profiilid ja tulemused, kui need tekivad;
       AIDA sportlaste otsingus ja AIDA Estonia rankingus neid praegu ei ole.
 - [ ] Ken Tomsonil on AIDA-s kaks profiili, mille vahel tulemused jagunevad; kinnitada kanooniline.
+- [ ] Aleksei Sosojevil on AIDA-s kaks profiili: Riia 21.11.2026 tulemused (STA 6:47, DNF 122 m) on
+      uuel profiilil `Profile-223ef93a-…`, tabeli link viitab vanale `Profile-8d469607-…`. Registris
+      on mõlema profiili parimad tulemused; paluda AIDA-l profiilid ühendada.
 
 ## Klubid, kontaktid ja visuaalid
 
